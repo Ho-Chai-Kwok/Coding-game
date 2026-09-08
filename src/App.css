@@ -1,0 +1,102 @@
+.app {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 48px;
+}
+
+/* --- Level map ("path") --- */
+
+.level-map {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.level-map__header p {
+  margin-top: -16px;
+  margin-bottom: 24px;
+}
+
+.level-map__path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.level-node {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  background: var(--code-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.level-node:not(:disabled):hover {
+  transform: translateY(-4px) scale(1.04);
+  border-color: var(--accent);
+}
+
+.level-node:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.level-node--unlocked {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.level-node__badge {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.level-node__title {
+  font-size: 11px;
+  color: var(--text);
+  max-width: 76px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* --- Level screen (placeholder lesson view) --- */
+
+.level-screen {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.level-screen__back {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-bottom: 16px;
+}
+
+.level-screen__character {
+  font-size: 72px;
+  line-height: 1;
+}
+
+.level-screen__message {
+  color: var(--text);
+  max-width: 320px;
+}
