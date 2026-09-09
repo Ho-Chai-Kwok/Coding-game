@@ -9,6 +9,7 @@ export default function LevelNode({ level, onSelect }) {
       disabled={locked}
       aria-label={locked ? `${level.title} (locked)` : level.title}
     >
+      <span className="level-node__stage">{level.stageNumber}</span>
       <span className="level-node__badge">
         {locked ? "🔒" : completed ? "⭐" : level.character}
       </span>
