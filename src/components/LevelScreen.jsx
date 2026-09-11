@@ -1,4 +1,5 @@
 import CodeChallenge from "./CodeChallenge";
+import QuizChallenge from "./QuizChallenge";
 
 const FUN_MESSAGES = [
   "Your guide is warming up its circuits...",
@@ -25,12 +26,21 @@ export default function LevelScreen({
       <div className="level-screen__character">{level.character}</div>
       <h2>{level.title}</h2>
 
-      {mode === "learning" && level.content?.type === "code" ? (
+      {mode === "learning" && level.content?.type === "code" && (
         <CodeChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}
         />
-      ) : (
+      )}
+
+      {mode === "learning" && level.content?.type === "quiz" && (
+        <QuizChallenge
+          content={level.content}
+          onSolved={() => onCompleteLevel(level)}
+        />
+      )}
+
+      {(mode === "ranked" || !level.content) && (
         <p className="level-screen__message">{message}</p>
       )}
 

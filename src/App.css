@@ -431,6 +431,115 @@
   box-shadow: var(--shadow);
 }
 
+/* --- Quiz challenge --- */
+
+.quiz-challenge {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  text-align: left;
+}
+
+.quiz-challenge__instructions {
+  color: var(--text);
+  text-align: center;
+  font-size: 14px;
+}
+
+.quiz-challenge__question {
+  color: var(--text-h);
+  text-align: center;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.quiz-challenge__options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-challenge__option {
+  font-family: var(--mono);
+  font-size: 14px;
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.quiz-challenge__option:not(:disabled):hover {
+  border-color: var(--accent);
+  transform: translateX(2px);
+}
+
+.quiz-challenge__option--correct {
+  border-color: #16a34a;
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.quiz-challenge__option--incorrect {
+  border-color: #b91c1c;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.quiz-challenge__feedback {
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.quiz-challenge__feedback--correct {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.quiz-challenge__feedback--incorrect {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.quiz-challenge__feedback-title {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.quiz-challenge__explanation {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.quiz-challenge__continue,
+.quiz-challenge__retry {
+  margin-top: 4px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.quiz-challenge__continue {
+  background: linear-gradient(155deg, #4ade80, #16a34a);
+}
+
+.quiz-challenge__retry {
+  background: linear-gradient(155deg, #f87171, #b91c1c);
+}
+
 .level-screen__ranked-actions {
   margin-top: 16px;
   display: flex;
