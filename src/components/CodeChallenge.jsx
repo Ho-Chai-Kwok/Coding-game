@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TutorialCard from "./TutorialCard";
 
 function runUserCode(code) {
   const logs = [];
@@ -34,6 +35,8 @@ export default function CodeChallenge({ content, onSolved }) {
 
   return (
     <div className="code-challenge">
+      <TutorialCard tutorial={content.tutorial} example={content.example} />
+
       <p className="code-challenge__instructions">{content.instructions}</p>
 
       <textarea
@@ -53,7 +56,7 @@ export default function CodeChallenge({ content, onSolved }) {
           {result.status === "success" && (
             <>
               <p className="code-challenge__result-title">
-                🎉 Correct! Output: {content.expectedOutput}
+                🎉 Awesome job! Output: {content.expectedOutput}
               </p>
               <button className="code-challenge__continue" onClick={onSolved}>
                 Continue →
@@ -63,7 +66,7 @@ export default function CodeChallenge({ content, onSolved }) {
 
           {result.status === "mismatch" && (
             <>
-              <p className="code-challenge__result-title">Not quite yet.</p>
+              <p className="code-challenge__result-title">So close! Let's try again 💪</p>
               <p className="code-challenge__result-detail">
                 Output: {result.logs.length ? result.logs.join("\n") : "(nothing printed)"}
               </p>
@@ -73,7 +76,7 @@ export default function CodeChallenge({ content, onSolved }) {
 
           {result.status === "error" && (
             <>
-              <p className="code-challenge__result-title">There's a bug!</p>
+              <p className="code-challenge__result-title">Oops, a little hiccup! 🔧</p>
               <p className="code-challenge__result-detail">{result.error}</p>
             </>
           )}

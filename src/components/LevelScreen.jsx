@@ -26,14 +26,14 @@ export default function LevelScreen({
       <div className="level-screen__character">{level.character}</div>
       <h2>{level.title}</h2>
 
-      {mode === "learning" && level.content?.type === "code" && (
+      {mode !== "ranked" && level.content?.type === "code" && (
         <CodeChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}
         />
       )}
 
-      {mode === "learning" && level.content?.type === "quiz" && (
+      {mode !== "ranked" && level.content?.type === "quiz" && (
         <QuizChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}

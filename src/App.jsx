@@ -4,7 +4,9 @@ import WorldMap from "./components/WorldMap";
 import LevelMap from "./components/LevelMap";
 import LevelScreen from "./components/LevelScreen";
 import RankedHome from "./components/RankedHome";
+import SideQuestMap from "./components/SideQuestMap";
 import { worlds } from "./data/levels";
+import { sidequests } from "./data/sidequests";
 import "./App.css";
 
 const RANKED_CHALLENGES = [
@@ -14,12 +16,18 @@ const RANKED_CHALLENGES = [
 ];
 
 export default function App() {
-  const [mode, setMode] = useState(null); // null | "learning" | "ranked"
+  const [mode, setMode] = useState(null); // null | "learning" | "ranked" | "sidequest"
 
   // Learning mode state
   const [worldsState, setWorldsState] = useState(() => structuredClone(worlds));
   const [activeWorldId, setActiveWorldId] = useState(null);
   const [activeLevel, setActiveLevel] = useState(null);
+
+  // Side quest state
+  const [sideQuestsState, setSideQuestsState] = useState(() =>
+    structuredClone(sidequests),
+  );
+  const [activeSideQuestId, setActiveSideQuestId] = useState(null);
 
   // Ranked mode state
   const [rankedChallenge, setRankedChallenge] = useState(null);
@@ -31,6 +39,7 @@ export default function App() {
     setMode(null);
     setActiveWorldId(null);
     setActiveLevel(null);
+    setActiveSideQuestId(null);
     setRankedChallenge(null);
   }
 
@@ -50,12 +59,24 @@ export default function App() {
         const nextWorld = next.find((w) => w.id === world.id + 1);
         if (nextWorld && nextWorld.status === "locked") {
           nextWorld.status = "unlocked";
+          // A world being unlocked must also unlock its own first level,
+          // otherwise entering it shows every stage locked with no way in.
+          if (nextWorld.levels[0]) {
+            nextWorld.levels[0].status = "unlocked";
+          }
         }
       }
 
       return next;
     });
     setActiveLevel(null);
+  }
+
+  function completeSideQuest(quest) {
+    setSideQuestsState((prev) =>
+      prev.map((q) => (q.id === quest.id ? { ...q, completed: true } : q)),
+    );
+    setActiveSideQuestId(null);
   }
 
   function startRankedMatch() {
@@ -99,6 +120,27 @@ export default function App() {
         <WorldMap
           worlds={worldsState}
           onSelectWorld={setActiveWorldId}
+          onBack={backToModes}
+        />
+      );
+    }
+  } else if (mode === "sidequest") {
+    const activeQuest = sideQuestsState.find((q) => q.id === activeSideQuestId);
+
+    if (activeQuest) {
+      screen = (
+        <LevelScreen
+          level={activeQuest.level}
+          mode="sidequest"
+          onBack={() => setActiveSideQuestId(null)}
+          onCompleteLevel={() => completeSideQuest(activeQuest)}
+        />
+      );
+    } else {
+      screen = (
+        <SideQuestMap
+          sidequests={sideQuestsState}
+          onSelectQuest={(q) => setActiveSideQuestId(q.id)}
           onBack={backToModes}
         />
       );

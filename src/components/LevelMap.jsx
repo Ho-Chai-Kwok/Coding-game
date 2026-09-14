@@ -3,6 +3,13 @@ import LevelNode from "./LevelNode";
 const ZIGZAG_PATTERN = [0, 1, 2, 2, 1, 0, -1, -2, -2, -1];
 const ZIGZAG_STEP = 44; // px of horizontal offset per pattern unit
 
+function getEncouragement(completedCount, total) {
+  if (completedCount === 0) return "You've got this — let's begin! 🚀";
+  if (completedCount === total) return "World complete! You're amazing! 🏆";
+  if (completedCount / total >= 0.5) return "Halfway there — keep it up! 🌟";
+  return "Great progress — keep going! 💪";
+}
+
 export default function LevelMap({ world, onSelectLevel, onBack }) {
   const completedCount = world.levels.filter(
     (l) => l.status === "completed",
@@ -22,6 +29,9 @@ export default function LevelMap({ world, onSelectLevel, onBack }) {
         <p>
           World {world.id} · {completedCount}/{world.totalStages} stages
           complete
+        </p>
+        <p className="level-map__encouragement">
+          {getEncouragement(completedCount, world.totalStages)}
         </p>
       </header>
 

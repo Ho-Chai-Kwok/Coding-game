@@ -3,7 +3,7 @@ export default function ModeSelect({ onSelect }) {
     <div className="mode-select">
       <header className="mode-select__header">
         <h1>Code Quest 🎮</h1>
-        <p>How do you want to play today?</p>
+        <p>Hi there! What kind of adventure sounds fun today?</p>
       </header>
 
       <div className="mode-select__grid">
@@ -14,7 +14,18 @@ export default function ModeSelect({ onSelect }) {
           <span className="mode-card__icon">🗺️</span>
           <span className="mode-card__title">Learning Mode</span>
           <span className="mode-card__desc">
-            Explore 10 worlds and 200 stages at your own pace.
+            100 worlds, one topic at a time — go slow, go steady!
+          </span>
+        </button>
+
+        <button
+          className="mode-card mode-card--sidequest"
+          onClick={() => onSelect("sidequest")}
+        >
+          <span className="mode-card__icon">🧭</span>
+          <span className="mode-card__title">Side Quests</span>
+          <span className="mode-card__desc">
+            Peek at real tools like PyTorch, AWS, and NumPy!
           </span>
         </button>
 
@@ -25,7 +36,7 @@ export default function ModeSelect({ onSelect }) {
           <span className="mode-card__icon">🏆</span>
           <span className="mode-card__title">Ranked Mode</span>
           <span className="mode-card__desc">
-            Battle timed challenges and climb the rank ladder.
+            Take on quick challenges and climb the rank ladder!
           </span>
         </button>
       </div>

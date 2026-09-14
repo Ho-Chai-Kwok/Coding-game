@@ -1,347 +1,1022 @@
-// Placeholder level data. No real lesson content yet — this file just
-// defines the shape/structure so the world map, level map, and level
-// screen have something to render. Replace `content: null` with real
-// exercises later.
+// Curriculum data. Each world now teaches exactly ONE topic, broken into
+// several small, gradually-harder steps (Duolingo-style) instead of one
+// level per topic. Worlds 1-12 are fully authored; worlds 13-100 are
+// placeholder "coming soon" scaffolding so the full 100-world map exists
+// and can be filled in over time (see `content: null` handling already
+// supported by LevelScreen).
 
-// 20 lesson topics, reused (in order) inside every world. Real curriculum
-// content can diverge per world later — for now this just keeps the map
-// populated with 200 distinct-looking stages.
-const TOPICS = [
-  "Say Hello",
-  "Variables 101",
-  "Loopy Loops",
-  "If This, Then That",
-  "Function Junction",
-  "Array Adventures",
-  "String Theory",
-  "Object Oasis",
-  "Boolean Basics",
-  "Debugging Dojo",
-  "Recursion Station",
-  "Sorting Safari",
-  "Search Party",
-  "Class Act",
-  "Error Handling 101",
-  "API Expedition",
-  "Async Awakening",
-  "Data Structures Trek",
-  "Algorithm Arena",
-  "Code Review Crossing",
-];
-
-const STAGES_PER_WORLD = 20;
-
-// Ten distinct color themes so each world reads as its own place on the map.
-const WORLD_THEMES = [
+const REAL_WORLDS = [
   {
-    id: 1,
-    name: "Pixel Meadow",
+    name: "Say Hello",
     icon: "🌱",
     from: "#4ade80",
     to: "#16a34a",
     characters: ["🐣", "🐛", "🐝", "🦋"],
+    levels: [
+      {
+        title: "First Print",
+        type: "code",
+        tutorial:
+          "console.log() is how you print a message to the screen. Put your message in quotes inside the parentheses, and it will show up as output.",
+        example: 'console.log("Hi there!");\n// prints: Hi there!',
+        instructions:
+          "Every programmer's first program prints a greeting. Use console.log() to print exactly: Hello, World!",
+        starterCode:
+          '// Use console.log() to print a message.\n// Fill in the string below:\n\nconsole.log("");',
+        expectedOutput: "Hello, World!",
+        hint: 'console.log() takes a string in quotes, like console.log("some text").',
+      },
+      {
+        title: "Print a Number",
+        type: "code",
+        tutorial:
+          "Numbers don't need quotes — only text (strings) do. Just type the number directly inside console.log().",
+        example: "console.log(7);\n// prints: 7",
+        instructions: "Print the number 2024.",
+        starterCode: "// Print the number 2024\n\n",
+        expectedOutput: "2024",
+        hint: "console.log(2024); — no quotes needed for numbers.",
+      },
+      {
+        title: "Two Lines",
+        type: "code",
+        tutorial:
+          "Each console.log() call prints on its own new line. Call it more than once to print several lines.",
+        example: 'console.log("First");\nconsole.log("Second");',
+        instructions: 'Print "Ready" on the first line and "Set" on the second line.',
+        starterCode: "// Print Ready, then Set, on separate lines\n\n",
+        expectedOutput: "Ready\nSet",
+        hint: 'console.log("Ready");\nconsole.log("Set");',
+      },
+      {
+        title: "Multiple Values",
+        type: "code",
+        tutorial:
+          "console.log() can print several things at once if you separate them with commas — it joins them with a space.",
+        example: 'console.log("Score:", 10);\n// prints: Score: 10',
+        instructions: 'Print exactly: Level 1 (using two comma-separated values).',
+        starterCode: "// Print: Level 1\n\n",
+        expectedOutput: "Level 1",
+        hint: 'console.log("Level", 1);',
+      },
+      {
+        title: "Banner Challenge",
+        type: "code",
+        tutorial:
+          "Let's combine what you've learned: use console.log() multiple times to build a bigger message out of several lines.",
+        example: 'console.log("===");\nconsole.log("HI");\nconsole.log("===");',
+        instructions:
+          "Print exactly these three lines: *****, HELLO, ***** (one per line).",
+        starterCode: "// Print the three lines\n\n",
+        expectedOutput: "*****\nHELLO\n*****",
+        hint: "Three console.log() calls in a row, one per line.",
+      },
+    ],
   },
   {
-    id: 2,
-    name: "Coral Bay",
-    icon: "🐠",
-    from: "#22d3ee",
-    to: "#0891b2",
-    characters: ["🐠", "🐙", "🦀", "🐢"],
+    name: "Comments",
+    icon: "💬",
+    from: "#5eead4",
+    to: "#0d9488",
+    characters: ["📝", "✏️", "🖊️", "📌"],
+    levels: [
+      {
+        title: "What's a Comment?",
+        type: "quiz",
+        tutorial:
+          "Comments are notes for humans that JavaScript completely ignores. A single-line comment starts with //.",
+        example: '// this line is ignored\nconsole.log("This runs");',
+        instructions: "Comments help explain code without changing what it does.",
+        question: "In JavaScript, how do you start a single-line comment?",
+        options: ["// ", "# ", "<!-- ", "** "],
+        correctIndex: 0,
+        explanation: "// starts a single-line comment in JavaScript — everything after it on that line is ignored.",
+      },
+      {
+        title: "Commented Out",
+        type: "quiz",
+        tutorial:
+          "If you put // in front of a line of code, that code won't run at all — it's called 'commenting out' a line.",
+        example: '// console.log("Hi");\nconsole.log("Bye");\n// only "Bye" prints',
+        instructions: "Think about what actually runs when a line is commented out.",
+        question: 'What happens when you run: // console.log("Hi");',
+        options: [
+          "It prints Hi",
+          "Nothing is printed — the line is commented out",
+          "It throws an error",
+          "It prints undefined",
+        ],
+        correctIndex: 1,
+        explanation: "The // turns the whole line into a comment, so JavaScript skips it entirely.",
+      },
+      {
+        title: "Uncomment It",
+        type: "code",
+        tutorial:
+          "To turn a comment back into real code, just remove the // in front of it.",
+        example: '// console.log("Ready!");\n// remove // to make this run',
+        instructions: 'Uncomment the line below so it prints: Ready!',
+        starterCode: '// console.log("Ready!");\n',
+        expectedOutput: "Ready!",
+        hint: "Remove the // at the start of the line.",
+      },
+    ],
   },
   {
-    id: 3,
-    name: "Sunset Dunes",
-    icon: "🏜️",
-    from: "#fb923c",
-    to: "#ea580c",
-    characters: ["🦂", "🐫", "🦎", "🦅"],
-  },
-  {
-    id: 4,
-    name: "Crystal Cavern",
-    icon: "💎",
-    from: "#c084fc",
-    to: "#7c3aed",
-    characters: ["🦇", "💎", "🕷️", "👾"],
-  },
-  {
-    id: 5,
-    name: "Cloud Peaks",
-    icon: "⛰️",
-    from: "#38bdf8",
-    to: "#0284c7",
-    characters: ["🦅", "🐐", "☁️", "🦉"],
-  },
-  {
-    id: 6,
-    name: "Ember Forge",
-    icon: "🔥",
-    from: "#f87171",
-    to: "#b91c1c",
-    characters: ["🐉", "🔥", "⚙️", "🦎"],
-  },
-  {
-    id: 7,
-    name: "Moonlit Grove",
-    icon: "🌙",
-    from: "#818cf8",
-    to: "#4338ca",
-    characters: ["🦉", "🌙", "🦊", "✨"],
-  },
-  {
-    id: 8,
-    name: "Golden Harbor",
-    icon: "⚓",
+    name: "Variables",
+    icon: "📦",
     from: "#fbbf24",
     to: "#d97706",
-    characters: ["⚓", "🦜", "🐬", "🦑"],
+    characters: ["🎁", "📦", "🧳", "🗳️"],
+    levels: [
+      {
+        title: "Your First Variable",
+        type: "code",
+        tutorial:
+          "A variable is a labeled box that stores a value so you can use it later. Create one with let, give it a name, and use = to store a value inside.",
+        example: "let age = 7;\nconsole.log(age);\n// prints: 7",
+        instructions: "Declare a variable named score, set it to 10, then print it.",
+        starterCode:
+          "// Declare a variable called score set to 10,\n// then print it with console.log.\n\n",
+        expectedOutput: "10",
+        hint: "let score = 10;\nconsole.log(score);",
+      },
+      {
+        title: "Text Variables",
+        type: "code",
+        tutorial:
+          "Variables can hold text too — just wrap the value in quotes, the same way you would in console.log().",
+        example: 'let name = "Ada";\nconsole.log(name);\n// prints: Ada',
+        instructions: 'Declare a variable called petName set to "Rex", then print it.',
+        starterCode: "// Declare petName and print it\n\n",
+        expectedOutput: "Rex",
+        hint: 'let petName = "Rex";\nconsole.log(petName);',
+      },
+      {
+        title: "Changing Values",
+        type: "code",
+        tutorial:
+          "A variable declared with let can be given a new value later, just by using = again — no need for the word let a second time.",
+        example: "let x = 1;\nx = 2;\nconsole.log(x); // 2",
+        instructions: "Given points below, change it to 10 and print it.",
+        starterCode: "let points = 5;\n\n// Change points to 10, then print it\n",
+        expectedOutput: "10",
+        hint: "points = 10;\nconsole.log(points);",
+      },
+      {
+        title: "Using Two Variables",
+        type: "code",
+        tutorial:
+          "You can use variables together in expressions, like adding two number variables with +.",
+        example: "let a = 2;\nlet b = 3;\nconsole.log(a + b); // 5",
+        instructions:
+          "Given apples and oranges below, print the total number of fruit.",
+        starterCode: "let apples = 3;\nlet oranges = 4;\n\n// Print the total\n",
+        expectedOutput: "7",
+        hint: "console.log(apples + oranges);",
+      },
+      {
+        title: "let vs const",
+        type: "quiz",
+        tutorial:
+          "let can be reassigned later. const cannot be changed after it's set — use it for values that should stay the same.",
+        example: "let score = 0;   // can change later\nconst PI = 3.14; // cannot change",
+        instructions: "Pick the right keyword for a value that should never change.",
+        question: "Which keyword should you use for a variable that should never change?",
+        options: ["let", "const", "var", "static"],
+        correctIndex: 1,
+        explanation: "const locks a variable's value in place — trying to reassign it causes an error.",
+      },
+      {
+        title: "Sentence Builder",
+        type: "code",
+        tutorial:
+          "Let's combine everything: declare a few variables and join them into a sentence with +.",
+        example: 'let word = "cat";\nconsole.log(word + "!"); // cat!',
+        instructions:
+          "Declare name = \"Milo\" and age = 8, then print exactly: Milo is 8 years old",
+        starterCode:
+          '// Declare name and age, then print the sentence\nlet name = "Milo";\nlet age = 8;\n\n',
+        expectedOutput: "Milo is 8 years old",
+        hint: 'console.log(name + " is " + age + " years old");',
+      },
+    ],
   },
   {
-    id: 9,
-    name: "Neon District",
-    icon: "🌆",
-    from: "#f472b6",
-    to: "#db2777",
-    characters: ["🤖", "🌆", "🎮", "⚡"],
+    name: "Numbers & Math",
+    icon: "🔢",
+    from: "#60a5fa",
+    to: "#2563eb",
+    characters: ["➕", "➗", "✖️", "➖"],
+    levels: [
+      {
+        title: "Add & Subtract",
+        type: "code",
+        tutorial: "JavaScript can do math with +, -, *, and / right inside console.log().",
+        example: "console.log(3 + 4);\n// prints: 7",
+        instructions: "Print the result of 12 - 5.",
+        starterCode: "// Print 12 - 5\n\n",
+        expectedOutput: "7",
+        hint: "console.log(12 - 5);",
+      },
+      {
+        title: "Multiply & Divide",
+        type: "code",
+        tutorial: "Use * for multiplication and / for division.",
+        example: "console.log(6 * 2);\n// prints: 12",
+        instructions: "Print the result of 6 * 7.",
+        starterCode: "// Print 6 * 7\n\n",
+        expectedOutput: "42",
+        hint: "console.log(6 * 7);",
+      },
+      {
+        title: "Order of Operations",
+        type: "code",
+        tutorial:
+          "Multiplication happens before addition, unless you use parentheses to change the order — just like in math class.",
+        example: "console.log(2 + 3 * 4);\n// prints: 14 (not 20)",
+        instructions: "Print the result of (2 + 3) * 4, using parentheses.",
+        starterCode: "// Print (2 + 3) * 4\n\n",
+        expectedOutput: "20",
+        hint: "console.log((2 + 3) * 4);",
+      },
+      {
+        title: "The Remainder %",
+        type: "code",
+        tutorial: "% gives you the remainder left over after dividing.",
+        example: "console.log(7 % 2);\n// prints: 1 (7 divided by 2 leaves 1 left over)",
+        instructions: "Print the result of 10 % 3.",
+        starterCode: "// Print 10 % 3\n\n",
+        expectedOutput: "1",
+        hint: "console.log(10 % 3);",
+      },
+      {
+        title: "Rounding Numbers",
+        type: "code",
+        tutorial: "Math.round() rounds a decimal to the nearest whole number.",
+        example: "console.log(Math.round(4.7));\n// prints: 5",
+        instructions: "Print Math.round(3.2).",
+        starterCode: "// Print Math.round(3.2)\n\n",
+        expectedOutput: "3",
+        hint: "console.log(Math.round(3.2));",
+      },
+    ],
   },
   {
-    id: 10,
-    name: "Starfall Summit",
-    icon: "✨",
-    from: "#a78bfa",
-    to: "#3b82f6",
-    characters: ["🚀", "🌟", "🛸", "🪐"],
+    name: "Strings",
+    icon: "🧵",
+    from: "#f0abfc",
+    to: "#c026d3",
+    characters: ["🧵", "🪡", "🧶", "📜"],
+    levels: [
+      {
+        title: "Text Basics",
+        type: "code",
+        tutorial: "Text values are called strings and must be wrapped in quotes.",
+        example: 'console.log("cat");\n// prints: cat',
+        instructions: "Print the word banana.",
+        starterCode: "// Print: banana\n\n",
+        expectedOutput: "banana",
+        hint: 'console.log("banana");',
+      },
+      {
+        title: "Joining Strings",
+        type: "code",
+        tutorial: "You can join (concatenate) strings together using the + operator.",
+        example: 'console.log("Hello" + " " + "World");\n// prints: Hello World',
+        instructions:
+          'Given the first and last name below, print the full name: "Ada Lovelace".',
+        starterCode:
+          'let first = "Ada";\nlet last = "Lovelace";\n\n// Print the full name below\n',
+        expectedOutput: "Ada Lovelace",
+        hint: 'console.log(first + " " + last);',
+      },
+      {
+        title: "String Length",
+        type: "code",
+        tutorial: ".length tells you how many characters are in a string.",
+        example: 'console.log("cat".length);\n// prints: 3',
+        instructions: 'Print the length of the word "banana".',
+        starterCode: "// Print the length of banana\n\n",
+        expectedOutput: "6",
+        hint: 'console.log("banana".length);',
+      },
+      {
+        title: "Template Literals",
+        type: "code",
+        tutorial:
+          "Template literals use backticks (`) and ${} to insert variables directly into a string.",
+        example: 'let name = "Sam";\nconsole.log(`Hi ${name}`);\n// prints: Hi Sam',
+        instructions:
+          "Given name below, print exactly: Hello, Luna! using a template literal.",
+        starterCode: '// Print: Hello, Luna!\nlet name = "Luna";\n\n',
+        expectedOutput: "Hello, Luna!",
+        hint: "console.log(`Hello, ${name}!`);",
+      },
+      {
+        title: "Changing Case",
+        type: "code",
+        tutorial: "Strings have built-in methods like .toUpperCase() and .toLowerCase().",
+        example: 'console.log("hi".toUpperCase());\n// prints: HI',
+        instructions: 'Given word below, print it in uppercase.',
+        starterCode: '// Print word in uppercase\nlet word = "loud";\n\n',
+        expectedOutput: "LOUD",
+        hint: "console.log(word.toUpperCase());",
+      },
+      {
+        title: "Case Quiz",
+        type: "quiz",
+        tutorial: "Strings come with several handy built-in methods for changing their case.",
+        example: 'console.log("HI".toLowerCase());\n// prints: hi',
+        instructions: "Pick the method that converts a string to lowercase.",
+        question: "Which method converts a string to lowercase?",
+        options: [".toLowerCase()", ".lower()", ".toLower()", ".downCase()"],
+        correctIndex: 0,
+        explanation: ".toLowerCase() converts every character in a string to lowercase.",
+      },
+    ],
+  },
+  {
+    name: "Booleans & Comparisons",
+    icon: "⚖️",
+    from: "#94a3b8",
+    to: "#475569",
+    characters: ["⚖️", "🔍", "👀", "🎯"],
+    levels: [
+      {
+        title: "True or False",
+        type: "quiz",
+        tutorial:
+          "A boolean is a value that's only ever true or false — it's how code represents yes/no answers.",
+        example: "console.log(5 > 3);\n// prints: true",
+        instructions: "Booleans are the foundation for decisions in code.",
+        question: "Which of these is a boolean value?",
+        options: ["\"true\"", "1", "true", "yes"],
+        correctIndex: 2,
+        explanation: "true (without quotes) is the actual boolean value — \"true\" in quotes is just a string.",
+      },
+      {
+        title: "Equal To",
+        type: "code",
+        tutorial: "=== checks whether two values are exactly equal, and gives back true or false.",
+        example: "console.log(5 === 5);\n// prints: true",
+        instructions: "Print whether 7 is equal to 7, using ===.",
+        starterCode: "// Print whether 7 === 7\n\n",
+        expectedOutput: "true",
+        hint: "console.log(7 === 7);",
+      },
+      {
+        title: "Greater Than",
+        type: "code",
+        tutorial: "> and < compare two numbers and give back true or false.",
+        example: "console.log(2 > 5);\n// prints: false",
+        instructions: "Print whether 10 is greater than 3.",
+        starterCode: "// Print whether 10 > 3\n\n",
+        expectedOutput: "true",
+        hint: "console.log(10 > 3);",
+      },
+      {
+        title: "And / Or",
+        type: "quiz",
+        tutorial: "&& (and) needs both sides to be true. || (or) only needs one side to be true.",
+        example: "console.log(true && false); // false\nconsole.log(true || false); // true",
+        instructions: "Booleans combine with && (and) and || (or).",
+        question: "What does the expression 5 > 3 && 2 > 4 evaluate to?",
+        options: ["true", "false", "5", "undefined"],
+        correctIndex: 1,
+        explanation:
+          "5 > 3 is true, but 2 > 4 is false. With &&, both sides must be true, so the result is false.",
+      },
+      {
+        title: "Range Check",
+        type: "code",
+        tutorial: "You can combine two comparisons with && to check if a value falls in a range.",
+        example: "let n = 5;\nconsole.log(n > 0 && n < 10); // true",
+        instructions:
+          "Given age below, print whether it's between 10 and 18 inclusive, using &&.",
+        starterCode: "let age = 15;\n\n// Print whether age is between 10 and 18\n",
+        expectedOutput: "true",
+        hint: "console.log(age >= 10 && age <= 18);",
+      },
+    ],
+  },
+  {
+    name: "Conditionals",
+    icon: "🚦",
+    from: "#fb923c",
+    to: "#c2410c",
+    characters: ["🚦", "🔀", "🛤️", "🚧"],
+    levels: [
+      {
+        title: "Just an if",
+        type: "code",
+        tutorial:
+          "if only runs its block when the condition inside the parentheses is true — otherwise nothing happens.",
+        example: 'if (true) {\n  console.log("shown");\n}',
+        instructions:
+          'Given isRaining below, print "Bring an umbrella" only if it\'s true.',
+        starterCode: "let isRaining = true;\n\n// Print the message only if isRaining\n",
+        expectedOutput: "Bring an umbrella",
+        hint: 'if (isRaining) {\n  console.log("Bring an umbrella");\n}',
+      },
+      {
+        title: "if / else",
+        type: "code",
+        tutorial:
+          "if/else lets your code make decisions. If the condition is true, the if block runs — otherwise the else block runs.",
+        example:
+          'if (10 > 5) {\n  console.log("bigger");\n} else {\n  console.log("smaller");\n}',
+        instructions:
+          'Given the age variable below, print "Adult" if age is 18 or older, otherwise print "Minor".',
+        starterCode: "let age = 20;\n\n// Write your if/else statement below\n",
+        expectedOutput: "Adult",
+        hint: 'if (age >= 18) {\n  console.log("Adult");\n} else {\n  console.log("Minor");\n}',
+      },
+      {
+        title: "else if Chains",
+        type: "code",
+        tutorial:
+          "else if lets you check several conditions in order, one after another, until one matches.",
+        example:
+          'let n = 5;\nif (n > 10) {\n  console.log("big");\n} else if (n > 0) {\n  console.log("small");\n} else {\n  console.log("zero or less");\n}',
+        instructions:
+          'Given temp below, print "Cold" if under 10, "Warm" if under 25, otherwise "Hot".',
+        starterCode: "let temp = 15;\n\n// Write your if / else if / else chain\n",
+        expectedOutput: "Warm",
+        hint: 'if (temp < 10) {\n  console.log("Cold");\n} else if (temp < 25) {\n  console.log("Warm");\n} else {\n  console.log("Hot");\n}',
+      },
+      {
+        title: "A Classic Bug",
+        type: "quiz",
+        tutorial:
+          "A very common mistake: = assigns a value, while === compares two values. Mixing them up inside an if can cause sneaky bugs.",
+        example: 'if (x = 5) { ... }   // bug: assigns 5 to x\nif (x === 5) { ... } // correct: compares x to 5',
+        instructions: "Spot the bug in this condition.",
+        question: 'A teammate wrote: if (x = 5) { console.log("five"); } — what\'s the bug?',
+        options: [
+          "Nothing, it's correct",
+          "It uses assignment (=) instead of comparison (===)",
+          "console.log needs two arguments",
+          "if statements can't use curly braces",
+        ],
+        correctIndex: 1,
+        explanation:
+          "= assigns a value while === compares. This bug silently sets x to 5 and always runs the block.",
+      },
+      {
+        title: "Even or Odd",
+        type: "code",
+        tutorial: "You can combine % with if to check patterns, like whether a number is even.",
+        example: "let n = 4;\nconsole.log(n % 2 === 0); // true (even)",
+        instructions: 'Given n below, print "Even" if n is even, otherwise "Odd".',
+        starterCode: "let n = 8;\n\n// Print Even or Odd\n",
+        expectedOutput: "Even",
+        hint: 'if (n % 2 === 0) {\n  console.log("Even");\n} else {\n  console.log("Odd");\n}',
+      },
+      {
+        title: "FizzBuzz Challenge",
+        type: "code",
+        tutorial:
+          "Let's combine everything: chain several conditions together to solve a classic coding puzzle.",
+        example: "// If divisible by 3 AND 5, print FizzBuzz first!",
+        instructions:
+          'Given n below, print "FizzBuzz" if divisible by both 3 and 5, else "Fizz" if by 3, else "Buzz" if by 5, else the number itself.',
+        starterCode: "let n = 15;\n\n// Write your FizzBuzz logic\n",
+        expectedOutput: "FizzBuzz",
+        hint:
+          'if (n % 15 === 0) {\n  console.log("FizzBuzz");\n} else if (n % 3 === 0) {\n  console.log("Fizz");\n} else if (n % 5 === 0) {\n  console.log("Buzz");\n} else {\n  console.log(n);\n}',
+      },
+    ],
+  },
+  {
+    name: "Loops: for",
+    icon: "🔁",
+    from: "#22d3ee",
+    to: "#0e7490",
+    characters: ["🔁", "🔄", "🌀", "♻️"],
+    levels: [
+      {
+        title: "Your First Loop",
+        type: "code",
+        tutorial:
+          "A for loop repeats code without you writing it over and over. It has three parts: a start, a condition to keep going, and a step.",
+        example: "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}\n// prints: 1, 2, 3",
+        instructions: "Use a for loop to print the numbers 1 through 5, one per line.",
+        starterCode: "// Write a for loop that prints 1 to 5\n\n",
+        expectedOutput: "1\n2\n3\n4\n5",
+        hint: "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
+      },
+      {
+        title: "Counting by Twos",
+        type: "code",
+        tutorial: "You can change the step (i += 2) to count differently, like only even numbers.",
+        example: "for (let i = 0; i <= 4; i += 2) {\n  console.log(i);\n}\n// prints: 0, 2, 4",
+        instructions: "Print the even numbers from 2 to 10.",
+        starterCode: "// Print 2, 4, 6, 8, 10\n\n",
+        expectedOutput: "2\n4\n6\n8\n10",
+        hint: "for (let i = 2; i <= 10; i += 2) {\n  console.log(i);\n}",
+      },
+      {
+        title: "Counting Down",
+        type: "code",
+        tutorial: "Loops can count down too, by decreasing i with i-- instead of increasing it.",
+        example: "for (let i = 3; i >= 1; i--) {\n  console.log(i);\n}\n// prints: 3, 2, 1",
+        instructions: "Print the numbers 5 down to 1.",
+        starterCode: "// Print 5, 4, 3, 2, 1\n\n",
+        expectedOutput: "5\n4\n3\n2\n1",
+        hint: "for (let i = 5; i >= 1; i--) {\n  console.log(i);\n}",
+      },
+      {
+        title: "Adding It Up",
+        type: "code",
+        tutorial:
+          "You can build up a total inside a loop by using a variable declared outside it, and adding to it each time.",
+        example: "let total = 0;\nfor (let i = 1; i <= 3; i++) {\n  total += i;\n}\n// total is 6",
+        instructions: "Use a loop to add up the numbers 1 through 5, then print the total.",
+        starterCode:
+          "let total = 0;\n\n// Loop from 1 to 5, adding each number to total\n\nconsole.log(total);",
+        expectedOutput: "15",
+        hint: "for (let i = 1; i <= 5; i++) {\n  total += i;\n}",
+      },
+      {
+        title: "Loop Danger",
+        type: "quiz",
+        tutorial:
+          "If a loop's condition never becomes false, it will run forever — this is called an infinite loop, and it freezes your program.",
+        example: "for (let i = 0; i > -1; i++) { }\n// i keeps growing — this NEVER stops",
+        instructions: "Spot the problem with this loop.",
+        question: "What's wrong with: for (let i = 0; i > -1; i++) { }",
+        options: [
+          "Nothing",
+          "It never stops — i keeps growing and stays > -1 forever",
+          "It only runs once",
+          "It causes a syntax error",
+        ],
+        correctIndex: 1,
+        explanation: "Since i only increases, i > -1 is always true, so the loop never ends.",
+      },
+      {
+        title: "Loop + If Combo",
+        type: "code",
+        tutorial: "You can put an if statement inside a loop to only act on certain values.",
+        example: "for (let i = 1; i <= 4; i++) {\n  if (i % 2 === 0) console.log(i);\n}\n// 2, 4",
+        instructions: "Print only the even numbers from 1 to 10, using a loop and an if.",
+        starterCode: "// Print the even numbers from 1 to 10\n\n",
+        expectedOutput: "2\n4\n6\n8\n10",
+        hint: "for (let i = 1; i <= 10; i++) {\n  if (i % 2 === 0) {\n    console.log(i);\n  }\n}",
+      },
+    ],
+  },
+  {
+    name: "Loops: while",
+    icon: "⏳",
+    from: "#a5b4fc",
+    to: "#4f46e5",
+    characters: ["⏳", "⌛", "🕰️", "⏰"],
+    levels: [
+      {
+        title: "The while Loop",
+        type: "code",
+        tutorial:
+          "A while loop repeats as long as its condition stays true. You must update the variable yourself, or it never stops!",
+        example: "let i = 0;\nwhile (i < 3) {\n  console.log(i);\n  i++;\n}\n// 0, 1, 2",
+        instructions: "Use a while loop to print the numbers 1 through 5.",
+        starterCode: "let i = 1;\n\n// write a while loop here\n",
+        expectedOutput: "1\n2\n3\n4\n5",
+        hint: "while (i <= 5) {\n  console.log(i);\n  i++;\n}",
+      },
+      {
+        title: "Counting Down Again",
+        type: "code",
+        tutorial: "Just like for loops, while loops can count down too.",
+        example: "let i = 3;\nwhile (i >= 1) {\n  console.log(i);\n  i--;\n}",
+        instructions: "Print 5 down to 1 using a while loop.",
+        starterCode: "let i = 5;\n\n",
+        expectedOutput: "5\n4\n3\n2\n1",
+        hint: "while (i >= 1) {\n  console.log(i);\n  i--;\n}",
+      },
+      {
+        title: "for vs while",
+        type: "quiz",
+        tutorial:
+          "for loops are great when you know exactly how many times to repeat. while loops shine when you don't know in advance — you just know the stopping condition.",
+        instructions: "Think about when each loop type fits best.",
+        question: "Which loop is best when you don't know in advance how many times you'll repeat?",
+        options: ["for", "while", "Both are identical", "Neither"],
+        correctIndex: 1,
+        explanation: "while loops are ideal when the number of repeats depends on something that changes while the loop runs.",
+      },
+      {
+        title: "Doubling Challenge",
+        type: "code",
+        tutorial: "Let's combine while with multiplication to grow a number quickly.",
+        example: "let n = 1;\nwhile (n < 10) {\n  console.log(n);\n  n *= 2;\n}",
+        instructions:
+          "Given n below, use a while loop to print n, doubling it each time, until n exceeds 100.",
+        starterCode: "let n = 1;\n\n",
+        expectedOutput: "1\n2\n4\n8\n16\n32\n64",
+        hint: "while (n <= 100) {\n  console.log(n);\n  n *= 2;\n}",
+      },
+    ],
+  },
+  {
+    name: "Arrays",
+    icon: "📚",
+    from: "#c4b5fd",
+    to: "#7c3aed",
+    characters: ["📚", "🗂️", "📋", "🧺"],
+    levels: [
+      {
+        title: "Making a List",
+        type: "quiz",
+        tutorial: "An array is an ordered list of values, written inside square brackets and separated by commas.",
+        example: 'let colors = ["red", "blue", "green"];',
+        instructions: "Arrays store ordered lists of values.",
+        question: "Which line correctly creates an array with the numbers 1, 2, and 3?",
+        options: [
+          "let nums = (1, 2, 3);",
+          "let nums = [1, 2, 3];",
+          "let nums = {1, 2, 3};",
+          "let nums = 1, 2, 3;",
+        ],
+        correctIndex: 1,
+        explanation: "Arrays are written with square brackets: [1, 2, 3].",
+      },
+      {
+        title: "Getting an Item",
+        type: "code",
+        tutorial:
+          "Each item in an array has a position (index) starting at 0. Use [] to get an item by its position.",
+        example: 'let a = ["x", "y"];\nconsole.log(a[1]);\n// prints: y',
+        instructions: "Given fruits below, print the second fruit (banana).",
+        starterCode: 'let fruits = ["apple", "banana", "cherry"];\n\n// Print the second fruit\n',
+        expectedOutput: "banana",
+        hint: "console.log(fruits[1]);",
+      },
+      {
+        title: "How Many Items?",
+        type: "code",
+        tutorial: ".length tells you how many items are in an array.",
+        example: "console.log([1, 2, 3].length);\n// prints: 3",
+        instructions: "Given nums below, print how many items are in the array.",
+        starterCode: "let nums = [10, 20, 30, 40];\n\n// Print how many items\n",
+        expectedOutput: "4",
+        hint: "console.log(nums.length);",
+      },
+      {
+        title: "Adding an Item",
+        type: "code",
+        tutorial: ".push() adds a new item onto the end of an array.",
+        example: 'let a = [1, 2];\na.push(3);\nconsole.log(a);\n// [1,2,3] (printed as 1,2,3)',
+        instructions: 'Given list below, push "c" onto it, then print the whole array.',
+        starterCode: 'let list = ["a", "b"];\n\n// push "c" then print list\n',
+        expectedOutput: "a,b,c",
+        hint: 'list.push("c");\nconsole.log(list);',
+      },
+      {
+        title: "Looping Through",
+        type: "code",
+        tutorial: "Combine a for loop with array indexing to visit every item, one by one.",
+        example: 'let a = ["x", "y"];\nfor (let i = 0; i < a.length; i++) {\n  console.log(a[i]);\n}',
+        instructions: "Given colors below, print each color on its own line.",
+        starterCode: 'let colors = ["red", "green", "blue"];\n\n// Print each color\n',
+        expectedOutput: "red\ngreen\nblue",
+        hint: "for (let i = 0; i < colors.length; i++) {\n  console.log(colors[i]);\n}",
+      },
+      {
+        title: "Out of Range",
+        type: "quiz",
+        tutorial: "If you try to access an index that doesn't exist, JavaScript gives you undefined instead of an error.",
+        example: 'console.log(["a", "b"][5]);\n// prints: undefined',
+        instructions: "Think about what happens outside the array's range.",
+        question: 'What does ["a", "b"][5] give you?',
+        options: ["An error", "undefined", "null", "5"],
+        correctIndex: 1,
+        explanation: "Accessing a missing index doesn't crash — it just gives back undefined.",
+      },
+    ],
+  },
+  {
+    name: "Functions",
+    icon: "⚙️",
+    from: "#6ee7b7",
+    to: "#059669",
+    characters: ["⚙️", "🔧", "🛠️", "⚡"],
+    levels: [
+      {
+        title: "Your First Function",
+        type: "code",
+        tutorial:
+          "A function is a reusable block of code with a name. Define it once with function, then run it any time by calling its name with ().",
+        example: 'function sayHi() {\n  console.log("Hi!");\n}\nsayHi();\n// prints: Hi!',
+        instructions: 'Write a function named greet that prints "Hi!", then call it.',
+        starterCode:
+          '// Define a function called greet that prints "Hi!"\n// Then call greet()\n\n',
+        expectedOutput: "Hi!",
+        hint: 'function greet() {\n  console.log("Hi!");\n}\ngreet();',
+      },
+      {
+        title: "Taking a Parameter",
+        type: "code",
+        tutorial:
+          "Parameters let you pass information into a function so it can use it, like a blank the function fills in.",
+        example: 'function greet(name) {\n  console.log("Hi " + name);\n}\ngreet("Sam");\n// Hi Sam',
+        instructions:
+          'Write a function shout that takes a word and prints it in uppercase, then call shout("go").',
+        starterCode: "// Define shout(word) and call shout(\"go\")\n\n",
+        expectedOutput: "GO",
+        hint: "function shout(word) {\n  console.log(word.toUpperCase());\n}\nshout(\"go\");",
+      },
+      {
+        title: "Returning a Value",
+        type: "code",
+        tutorial:
+          "return sends a value back out of a function so you can use it later, instead of just printing it directly.",
+        example: "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 3));\n// 5",
+        instructions:
+          "Write a function add that returns the sum of two numbers, then print add(4, 5).",
+        starterCode: "// Define add(a, b) that returns a + b, then print add(4, 5)\n\n",
+        expectedOutput: "9",
+        hint: "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(4, 5));",
+      },
+      {
+        title: "Two Parameters",
+        type: "code",
+        tutorial: "Functions can take more than one parameter, separated by commas.",
+        example: "function multiply(a, b) {\n  return a * b;\n}",
+        instructions:
+          "Write a function multiply(a, b) that returns a * b, then print multiply(3, 4).",
+        starterCode: "// Define multiply(a, b), then print multiply(3, 4)\n\n",
+        expectedOutput: "12",
+        hint: "function multiply(a, b) {\n  return a * b;\n}\nconsole.log(multiply(3, 4));",
+      },
+      {
+        title: "Arrow Functions",
+        type: "code",
+        tutorial: "Arrow functions are a shorter way to write functions, using =>.",
+        example: "const add = (a, b) => a + b;\nconsole.log(add(2, 3));\n// 5",
+        instructions:
+          "Write an arrow function called square that returns n * n, then print square(5).",
+        starterCode: "// Define square as an arrow function, then print square(5)\n\n",
+        expectedOutput: "25",
+        hint: "const square = n => n * n;\nconsole.log(square(5));",
+      },
+      {
+        title: "Default Parameters",
+        type: "quiz",
+        tutorial: "You can give a parameter a default value, used only when no argument is passed in.",
+        example: 'function greet(name = "friend") {\n  console.log("Hi " + name);\n}\ngreet(); // Hi friend',
+        instructions: "Think about what happens with no arguments.",
+        question: 'What does function greet(name = "friend") {} do if you call greet() with no arguments?',
+        options: ["Throws an error", "name becomes undefined", 'name becomes "friend"', "It doesn't run"],
+        correctIndex: 2,
+        explanation: "Default parameters fill in automatically when no argument is provided for that spot.",
+      },
+    ],
+  },
+  {
+    name: "Objects",
+    icon: "🗃️",
+    from: "#fcd34d",
+    to: "#b45309",
+    characters: ["🗃️", "📦", "🏷️", "🔖"],
+    levels: [
+      {
+        title: "Making an Object",
+        type: "quiz",
+        tutorial: "An object stores related information as key: value pairs, wrapped in curly braces.",
+        example: 'let cat = { name: "Whiskers", age: 3 };',
+        instructions: "Objects store data as key/value pairs.",
+        question: 'Which of these correctly creates an object with a name property set to "Rex"?',
+        options: [
+          'let dog = { name: "Rex" };',
+          'let dog = ( name: "Rex" );',
+          'let dog = [ name: "Rex" ];',
+          'let dog = name: "Rex";',
+        ],
+        correctIndex: 0,
+        explanation: 'Objects use curly braces with key: value pairs, like { name: "Rex" }.',
+      },
+      {
+        title: "Reading a Property",
+        type: "code",
+        tutorial: "You can read a value back out of an object with dot notation, like dog.name.",
+        example: 'let cat = { name: "Whiskers" };\nconsole.log(cat.name);\n// Whiskers',
+        instructions: "Given dog below, print the dog's name.",
+        starterCode: 'let dog = { name: "Rex", age: 3 };\n\n// Print dog\'s name\n',
+        expectedOutput: "Rex",
+        hint: "console.log(dog.name);",
+      },
+      {
+        title: "Updating a Property",
+        type: "code",
+        tutorial: "You can change a property's value after creating the object, just by assigning it a new value.",
+        example: 'let car = { color: "red" };\ncar.color = "blue";',
+        instructions: "Given user below, set score to 100 and print it.",
+        starterCode: "let user = { score: 0 };\n\n// Set score to 100, then print it\n",
+        expectedOutput: "100",
+        hint: "user.score = 100;\nconsole.log(user.score);",
+      },
+      {
+        title: "Adding a Property",
+        type: "code",
+        tutorial: "You can add a brand-new property to an object just by assigning it, even if it wasn't there before.",
+        example: 'let obj = {};\nobj.newKey = "value";',
+        instructions: 'Given pet below, add a property sound set to "Woof" and print it.',
+        starterCode: 'let pet = { name: "Milo" };\n\n// Add sound, then print it\n',
+        expectedOutput: "Woof",
+        hint: 'pet.sound = "Woof";\nconsole.log(pet.sound);',
+      },
+      {
+        title: "Bracket Notation",
+        type: "quiz",
+        tutorial: "Besides dot notation, you can also access a property using square brackets — useful when the key is stored in a variable.",
+        example: 'let key = "name";\nlet cat = { name: "Tom" };\nconsole.log(cat[key]); // Tom',
+        instructions: "Think about accessing a property when the key is in a variable.",
+        question: "Which also works to access a property, when the key is stored in a variable?",
+        options: ["obj.key", "obj[key]", "obj->key", "obj::key"],
+        correctIndex: 1,
+        explanation: "Bracket notation lets you use a variable as the property name — dot notation can't do that.",
+      },
+    ],
   },
 ];
 
-// Real lesson content, keyed by "<worldId>-<stageNumber>". Everything not
-// listed here stays a placeholder (`content: null`) until it's written.
-const LESSON_CONTENT = {
-  "1-1": {
-    type: "code",
-    instructions:
-      'Every programmer\'s first program prints a greeting. Use console.log() to print exactly: Hello, World!',
-    starterCode:
-      '// Use console.log() to print a message.\n// Fill in the string below:\n\nconsole.log("");',
-    expectedOutput: "Hello, World!",
-    hint: 'console.log() takes a string in quotes, like console.log("some text").',
-  },
-  "1-2": {
-    type: "code",
-    instructions:
-      "Declare a variable named score, set it to 10, then print it.",
-    starterCode:
-      "// Declare a variable called score set to 10,\n// then print it with console.log.\n\n",
-    expectedOutput: "10",
-    hint: "let score = 10;\nconsole.log(score);",
-  },
-  "1-3": {
-    type: "code",
-    instructions: "Use a for loop to print the numbers 1 through 5, one per line.",
-    starterCode: "// Write a for loop that prints 1 to 5\n\n",
-    expectedOutput: "1\n2\n3\n4\n5",
-    hint: "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
-  },
-  "1-4": {
-    type: "code",
-    instructions:
-      'Given the age variable below, print "Adult" if age is 18 or older, otherwise print "Minor".',
-    starterCode: "let age = 20;\n\n// Write your if/else statement below\n",
-    expectedOutput: "Adult",
-    hint: 'if (age >= 18) {\n  console.log("Adult");\n} else {\n  console.log("Minor");\n}',
-  },
-  "1-5": {
-    type: "code",
-    instructions: 'Write a function named greet that prints "Hi!", then call it.',
-    starterCode:
-      '// Define a function called greet that prints "Hi!"\n// Then call greet()\n\n',
-    expectedOutput: "Hi!",
-    hint: 'function greet() {\n  console.log("Hi!");\n}\ngreet();',
-  },
-  "1-6": {
-    type: "quiz",
-    instructions: "Arrays store ordered lists of values.",
-    question: "Which line correctly creates an array with the numbers 1, 2, and 3?",
-    options: [
-      "let nums = (1, 2, 3);",
-      "let nums = [1, 2, 3];",
-      "let nums = {1, 2, 3};",
-      "let nums = 1, 2, 3;",
-    ],
-    correctIndex: 1,
-    explanation: "Arrays are written with square brackets: [1, 2, 3].",
-  },
-  "1-7": {
-    type: "code",
-    instructions:
-      'Given the first and last name below, print the full name: "Ada Lovelace".',
-    starterCode:
-      'let first = "Ada";\nlet last = "Lovelace";\n\n// Print the full name below\n',
-    expectedOutput: "Ada Lovelace",
-    hint: 'console.log(first + " " + last);',
-  },
-  "1-8": {
-    type: "quiz",
-    instructions: "Objects store data as key/value pairs.",
-    question:
-      'Which of these correctly creates an object with a name property set to "Rex"?',
-    options: [
-      'let dog = { name: "Rex" };',
-      'let dog = ( name: "Rex" );',
-      'let dog = [ name: "Rex" ];',
-      'let dog = name: "Rex";',
-    ],
-    correctIndex: 0,
-    explanation:
-      'Objects use curly braces with key: value pairs, like { name: "Rex" }.',
-  },
-  "1-9": {
-    type: "quiz",
-    instructions: "Booleans combine with && (and) and || (or).",
-    question: "What does the expression 5 > 3 && 2 > 4 evaluate to?",
-    options: ["true", "false", "5", "undefined"],
-    correctIndex: 1,
-    explanation:
-      "5 > 3 is true, but 2 > 4 is false. With &&, both sides must be true, so the result is false.",
-  },
-  "1-10": {
-    type: "code",
-    instructions: 'This code should print "Fixed it!" but has a bug. Find and fix it.',
-    starterCode: 'console.log("Fixed it!"\n',
-    expectedOutput: "Fixed it!",
-    hint: "Check your parentheses — every ( needs a matching ).",
-  },
-  "1-11": {
-    type: "quiz",
-    instructions: "Recursion is a function that calls itself.",
-    question: "What must every recursive function have to avoid running forever?",
-    options: [
-      "A for loop",
-      "A base case that stops the recursion",
-      "An array",
-      "A return type of number",
-    ],
-    correctIndex: 1,
-    explanation:
-      "Without a base case, a recursive function keeps calling itself forever, causing a stack overflow.",
-  },
-  "1-12": {
-    type: "quiz",
-    instructions: "JavaScript arrays come with handy built-in methods.",
-    question: "Which built-in array method sorts elements in place?",
-    options: [".filter()", ".map()", ".sort()", ".find()"],
-    correctIndex: 2,
-    explanation: "Array.prototype.sort() reorders the elements of an array in place.",
-  },
-  "1-13": {
-    type: "quiz",
-    instructions: "Searching arrays is a everyday task.",
-    question: "What does [1, 2, 3].includes(2) return?",
-    options: ["1", "true", "false", "2"],
-    correctIndex: 1,
-    explanation: ".includes() returns true if the array contains the given value.",
-  },
-  "1-14": {
-    type: "quiz",
-    instructions: "Classes are blueprints for creating objects.",
-    question: "Which keyword creates a new instance of a class in JavaScript?",
-    options: ["make", "create", "new", "init"],
-    correctIndex: 2,
-    explanation:
-      "The new keyword creates a new object instance from a class, e.g. new Dog().",
-  },
-  "1-15": {
-    type: "code",
-    instructions:
-      'Wrap the risky code below in a try/catch. In the catch block, print "Caught an error!".',
-    starterCode:
-      '// Wrap this in try/catch and print "Caught an error!" in the catch block\nJSON.parse("not valid json");\n',
-    expectedOutput: "Caught an error!",
-    hint: 'try {\n  JSON.parse("not valid json");\n} catch (e) {\n  console.log("Caught an error!");\n}',
-  },
-  "1-16": {
-    type: "quiz",
-    instructions: "APIs let programs talk to each other.",
-    question: "What does API stand for?",
-    options: [
-      "Application Programming Interface",
-      "Automated Program Input",
-      "Applied Protocol Internet",
-      "App Process Index",
-    ],
-    correctIndex: 0,
-    explanation:
-      "API stands for Application Programming Interface — a way for programs to talk to each other.",
-  },
-  "1-17": {
-    type: "quiz",
-    instructions: "Async code lets programs wait without freezing.",
-    question: "Which keyword pauses a function until a Promise resolves?",
-    options: ["defer", "await", "pause", "yield"],
-    correctIndex: 1,
-    explanation:
-      "await pauses an async function until the Promise it's waiting on resolves.",
-  },
-  "1-18": {
-    type: "quiz",
-    instructions: "Different data structures fit different jobs.",
-    question: "Which structure follows First-In-First-Out (FIFO) order?",
-    options: ["Stack", "Queue", "Tree", "Set"],
-    correctIndex: 1,
-    explanation:
-      "A queue removes items in the same order they were added — first in, first out.",
-  },
-  "1-19": {
-    type: "quiz",
-    instructions: "Big O notation describes how algorithms scale.",
-    question: "What does O(n) time complexity mean?",
-    options: [
-      "The algorithm always takes exactly n seconds",
-      "The runtime grows roughly in proportion to the input size",
-      "The algorithm uses n bytes of memory",
-      "The algorithm never finishes",
-    ],
-    correctIndex: 1,
-    explanation: "O(n) means runtime scales linearly with the input size n.",
-  },
-  "1-20": {
-    type: "quiz",
-    instructions: "Spotting bugs by reading code is a core skill.",
-    question:
-      'A teammate wrote: if (x = 5) { console.log("five"); } — what\'s the bug?',
-    options: [
-      "Nothing, it's correct",
-      "It uses assignment (=) instead of comparison (===)",
-      "console.log needs two arguments",
-      "if statements can't use curly braces",
-    ],
-    correctIndex: 1,
-    explanation:
-      "= assigns a value while === compares. This bug silently sets x to 5 and always runs the block.",
-  },
-};
+// A curated palette so the map still looks colorful even before every
+// world has real content. Cycled for worlds 13-100.
+const PALETTE = [
+  { from: "#4ade80", to: "#16a34a", icon: "🧩" },
+  { from: "#22d3ee", to: "#0891b2", icon: "🎯" },
+  { from: "#fb923c", to: "#ea580c", icon: "🛠️" },
+  { from: "#c084fc", to: "#7c3aed", icon: "📐" },
+  { from: "#38bdf8", to: "#0284c7", icon: "🔭" },
+  { from: "#f87171", to: "#b91c1c", icon: "🎨" },
+  { from: "#818cf8", to: "#4338ca", icon: "🧭" },
+  { from: "#fbbf24", to: "#d97706", icon: "🛡️" },
+  { from: "#f472b6", to: "#db2777", icon: "🏹" },
+  { from: "#a78bfa", to: "#3b82f6", icon: "⚗️" },
+  { from: "#34d399", to: "#047857", icon: "🧬" },
+  { from: "#fca5a5", to: "#dc2626", icon: "🪄" },
+  { from: "#67e8f9", to: "#0e7490", icon: "🎓" },
+  { from: "#fdba74", to: "#c2410c", icon: "🏆" },
+  { from: "#d8b4fe", to: "#9333ea", icon: "🌌" },
+  { from: "#7dd3fc", to: "#0369a1", icon: "🔦" },
+  { from: "#fde047", to: "#ca8a04", icon: "🗝️" },
+  { from: "#6ee7b7", to: "#059669", icon: "🧊" },
+  { from: "#f9a8d4", to: "#be185d", icon: "🛰️" },
+  { from: "#93c5fd", to: "#1d4ed8", icon: "🌋" },
+];
 
-function buildLevelsForWorld(worldId) {
-  return Array.from({ length: STAGES_PER_WORLD }, (_, i) => {
+const PLACEHOLDER_CHARACTERS = ["✨", "🌟", "🎈", "🎉"];
+
+// A full 100-topic curriculum roadmap. Worlds 13-100 stay locked
+// placeholders ("coming soon") until they're authored with real content.
+const PLACEHOLDER_TOPICS = [
+  "Array Methods (Map, Filter, forEach)",
+  "Debugging Basics",
+  "Functions II: Defaults & Rest",
+  "Template Literals II",
+  "Destructuring",
+  "Spread & Rest Operators",
+  "Objects II: Methods & this",
+  "Classes: Basics",
+  "Classes: Inheritance",
+  "Error Handling: try/catch",
+  "Recursion",
+  "Higher-Order Functions",
+  "Closures",
+  "Scope & Hoisting",
+  "Sorting Algorithms",
+  "Searching Algorithms",
+  "Big O Notation",
+  "Stacks",
+  "Queues",
+  "Linked Lists",
+  "Trees",
+  "Hash Maps",
+  "Graphs",
+  "Dynamic Programming Intro",
+  "Regular Expressions",
+  "Date & Time",
+  "Math Object Deep Dive",
+  "Type Coercion",
+  "Truthy & Falsy",
+  "Ternary Operator",
+  "Callback Functions",
+  "Promises",
+  "Async/Await",
+  "The Event Loop",
+  "JSON",
+  "Map & Set",
+  "Modules: Import & Export",
+  "DOM Basics",
+  "DOM Events",
+  "Fetch API",
+  "LocalStorage",
+  "HTTP Basics",
+  "REST Concepts",
+  "Status Codes",
+  "Databases 101",
+  "SQL Basics",
+  "NoSQL Basics",
+  "Command Line Basics",
+  "Environment Variables",
+  "Package Managers",
+  "Semantic Versioning",
+  "Testing Basics",
+  "Clean Code Principles",
+  "Naming Conventions",
+  "Design Patterns: Singleton",
+  "Design Patterns: Factory",
+  "Design Patterns: Observer",
+  "SOLID Principles",
+  "Immutability",
+  "Pure Functions",
+  "Currying",
+  "Memoization",
+  "State Management",
+  "Bit Manipulation",
+  "Two Pointers Technique",
+  "Sliding Window Technique",
+  "Backtracking",
+  "Greedy Algorithms",
+  "Graph Traversal: BFS",
+  "Graph Traversal: DFS",
+  "HTML Basics",
+  "CSS Basics",
+  "Responsive Design",
+  "Accessibility Basics",
+  "Web Security Basics",
+  "Performance Optimization",
+  "Version Control Concepts",
+  "Code Review Skills",
+  "Pseudocode & Planning",
+  "Problem Solving Strategies",
+  "Interview Prep: Arrays",
+  "Interview Prep: Strings",
+  "Interview Prep: Trees",
+  "Final Boss: Mixed Review I",
+  "Final Boss: Mixed Review II",
+  "Final Boss: Mixed Review III",
+  "Final Boss: Mixed Review IV",
+  "Capstone Project",
+];
+
+function finalizeRealWorld(def, id, isFirstWorld) {
+  const levels = def.levels.map((lvl, i) => {
     const stageNumber = i + 1;
-    const status = worldId === 1 && stageNumber === 1 ? "unlocked" : "locked";
-
+    const { title, ...content } = lvl;
     return {
-      id: `${worldId}-${stageNumber}`,
-      worldId,
+      id: `${id}-${stageNumber}`,
+      worldId: id,
       stageNumber,
-      title: TOPICS[i % TOPICS.length],
-      character: WORLD_THEMES[worldId - 1].characters[i % 4],
-      status,
-      content: LESSON_CONTENT[`${worldId}-${stageNumber}`] ?? null,
+      title,
+      character: def.characters[i % def.characters.length],
+      status: isFirstWorld && stageNumber === 1 ? "unlocked" : "locked",
+      content,
     };
   });
+
+  return {
+    id,
+    name: def.name,
+    icon: def.icon,
+    from: def.from,
+    to: def.to,
+    status: isFirstWorld ? "unlocked" : "locked",
+    totalStages: levels.length,
+    levels,
+  };
 }
 
-export const worlds = WORLD_THEMES.map((theme) => ({
-  ...theme,
-  status: theme.id === 1 ? "unlocked" : "locked",
-  totalStages: STAGES_PER_WORLD,
-  levels: buildLevelsForWorld(theme.id),
-}));
+function buildPlaceholderWorld(id, name, paletteIndex) {
+  const p = PALETTE[paletteIndex % PALETTE.length];
+  const totalStages = 5;
+  const levels = Array.from({ length: totalStages }, (_, i) => ({
+    id: `${id}-${i + 1}`,
+    worldId: id,
+    stageNumber: i + 1,
+    title: `Stage ${i + 1}`,
+    character: PLACEHOLDER_CHARACTERS[i % PLACEHOLDER_CHARACTERS.length],
+    status: "locked",
+    content: null,
+  }));
+
+  return {
+    id,
+    name,
+    icon: p.icon,
+    from: p.from,
+    to: p.to,
+    status: "locked",
+    totalStages,
+    levels,
+  };
+}
+
+export const worlds = [
+  ...REAL_WORLDS.map((def, i) => finalizeRealWorld(def, i + 1, i === 0)),
+  ...PLACEHOLDER_TOPICS.map((name, i) =>
+    buildPlaceholderWorld(REAL_WORLDS.length + 1 + i, name, i),
+  ),
+];

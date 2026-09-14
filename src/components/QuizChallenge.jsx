@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TutorialCard from "./TutorialCard";
 
 export default function QuizChallenge({ content, onSolved }) {
   const [selected, setSelected] = useState(null);
@@ -17,6 +18,8 @@ export default function QuizChallenge({ content, onSolved }) {
 
   return (
     <div className="quiz-challenge">
+      <TutorialCard tutorial={content.tutorial} example={content.example} />
+
       <p className="quiz-challenge__instructions">{content.instructions}</p>
       <p className="quiz-challenge__question">{content.question}</p>
 
@@ -42,7 +45,7 @@ export default function QuizChallenge({ content, onSolved }) {
       {status && (
         <div className={`quiz-challenge__feedback quiz-challenge__feedback--${status}`}>
           <p className="quiz-challenge__feedback-title">
-            {status === "correct" ? "🎉 Correct!" : "❌ Not quite."}
+            {status === "correct" ? "🎉 You got it!" : "🤔 Not quite — try again!"}
           </p>
           <p className="quiz-challenge__explanation">{content.explanation}</p>
 
