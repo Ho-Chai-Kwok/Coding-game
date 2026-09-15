@@ -129,6 +129,44 @@
   background: linear-gradient(160deg, #f97316, #db2777);
 }
 
+.mode-card--js {
+  background: linear-gradient(160deg, #f7df1e, #d4a017);
+  color: #2b2417;
+}
+
+.mode-card--python {
+  background: linear-gradient(160deg, #4b8bbe, #306998);
+}
+
+/* --- Language pill (Learning Mode language switcher) --- */
+
+.language-pill {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-family: var(--heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 4px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease;
+}
+
+.language-pill:hover {
+  transform: translateY(-1px) scale(1.03);
+}
+
+.language-pill--javascript {
+  background: linear-gradient(155deg, #f7df1e, #d4a017);
+  color: #2b2417;
+}
+
+.language-pill--python {
+  background: linear-gradient(155deg, #4b8bbe, #306998);
+}
+
 .mode-card__icon {
   font-size: 48px;
   line-height: 1;
@@ -527,6 +565,14 @@
   border-color: var(--accent);
 }
 
+.code-challenge--javascript .code-challenge__editor:focus {
+  border-color: #d4a017;
+}
+
+.code-challenge--python .code-challenge__editor:focus {
+  border-color: #4b8bbe;
+}
+
 .code-challenge__run {
   align-self: center;
   border: none;
@@ -544,6 +590,21 @@
 
 .code-challenge__run:hover {
   transform: translateY(-2px) scale(1.04);
+}
+
+.code-challenge__run:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.code-challenge--javascript .code-challenge__run {
+  background: linear-gradient(155deg, #f7df1e, #d4a017);
+  color: #2b2417;
+}
+
+.code-challenge--python .code-challenge__run {
+  background: linear-gradient(155deg, #4b8bbe, #306998);
 }
 
 .code-challenge__result {
@@ -892,4 +953,350 @@
 
 .ranked-home__play:hover {
   transform: translateY(-3px) scale(1.02);
+}
+
+/* --- Side quest course path (clean, tidy lesson list) --- */
+
+.quest-path {
+  width: 100%;
+  max-width: 480px;
+}
+
+.quest-path__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.quest-path__icon {
+  font-size: 40px;
+  line-height: 1;
+  animation: float-bob 3s ease-in-out infinite;
+}
+
+.quest-path__header h1 {
+  background: linear-gradient(155deg, var(--world-from), var(--world-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.quest-path__header p {
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+.quest-path__progress-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.quest-path__progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(155deg, var(--world-from), var(--world-to));
+  transition: width 0.3s ease;
+}
+
+.quest-path__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quest-lesson-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--code-bg);
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.quest-lesson-row:not(:disabled):hover {
+  transform: translateX(4px);
+  border-color: var(--accent);
+}
+
+.quest-lesson-row--locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quest-lesson-row--completed {
+  border-color: #16a34a;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.quest-lesson-row__number {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(155deg, var(--world-from), var(--world-to));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.quest-lesson-row--locked .quest-lesson-row__number {
+  background: var(--locked-bg);
+  color: var(--text);
+}
+
+.quest-lesson-row__title {
+  flex: 1;
+}
+
+/* --- Mode select settings gear --- */
+
+.mode-select__settings {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  background: var(--code-bg);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.mode-select__settings:hover {
+  transform: rotate(30deg) scale(1.08);
+}
+
+.mode-select {
+  position: relative;
+}
+
+/* --- Settings screen --- */
+
+.settings {
+  width: 100%;
+  max-width: 480px;
+}
+
+.settings__section {
+  margin-top: 28px;
+}
+
+.settings__section-title {
+  font-family: var(--heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 12px;
+}
+
+.settings__language-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.settings__language-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.settings__language-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.settings__language-btn--active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.settings__account-info {
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.settings__signout {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(155deg, #818cf8, #4f46e5);
+  box-shadow: var(--shadow);
+}
+
+.settings__reset {
+  width: 100%;
+  border: 2px solid rgba(234, 88, 12, 0.4);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 14px;
+  color: #c2410c;
+  background: rgba(251, 146, 60, 0.12);
+  cursor: pointer;
+}
+
+/* --- Auth gate (login / sign up / guest) --- */
+
+.auth-gate {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-gate__loading {
+  color: var(--text);
+  font-family: var(--heading);
+  font-size: 16px;
+}
+
+.auth-gate__card {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  text-align: center;
+}
+
+.auth-gate__title {
+  margin: 0;
+}
+
+.auth-gate__subtitle {
+  margin-top: -8px;
+  color: var(--text);
+  font-size: 14.5px;
+}
+
+.auth-gate__tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--code-bg);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.auth-gate__tab {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 10px;
+  border-radius: 999px;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.auth-gate__tab--active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.auth-gate__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-gate__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+
+.auth-gate__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.auth-gate__error {
+  color: #c2410c;
+  font-size: 13px;
+  margin: 0;
+}
+
+.auth-gate__submit {
+  border: none;
+  border-radius: 999px;
+  padding: 13px;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 15px;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(155deg, #34d399, #0ea5e9);
+  box-shadow: var(--shadow);
+}
+
+.auth-gate__submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.auth-gate__guest {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.auth-gate__hint {
+  font-size: 12.5px;
+  color: var(--text);
+  opacity: 0.8;
 }

@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import ModeSelect from "./components/ModeSelect";
 import WorldMap from "./components/WorldMap";
 import LevelMap from "./components/LevelMap";
 import LevelScreen from "./components/LevelScreen";
 import RankedHome from "./components/RankedHome";
 import SideQuestMap from "./components/SideQuestMap";
+import SideQuestPath from "./components/SideQuestPath";
+import LanguageSelect from "./components/LanguageSelect";
+import Settings from "./components/Settings";
+import AuthGate from "./components/AuthGate";
+import { useAuth } from "./auth/AuthContext";
+import { useProgressSync } from "./hooks/useProgressSync";
 import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import "./App.css";
@@ -15,19 +21,29 @@ const RANKED_CHALLENGES = [
   { id: "ranked-3", stageNumber: 3, title: "Logic Lightning Round", character: "⚡" },
 ];
 
-export default function App() {
-  const [mode, setMode] = useState(null); // null | "learning" | "ranked" | "sidequest"
+function freshWorlds() {
+  return structuredClone(worlds);
+}
+
+function freshSideQuests() {
+  return structuredClone(sidequests);
+}
+
+function AppShell() {
+  const { user } = useAuth();
+
+  const [mode, setMode] = useState(null); // null | "learning" | "ranked" | "sidequest" | "settings"
 
   // Learning mode state
-  const [worldsState, setWorldsState] = useState(() => structuredClone(worlds));
+  const [worldsState, setWorldsState] = useState(freshWorlds);
   const [activeWorldId, setActiveWorldId] = useState(null);
   const [activeLevel, setActiveLevel] = useState(null);
+  const [language, setLanguage] = useState(null); // null | "javascript" | "python"
 
   // Side quest state
-  const [sideQuestsState, setSideQuestsState] = useState(() =>
-    structuredClone(sidequests),
-  );
+  const [sideQuestsState, setSideQuestsState] = useState(freshSideQuests);
   const [activeSideQuestId, setActiveSideQuestId] = useState(null);
+  const [activeSideQuestLesson, setActiveSideQuestLesson] = useState(null);
 
   // Ranked mode state
   const [rankedChallenge, setRankedChallenge] = useState(null);
@@ -35,11 +51,37 @@ export default function App() {
   const [rankedWins, setRankedWins] = useState(7);
   const [rankedLosses, setRankedLosses] = useState(4);
 
+  // Persist progress: Supabase when logged in, localStorage as a guest.
+  const progressSnapshot = useMemo(
+    () => ({ worldsState, sideQuestsState, rankedPoints, rankedWins, rankedLosses }),
+    [worldsState, sideQuestsState, rankedPoints, rankedWins, rankedLosses],
+  );
+
+  const onHydrate = useCallback((saved) => {
+    if (!saved) return;
+    if (saved.worldsState) setWorldsState(saved.worldsState);
+    if (saved.sideQuestsState) setSideQuestsState(saved.sideQuestsState);
+    if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
+    if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
+    if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
+  }, []);
+
+  useProgressSync({ userId: user?.id ?? null, state: progressSnapshot, onHydrate });
+
+  function resetProgress() {
+    setWorldsState(freshWorlds());
+    setSideQuestsState(freshSideQuests());
+    setRankedPoints(1240);
+    setRankedWins(7);
+    setRankedLosses(4);
+  }
+
   function backToModes() {
     setMode(null);
     setActiveWorldId(null);
     setActiveLevel(null);
     setActiveSideQuestId(null);
+    setActiveSideQuestLesson(null);
     setRankedChallenge(null);
   }
 
@@ -72,11 +114,23 @@ export default function App() {
     setActiveLevel(null);
   }
 
-  function completeSideQuest(quest) {
-    setSideQuestsState((prev) =>
-      prev.map((q) => (q.id === quest.id ? { ...q, completed: true } : q)),
-    );
-    setActiveSideQuestId(null);
+  function completeSideQuestLesson(lesson) {
+    setSideQuestsState((prev) => {
+      const next = structuredClone(prev);
+      const quest = next.find((q) => q.id === lesson.questId);
+      const l = quest.lessons.find((x) => x.id === lesson.id);
+      l.status = "completed";
+
+      const nextLesson = quest.lessons.find(
+        (x) => x.lessonNumber === lesson.lessonNumber + 1,
+      );
+      if (nextLesson && nextLesson.status === "locked") {
+        nextLesson.status = "unlocked";
+      }
+
+      return next;
+    });
+    setActiveSideQuestLesson(null);
   }
 
   function startRankedMatch() {
@@ -95,14 +149,21 @@ export default function App() {
   let screen;
 
   if (!mode) {
-    screen = <ModeSelect onSelect={setMode} />;
+    screen = <ModeSelect onSelect={setMode} onOpenSettings={() => setMode("settings")} />;
+  } else if (mode === "settings") {
+    screen = <Settings onBack={backToModes} onResetProgress={resetProgress} />;
   } else if (mode === "learning") {
     const activeWorld = worldsState.find((w) => w.id === activeWorldId);
 
-    if (activeLevel) {
+    if (!language) {
+      screen = (
+        <LanguageSelect onSelect={setLanguage} onBack={backToModes} />
+      );
+    } else if (activeLevel) {
       screen = (
         <LevelScreen
           level={activeLevel}
+          language={language}
           onBack={() => setActiveLevel(null)}
           onCompleteLevel={completeLevel}
         />
@@ -119,6 +180,8 @@ export default function App() {
       screen = (
         <WorldMap
           worlds={worldsState}
+          language={language}
+          onChangeLanguage={() => setLanguage(null)}
           onSelectWorld={setActiveWorldId}
           onBack={backToModes}
         />
@@ -127,13 +190,21 @@ export default function App() {
   } else if (mode === "sidequest") {
     const activeQuest = sideQuestsState.find((q) => q.id === activeSideQuestId);
 
-    if (activeQuest) {
+    if (activeSideQuestLesson) {
       screen = (
         <LevelScreen
-          level={activeQuest.level}
+          level={activeSideQuestLesson}
           mode="sidequest"
+          onBack={() => setActiveSideQuestLesson(null)}
+          onCompleteLevel={completeSideQuestLesson}
+        />
+      );
+    } else if (activeQuest) {
+      screen = (
+        <SideQuestPath
+          quest={activeQuest}
+          onSelectLesson={setActiveSideQuestLesson}
           onBack={() => setActiveSideQuestId(null)}
-          onCompleteLevel={() => completeSideQuest(activeQuest)}
         />
       );
     } else {
@@ -169,4 +240,12 @@ export default function App() {
   }
 
   return <div className="app">{screen}</div>;
+}
+
+export default function App() {
+  return (
+    <AuthGate>
+      <AppShell />
+    </AuthGate>
+  );
 }

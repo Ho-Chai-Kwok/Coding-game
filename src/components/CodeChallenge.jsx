@@ -1,7 +1,9 @@
 import { useState } from "react";
 import TutorialCard from "./TutorialCard";
+import { runPythonCode } from "../utils/pyRuntime";
+import { useI18n } from "../i18n/I18nContext";
 
-function runUserCode(code) {
+function runJsCode(code) {
   const logs = [];
   const fakeConsole = {
     log: (...args) => logs.push(args.map(String).join(" ")),
@@ -16,12 +18,23 @@ function runUserCode(code) {
   }
 }
 
-export default function CodeChallenge({ content, onSolved }) {
-  const [code, setCode] = useState(content.starterCode);
-  const [result, setResult] = useState(null); // { status, logs, error }
+function resolveContent(content, language) {
+  if (language !== "python" || !content.python) return content;
+  return { ...content, ...content.python };
+}
 
-  function handleRun() {
-    const { logs, error } = runUserCode(code);
+export default function CodeChallenge({ content, language = "javascript", onSolved }) {
+  const { t } = useI18n();
+  const active = resolveContent(content, language);
+  const [code, setCode] = useState(active.starterCode);
+  const [result, setResult] = useState(null); // { status, logs, error }
+  const [running, setRunning] = useState(false);
+
+  async function handleRun() {
+    setRunning(true);
+    const { logs, error } =
+      language === "python" ? await runPythonCode(code) : runJsCode(code);
+    setRunning(false);
 
     if (error) {
       setResult({ status: "error", logs, error });
@@ -29,15 +42,15 @@ export default function CodeChallenge({ content, onSolved }) {
     }
 
     const output = logs.join("\n").trim();
-    const passed = output === content.expectedOutput;
+    const passed = output === active.expectedOutput;
     setResult({ status: passed ? "success" : "mismatch", logs, error: null });
   }
 
   return (
-    <div className="code-challenge">
-      <TutorialCard tutorial={content.tutorial} example={content.example} />
+    <div className={`code-challenge code-challenge--${language}`}>
+      <TutorialCard tutorial={active.tutorial} example={active.example} />
 
-      <p className="code-challenge__instructions">{content.instructions}</p>
+      <p className="code-challenge__instructions">{active.instructions}</p>
 
       <textarea
         className="code-challenge__editor"
@@ -47,8 +60,8 @@ export default function CodeChallenge({ content, onSolved }) {
         rows={5}
       />
 
-      <button className="code-challenge__run" onClick={handleRun}>
-        ▶ Run Code
+      <button className="code-challenge__run" onClick={handleRun} disabled={running}>
+        {running ? t("codeChallenge.running") : t("codeChallenge.run")}
       </button>
 
       {result && (
@@ -56,27 +69,28 @@ export default function CodeChallenge({ content, onSolved }) {
           {result.status === "success" && (
             <>
               <p className="code-challenge__result-title">
-                🎉 Awesome job! Output: {content.expectedOutput}
+                {t("codeChallenge.success")} {active.expectedOutput}
               </p>
               <button className="code-challenge__continue" onClick={onSolved}>
-                Continue →
+                {t("codeChallenge.continue")}
               </button>
             </>
           )}
 
           {result.status === "mismatch" && (
             <>
-              <p className="code-challenge__result-title">So close! Let's try again 💪</p>
+              <p className="code-challenge__result-title">{t("codeChallenge.mismatch")}</p>
               <p className="code-challenge__result-detail">
-                Output: {result.logs.length ? result.logs.join("\n") : "(nothing printed)"}
+                {t("codeChallenge.output")}{" "}
+                {result.logs.length ? result.logs.join("\n") : t("codeChallenge.nothingPrinted")}
               </p>
-              <p className="code-challenge__hint">💡 {content.hint}</p>
+              <p className="code-challenge__hint">💡 {active.hint}</p>
             </>
           )}
 
           {result.status === "error" && (
             <>
-              <p className="code-challenge__result-title">Oops, a little hiccup! 🔧</p>
+              <p className="code-challenge__result-title">{t("codeChallenge.error")}</p>
               <p className="code-challenge__result-detail">{result.error}</p>
             </>
           )}

@@ -1,12 +1,14 @@
 import { getRankInfo } from "../data/rank";
+import { useI18n } from "../i18n/I18nContext";
 
 export default function RankedHome({ points, wins, losses, onPlay, onBack }) {
+  const { t } = useI18n();
   const rank = getRankInfo(points);
 
   return (
     <div className="ranked-home">
       <button className="back-link" onClick={onBack}>
-        ← Modes
+        ← {t("backToModes")}
       </button>
 
       <div
@@ -30,19 +32,19 @@ export default function RankedHome({ points, wins, losses, onPlay, onBack }) {
         </div>
         <p className="ranked-home__progress-label">
           {rank.isMaxTier
-            ? "You've reached the top rank!"
-            : `${rank.pointsToNext} LP to next division`}
+            ? t("rankedHome.maxTier")
+            : `${rank.pointsToNext} ${t("rankedHome.pointsToNext")}`}
         </p>
       </div>
 
       <div className="ranked-home__stats">
         <div className="ranked-home__stat">
           <span className="ranked-home__stat-value">{wins}</span>
-          <span className="ranked-home__stat-label">Wins</span>
+          <span className="ranked-home__stat-label">{t("rankedHome.wins")}</span>
         </div>
         <div className="ranked-home__stat">
           <span className="ranked-home__stat-value">{losses}</span>
-          <span className="ranked-home__stat-label">Losses</span>
+          <span className="ranked-home__stat-label">{t("rankedHome.losses")}</span>
         </div>
         <div className="ranked-home__stat">
           <span className="ranked-home__stat-value">
@@ -51,12 +53,12 @@ export default function RankedHome({ points, wins, losses, onPlay, onBack }) {
               : 0}
             %
           </span>
-          <span className="ranked-home__stat-label">Win rate</span>
+          <span className="ranked-home__stat-label">{t("rankedHome.winRate")}</span>
         </div>
       </div>
 
       <button className="ranked-home__play" onClick={onPlay}>
-        ⚔️ Play Ranked Match
+        {t("rankedHome.play")}
       </button>
     </div>
   );

@@ -1,9 +1,17 @@
-export default function ModeSelect({ onSelect }) {
+import { useI18n } from "../i18n/I18nContext";
+
+export default function ModeSelect({ onSelect, onOpenSettings }) {
+  const { t } = useI18n();
+
   return (
     <div className="mode-select">
+      <button className="mode-select__settings" onClick={onOpenSettings} aria-label="Settings">
+        ⚙️
+      </button>
+
       <header className="mode-select__header">
-        <h1>Code Quest 🎮</h1>
-        <p>Hi there! What kind of adventure sounds fun today?</p>
+        <h1>{t("appName")} 🎮</h1>
+        <p>{t("modeSelect.greeting")}</p>
       </header>
 
       <div className="mode-select__grid">
@@ -12,10 +20,8 @@ export default function ModeSelect({ onSelect }) {
           onClick={() => onSelect("learning")}
         >
           <span className="mode-card__icon">🗺️</span>
-          <span className="mode-card__title">Learning Mode</span>
-          <span className="mode-card__desc">
-            100 worlds, one topic at a time — go slow, go steady!
-          </span>
+          <span className="mode-card__title">{t("modeSelect.learningTitle")}</span>
+          <span className="mode-card__desc">{t("modeSelect.learningDesc")}</span>
         </button>
 
         <button
@@ -23,10 +29,8 @@ export default function ModeSelect({ onSelect }) {
           onClick={() => onSelect("sidequest")}
         >
           <span className="mode-card__icon">🧭</span>
-          <span className="mode-card__title">Side Quests</span>
-          <span className="mode-card__desc">
-            Peek at real tools like PyTorch, AWS, and NumPy!
-          </span>
+          <span className="mode-card__title">{t("modeSelect.sidequestTitle")}</span>
+          <span className="mode-card__desc">{t("modeSelect.sidequestDesc")}</span>
         </button>
 
         <button
@@ -34,10 +38,8 @@ export default function ModeSelect({ onSelect }) {
           onClick={() => onSelect("ranked")}
         >
           <span className="mode-card__icon">🏆</span>
-          <span className="mode-card__title">Ranked Mode</span>
-          <span className="mode-card__desc">
-            Take on quick challenges and climb the rank ladder!
-          </span>
+          <span className="mode-card__title">{t("modeSelect.rankedTitle")}</span>
+          <span className="mode-card__desc">{t("modeSelect.rankedDesc")}</span>
         </button>
       </div>
     </div>

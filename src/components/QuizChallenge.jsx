@@ -1,7 +1,9 @@
 import { useState } from "react";
 import TutorialCard from "./TutorialCard";
+import { useI18n } from "../i18n/I18nContext";
 
 export default function QuizChallenge({ content, onSolved }) {
+  const { t } = useI18n();
   const [selected, setSelected] = useState(null);
   const [status, setStatus] = useState(null); // null | "correct" | "incorrect"
 
@@ -45,17 +47,17 @@ export default function QuizChallenge({ content, onSolved }) {
       {status && (
         <div className={`quiz-challenge__feedback quiz-challenge__feedback--${status}`}>
           <p className="quiz-challenge__feedback-title">
-            {status === "correct" ? "🎉 You got it!" : "🤔 Not quite — try again!"}
+            {status === "correct" ? t("quizChallenge.correct") : t("quizChallenge.incorrect")}
           </p>
           <p className="quiz-challenge__explanation">{content.explanation}</p>
 
           {status === "correct" ? (
             <button className="quiz-challenge__continue" onClick={onSolved}>
-              Continue →
+              {t("quizChallenge.continue")}
             </button>
           ) : (
             <button className="quiz-challenge__retry" onClick={handleRetry}>
-              Try Again
+              {t("quizChallenge.tryAgain")}
             </button>
           )}
         </div>

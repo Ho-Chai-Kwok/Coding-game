@@ -25,6 +25,14 @@ const REAL_WORLDS = [
           '// Use console.log() to print a message.\n// Fill in the string below:\n\nconsole.log("");',
         expectedOutput: "Hello, World!",
         hint: 'console.log() takes a string in quotes, like console.log("some text").',
+        python: {
+          tutorial:
+            "print() is how you print a message to the screen in Python. Put your message in quotes inside the parentheses.",
+          example: 'print("Hi there!")\n# prints: Hi there!',
+          starterCode:
+            '# Use print() to print a message.\n# Fill in the string below:\n\nprint("")',
+          hint: 'print() takes a string in quotes, like print("some text").',
+        },
       },
       {
         title: "Print a Number",
@@ -36,6 +44,13 @@ const REAL_WORLDS = [
         starterCode: "// Print the number 2024\n\n",
         expectedOutput: "2024",
         hint: "console.log(2024); — no quotes needed for numbers.",
+        python: {
+          tutorial:
+            "Numbers don't need quotes — only text (strings) do. Just type the number directly inside print().",
+          example: "print(7)\n# prints: 7",
+          starterCode: "# Print the number 2024\n\n",
+          hint: "print(2024) — no quotes needed for numbers.",
+        },
       },
       {
         title: "Two Lines",
@@ -47,6 +62,13 @@ const REAL_WORLDS = [
         starterCode: "// Print Ready, then Set, on separate lines\n\n",
         expectedOutput: "Ready\nSet",
         hint: 'console.log("Ready");\nconsole.log("Set");',
+        python: {
+          tutorial:
+            "Each print() call prints on its own new line. Call it more than once to print several lines.",
+          example: 'print("First")\nprint("Second")',
+          starterCode: "# Print Ready, then Set, on separate lines\n\n",
+          hint: 'print("Ready")\nprint("Set")',
+        },
       },
       {
         title: "Multiple Values",
@@ -58,6 +80,13 @@ const REAL_WORLDS = [
         starterCode: "// Print: Level 1\n\n",
         expectedOutput: "Level 1",
         hint: 'console.log("Level", 1);',
+        python: {
+          tutorial:
+            "print() can print several things at once if you separate them with commas — it joins them with a space.",
+          example: 'print("Score:", 10)\n# prints: Score: 10',
+          starterCode: "# Print: Level 1\n\n",
+          hint: 'print("Level", 1)',
+        },
       },
       {
         title: "Banner Challenge",
@@ -70,6 +99,13 @@ const REAL_WORLDS = [
         starterCode: "// Print the three lines\n\n",
         expectedOutput: "*****\nHELLO\n*****",
         hint: "Three console.log() calls in a row, one per line.",
+        python: {
+          tutorial:
+            "Let's combine what you've learned: use print() multiple times to build a bigger message out of several lines.",
+          example: 'print("===")\nprint("HI")\nprint("===")',
+          starterCode: "# Print the three lines\n\n",
+          hint: "Three print() calls in a row, one per line.",
+        },
       },
     ],
   },
@@ -119,6 +155,13 @@ const REAL_WORLDS = [
         starterCode: '// console.log("Ready!");\n',
         expectedOutput: "Ready!",
         hint: "Remove the // at the start of the line.",
+        python: {
+          tutorial:
+            "Python comments start with #. To turn a comment back into real code, just remove the # in front of it.",
+          example: '# print("Ready!")\n# remove # to make this run',
+          starterCode: '# print("Ready!")\n',
+          hint: "Remove the # at the start of the line.",
+        },
       },
     ],
   },
@@ -140,6 +183,14 @@ const REAL_WORLDS = [
           "// Declare a variable called score set to 10,\n// then print it with console.log.\n\n",
         expectedOutput: "10",
         hint: "let score = 10;\nconsole.log(score);",
+        python: {
+          tutorial:
+            "A variable is a labeled box that stores a value. In Python you don't need any keyword — just write the name, =, and the value.",
+          example: "age = 7\nprint(age)\n# prints: 7",
+          starterCode:
+            "# Create a variable called score set to 10,\n# then print it with print().\n\n",
+          hint: "score = 10\nprint(score)",
+        },
       },
       {
         title: "Text Variables",
@@ -151,6 +202,13 @@ const REAL_WORLDS = [
         starterCode: "// Declare petName and print it\n\n",
         expectedOutput: "Rex",
         hint: 'let petName = "Rex";\nconsole.log(petName);',
+        python: {
+          tutorial:
+            "Variables can hold text too — just wrap the value in quotes, the same way you would in print().",
+          example: 'name = "Ada"\nprint(name)\n# prints: Ada',
+          starterCode: "# Create petName and print it\n\n",
+          hint: 'petName = "Rex"\nprint(petName)',
+        },
       },
       {
         title: "Changing Values",
@@ -162,6 +220,13 @@ const REAL_WORLDS = [
         starterCode: "let points = 5;\n\n// Change points to 10, then print it\n",
         expectedOutput: "10",
         hint: "points = 10;\nconsole.log(points);",
+        python: {
+          tutorial:
+            "A variable can be given a new value later just by assigning it again.",
+          example: "x = 1\nx = 2\nprint(x)  # 2",
+          starterCode: "points = 5\n\n# Change points to 10, then print it\n",
+          hint: "points = 10\nprint(points)",
+        },
       },
       {
         title: "Using Two Variables",
@@ -174,6 +239,13 @@ const REAL_WORLDS = [
         starterCode: "let apples = 3;\nlet oranges = 4;\n\n// Print the total\n",
         expectedOutput: "7",
         hint: "console.log(apples + oranges);",
+        python: {
+          tutorial:
+            "You can use variables together in expressions, like adding two number variables with +.",
+          example: "a = 2\nb = 3\nprint(a + b)  # 5",
+          starterCode: "apples = 3\noranges = 4\n\n# Print the total\n",
+          hint: "print(apples + oranges)",
+        },
       },
       {
         title: "let vs const",
@@ -199,6 +271,14 @@ const REAL_WORLDS = [
           '// Declare name and age, then print the sentence\nlet name = "Milo";\nlet age = 8;\n\n',
         expectedOutput: "Milo is 8 years old",
         hint: 'console.log(name + " is " + age + " years old");',
+        python: {
+          tutorial:
+            "Let's combine everything: create a few variables and join them into a sentence with +. Use str() to turn a number into text first.",
+          example: 'word = "cat"\nprint(word + "!")  # cat!',
+          starterCode:
+            '# Create name and age, then print the sentence\nname = "Milo"\nage = 8\n\n',
+          hint: 'print(name + " is " + str(age) + " years old")',
+        },
       },
     ],
   },
@@ -218,6 +298,12 @@ const REAL_WORLDS = [
         starterCode: "// Print 12 - 5\n\n",
         expectedOutput: "7",
         hint: "console.log(12 - 5);",
+        python: {
+          tutorial: "Python can do math with +, -, *, and / right inside print().",
+          example: "print(3 + 4)\n# prints: 7",
+          starterCode: "# Print 12 - 5\n\n",
+          hint: "print(12 - 5)",
+        },
       },
       {
         title: "Multiply & Divide",
@@ -228,6 +314,12 @@ const REAL_WORLDS = [
         starterCode: "// Print 6 * 7\n\n",
         expectedOutput: "42",
         hint: "console.log(6 * 7);",
+        python: {
+          tutorial: "Use * for multiplication and / for division.",
+          example: "print(6 * 2)\n# prints: 12",
+          starterCode: "# Print 6 * 7\n\n",
+          hint: "print(6 * 7)",
+        },
       },
       {
         title: "Order of Operations",
@@ -239,6 +331,13 @@ const REAL_WORLDS = [
         starterCode: "// Print (2 + 3) * 4\n\n",
         expectedOutput: "20",
         hint: "console.log((2 + 3) * 4);",
+        python: {
+          tutorial:
+            "Multiplication happens before addition, unless you use parentheses to change the order — just like in math class.",
+          example: "print(2 + 3 * 4)\n# prints: 14 (not 20)",
+          starterCode: "# Print (2 + 3) * 4\n\n",
+          hint: "print((2 + 3) * 4)",
+        },
       },
       {
         title: "The Remainder %",
@@ -249,6 +348,12 @@ const REAL_WORLDS = [
         starterCode: "// Print 10 % 3\n\n",
         expectedOutput: "1",
         hint: "console.log(10 % 3);",
+        python: {
+          tutorial: "% gives you the remainder left over after dividing.",
+          example: "print(7 % 2)\n# prints: 1 (7 divided by 2 leaves 1 left over)",
+          starterCode: "# Print 10 % 3\n\n",
+          hint: "print(10 % 3)",
+        },
       },
       {
         title: "Rounding Numbers",
@@ -259,6 +364,12 @@ const REAL_WORLDS = [
         starterCode: "// Print Math.round(3.2)\n\n",
         expectedOutput: "3",
         hint: "console.log(Math.round(3.2));",
+        python: {
+          tutorial: "round() rounds a decimal to the nearest whole number.",
+          example: "print(round(4.7))\n# prints: 5",
+          starterCode: "# Print round(3.2)\n\n",
+          hint: "print(round(3.2))",
+        },
       },
     ],
   },
@@ -278,6 +389,12 @@ const REAL_WORLDS = [
         starterCode: "// Print: banana\n\n",
         expectedOutput: "banana",
         hint: 'console.log("banana");',
+        python: {
+          tutorial: "Text values are called strings and must be wrapped in quotes.",
+          example: 'print("cat")\n# prints: cat',
+          starterCode: "# Print: banana\n\n",
+          hint: 'print("banana")',
+        },
       },
       {
         title: "Joining Strings",
@@ -290,6 +407,13 @@ const REAL_WORLDS = [
           'let first = "Ada";\nlet last = "Lovelace";\n\n// Print the full name below\n',
         expectedOutput: "Ada Lovelace",
         hint: 'console.log(first + " " + last);',
+        python: {
+          tutorial: "You can join (concatenate) strings together using the + operator.",
+          example: 'print("Hello" + " " + "World")\n# prints: Hello World',
+          starterCode:
+            'first = "Ada"\nlast = "Lovelace"\n\n# Print the full name below\n',
+          hint: 'print(first + " " + last)',
+        },
       },
       {
         title: "String Length",
@@ -300,6 +424,12 @@ const REAL_WORLDS = [
         starterCode: "// Print the length of banana\n\n",
         expectedOutput: "6",
         hint: 'console.log("banana".length);',
+        python: {
+          tutorial: "len() tells you how many characters are in a string.",
+          example: 'print(len("cat"))\n# prints: 3',
+          starterCode: "# Print the length of banana\n\n",
+          hint: 'print(len("banana"))',
+        },
       },
       {
         title: "Template Literals",
@@ -312,6 +442,13 @@ const REAL_WORLDS = [
         starterCode: '// Print: Hello, Luna!\nlet name = "Luna";\n\n',
         expectedOutput: "Hello, Luna!",
         hint: "console.log(`Hello, ${name}!`);",
+        python: {
+          tutorial:
+            "Python's f-strings let you insert variables directly into a string — write f before the quotes, and put variables inside {}.",
+          example: 'name = "Sam"\nprint(f"Hi {name}")\n# prints: Hi Sam',
+          starterCode: '# Print: Hello, Luna!\nname = "Luna"\n\n',
+          hint: 'print(f"Hello, {name}!")',
+        },
       },
       {
         title: "Changing Case",
@@ -322,6 +459,12 @@ const REAL_WORLDS = [
         starterCode: '// Print word in uppercase\nlet word = "loud";\n\n',
         expectedOutput: "LOUD",
         hint: "console.log(word.toUpperCase());",
+        python: {
+          tutorial: "Strings have built-in methods like .upper() and .lower().",
+          example: 'print("hi".upper())\n# prints: HI',
+          starterCode: '# Print word in uppercase\nword = "loud"\n\n',
+          hint: "print(word.upper())",
+        },
       },
       {
         title: "Case Quiz",
@@ -364,6 +507,13 @@ const REAL_WORLDS = [
         starterCode: "// Print whether 7 === 7\n\n",
         expectedOutput: "true",
         hint: "console.log(7 === 7);",
+        python: {
+          tutorial: "== checks whether two values are equal, and gives back True or False.",
+          example: "print(5 == 5)\n# prints: True",
+          starterCode: "# Print whether 7 == 7\n\n",
+          hint: "print(7 == 7)",
+          expectedOutput: "True",
+        },
       },
       {
         title: "Greater Than",
@@ -374,6 +524,13 @@ const REAL_WORLDS = [
         starterCode: "// Print whether 10 > 3\n\n",
         expectedOutput: "true",
         hint: "console.log(10 > 3);",
+        python: {
+          tutorial: "> and < compare two numbers and give back True or False.",
+          example: "print(2 > 5)\n# prints: False",
+          starterCode: "# Print whether 10 > 3\n\n",
+          hint: "print(10 > 3)",
+          expectedOutput: "True",
+        },
       },
       {
         title: "And / Or",
@@ -397,6 +554,14 @@ const REAL_WORLDS = [
         starterCode: "let age = 15;\n\n// Print whether age is between 10 and 18\n",
         expectedOutput: "true",
         hint: "console.log(age >= 10 && age <= 18);",
+        python: {
+          tutorial:
+            "You can combine two comparisons with and to check if a value falls in a range.",
+          example: "n = 5\nprint(n > 0 and n < 10)  # True",
+          starterCode: "age = 15\n\n# Print whether age is between 10 and 18\n",
+          hint: "print(age >= 10 and age <= 18)",
+          expectedOutput: "True",
+        },
       },
     ],
   },
@@ -418,6 +583,13 @@ const REAL_WORLDS = [
         starterCode: "let isRaining = true;\n\n// Print the message only if isRaining\n",
         expectedOutput: "Bring an umbrella",
         hint: 'if (isRaining) {\n  console.log("Bring an umbrella");\n}',
+        python: {
+          tutorial:
+            "if only runs its indented block when the condition is true — otherwise nothing happens. Python uses indentation (not curly braces) to mark the block.",
+          example: 'if True:\n    print("shown")',
+          starterCode: "isRaining = True\n\n# Print the message only if isRaining\n",
+          hint: 'if isRaining:\n    print("Bring an umbrella")',
+        },
       },
       {
         title: "if / else",
@@ -431,6 +603,13 @@ const REAL_WORLDS = [
         starterCode: "let age = 20;\n\n// Write your if/else statement below\n",
         expectedOutput: "Adult",
         hint: 'if (age >= 18) {\n  console.log("Adult");\n} else {\n  console.log("Minor");\n}',
+        python: {
+          tutorial:
+            "if/else lets your code make decisions. Indent the code under if and else to show what belongs to each branch.",
+          example: 'if 10 > 5:\n    print("bigger")\nelse:\n    print("smaller")',
+          starterCode: "age = 20\n\n# Write your if/else statement below\n",
+          hint: 'if age >= 18:\n    print("Adult")\nelse:\n    print("Minor")',
+        },
       },
       {
         title: "else if Chains",
@@ -444,6 +623,14 @@ const REAL_WORLDS = [
         starterCode: "let temp = 15;\n\n// Write your if / else if / else chain\n",
         expectedOutput: "Warm",
         hint: 'if (temp < 10) {\n  console.log("Cold");\n} else if (temp < 25) {\n  console.log("Warm");\n} else {\n  console.log("Hot");\n}',
+        python: {
+          tutorial:
+            "elif (short for 'else if') lets you check several conditions in order, one after another, until one matches.",
+          example:
+            'n = 5\nif n > 10:\n    print("big")\nelif n > 0:\n    print("small")\nelse:\n    print("zero or less")',
+          starterCode: "temp = 15\n\n# Write your if / elif / else chain\n",
+          hint: 'if temp < 10:\n    print("Cold")\nelif temp < 25:\n    print("Warm")\nelse:\n    print("Hot")',
+        },
       },
       {
         title: "A Classic Bug",
@@ -472,6 +659,13 @@ const REAL_WORLDS = [
         starterCode: "let n = 8;\n\n// Print Even or Odd\n",
         expectedOutput: "Even",
         hint: 'if (n % 2 === 0) {\n  console.log("Even");\n} else {\n  console.log("Odd");\n}',
+        python: {
+          tutorial:
+            "You can combine % with if to check patterns, like whether a number is even.",
+          example: "n = 4\nprint(n % 2 == 0)  # True (even)",
+          starterCode: "n = 8\n\n# Print Even or Odd\n",
+          hint: 'if n % 2 == 0:\n    print("Even")\nelse:\n    print("Odd")',
+        },
       },
       {
         title: "FizzBuzz Challenge",
@@ -485,6 +679,14 @@ const REAL_WORLDS = [
         expectedOutput: "FizzBuzz",
         hint:
           'if (n % 15 === 0) {\n  console.log("FizzBuzz");\n} else if (n % 3 === 0) {\n  console.log("Fizz");\n} else if (n % 5 === 0) {\n  console.log("Buzz");\n} else {\n  console.log(n);\n}',
+        python: {
+          tutorial:
+            "Let's combine everything: chain several conditions together to solve a classic coding puzzle.",
+          example: "# If divisible by 3 AND 5, print FizzBuzz first!",
+          starterCode: "n = 15\n\n# Write your FizzBuzz logic\n",
+          hint:
+            'if n % 15 == 0:\n    print("FizzBuzz")\nelif n % 3 == 0:\n    print("Fizz")\nelif n % 5 == 0:\n    print("Buzz")\nelse:\n    print(n)',
+        },
       },
     ],
   },
@@ -505,6 +707,13 @@ const REAL_WORLDS = [
         starterCode: "// Write a for loop that prints 1 to 5\n\n",
         expectedOutput: "1\n2\n3\n4\n5",
         hint: "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}",
+        python: {
+          tutorial:
+            "A for loop in Python repeats code for each value in a range. range(1, 6) gives 1 through 5 (the end number is excluded).",
+          example: "for i in range(1, 4):\n    print(i)\n# prints: 1, 2, 3",
+          starterCode: "# Write a for loop that prints 1 to 5\n\n",
+          hint: "for i in range(1, 6):\n    print(i)",
+        },
       },
       {
         title: "Counting by Twos",
@@ -515,6 +724,13 @@ const REAL_WORLDS = [
         starterCode: "// Print 2, 4, 6, 8, 10\n\n",
         expectedOutput: "2\n4\n6\n8\n10",
         hint: "for (let i = 2; i <= 10; i += 2) {\n  console.log(i);\n}",
+        python: {
+          tutorial:
+            "range(start, stop, step) lets you count by a different step, like only even numbers.",
+          example: "for i in range(0, 5, 2):\n    print(i)\n# prints: 0, 2, 4",
+          starterCode: "# Print 2, 4, 6, 8, 10\n\n",
+          hint: "for i in range(2, 11, 2):\n    print(i)",
+        },
       },
       {
         title: "Counting Down",
@@ -525,6 +741,12 @@ const REAL_WORLDS = [
         starterCode: "// Print 5, 4, 3, 2, 1\n\n",
         expectedOutput: "5\n4\n3\n2\n1",
         hint: "for (let i = 5; i >= 1; i--) {\n  console.log(i);\n}",
+        python: {
+          tutorial: "Loops can count down too, using a negative step in range().",
+          example: "for i in range(3, 0, -1):\n    print(i)\n# prints: 3, 2, 1",
+          starterCode: "# Print 5, 4, 3, 2, 1\n\n",
+          hint: "for i in range(5, 0, -1):\n    print(i)",
+        },
       },
       {
         title: "Adding It Up",
@@ -537,6 +759,14 @@ const REAL_WORLDS = [
           "let total = 0;\n\n// Loop from 1 to 5, adding each number to total\n\nconsole.log(total);",
         expectedOutput: "15",
         hint: "for (let i = 1; i <= 5; i++) {\n  total += i;\n}",
+        python: {
+          tutorial:
+            "You can build up a total inside a loop by using a variable declared outside it, and adding to it each time.",
+          example: "total = 0\nfor i in range(1, 4):\n    total += i\n# total is 6",
+          starterCode:
+            "total = 0\n\n# Loop from 1 to 5, adding each number to total\n\nprint(total)",
+          hint: "for i in range(1, 6):\n    total += i",
+        },
       },
       {
         title: "Loop Danger",
@@ -564,6 +794,12 @@ const REAL_WORLDS = [
         starterCode: "// Print the even numbers from 1 to 10\n\n",
         expectedOutput: "2\n4\n6\n8\n10",
         hint: "for (let i = 1; i <= 10; i++) {\n  if (i % 2 === 0) {\n    console.log(i);\n  }\n}",
+        python: {
+          tutorial: "You can put an if statement inside a loop to only act on certain values.",
+          example: "for i in range(1, 5):\n    if i % 2 == 0:\n        print(i)\n# 2, 4",
+          starterCode: "# Print the even numbers from 1 to 10\n\n",
+          hint: "for i in range(1, 11):\n    if i % 2 == 0:\n        print(i)",
+        },
       },
     ],
   },
@@ -584,6 +820,13 @@ const REAL_WORLDS = [
         starterCode: "let i = 1;\n\n// write a while loop here\n",
         expectedOutput: "1\n2\n3\n4\n5",
         hint: "while (i <= 5) {\n  console.log(i);\n  i++;\n}",
+        python: {
+          tutorial:
+            "A while loop repeats as long as its condition stays true. You must update the variable yourself, or it never stops!",
+          example: "i = 0\nwhile i < 3:\n    print(i)\n    i += 1\n# 0, 1, 2",
+          starterCode: "i = 1\n\n# write a while loop here\n",
+          hint: "while i <= 5:\n    print(i)\n    i += 1",
+        },
       },
       {
         title: "Counting Down Again",
@@ -594,6 +837,12 @@ const REAL_WORLDS = [
         starterCode: "let i = 5;\n\n",
         expectedOutput: "5\n4\n3\n2\n1",
         hint: "while (i >= 1) {\n  console.log(i);\n  i--;\n}",
+        python: {
+          tutorial: "Just like for loops, while loops can count down too.",
+          example: "i = 3\nwhile i >= 1:\n    print(i)\n    i -= 1",
+          starterCode: "i = 5\n\n",
+          hint: "while i >= 1:\n    print(i)\n    i -= 1",
+        },
       },
       {
         title: "for vs while",
@@ -616,6 +865,12 @@ const REAL_WORLDS = [
         starterCode: "let n = 1;\n\n",
         expectedOutput: "1\n2\n4\n8\n16\n32\n64",
         hint: "while (n <= 100) {\n  console.log(n);\n  n *= 2;\n}",
+        python: {
+          tutorial: "Let's combine while with multiplication to grow a number quickly.",
+          example: "n = 1\nwhile n < 10:\n    print(n)\n    n *= 2",
+          starterCode: "n = 1\n\n",
+          hint: "while n <= 100:\n    print(n)\n    n *= 2",
+        },
       },
     ],
   },
@@ -652,6 +907,14 @@ const REAL_WORLDS = [
         starterCode: 'let fruits = ["apple", "banana", "cherry"];\n\n// Print the second fruit\n',
         expectedOutput: "banana",
         hint: "console.log(fruits[1]);",
+        python: {
+          tutorial:
+            "Each item in a list has a position (index) starting at 0. Use [] to get an item by its position.",
+          example: 'a = ["x", "y"]\nprint(a[1])\n# prints: y',
+          starterCode:
+            'fruits = ["apple", "banana", "cherry"]\n\n# Print the second fruit\n',
+          hint: "print(fruits[1])",
+        },
       },
       {
         title: "How Many Items?",
@@ -662,6 +925,12 @@ const REAL_WORLDS = [
         starterCode: "let nums = [10, 20, 30, 40];\n\n// Print how many items\n",
         expectedOutput: "4",
         hint: "console.log(nums.length);",
+        python: {
+          tutorial: "len() tells you how many items are in a list.",
+          example: "print(len([1, 2, 3]))\n# prints: 3",
+          starterCode: "nums = [10, 20, 30, 40]\n\n# Print how many items\n",
+          hint: "print(len(nums))",
+        },
       },
       {
         title: "Adding an Item",
@@ -672,6 +941,13 @@ const REAL_WORLDS = [
         starterCode: 'let list = ["a", "b"];\n\n// push "c" then print list\n',
         expectedOutput: "a,b,c",
         hint: 'list.push("c");\nconsole.log(list);',
+        python: {
+          tutorial: ".append() adds a new item onto the end of a list.",
+          example: "a = [1, 2]\na.append(3)\nprint(a)\n# [1, 2, 3]",
+          starterCode: 'items = ["a", "b"]\n\n# append "c" then print items\n',
+          hint: 'items.append("c")\nprint(items)',
+          expectedOutput: "['a', 'b', 'c']",
+        },
       },
       {
         title: "Looping Through",
@@ -682,6 +958,13 @@ const REAL_WORLDS = [
         starterCode: 'let colors = ["red", "green", "blue"];\n\n// Print each color\n',
         expectedOutput: "red\ngreen\nblue",
         hint: "for (let i = 0; i < colors.length; i++) {\n  console.log(colors[i]);\n}",
+        python: {
+          tutorial:
+            "Python lets you loop directly over a list's values with for item in list — no index needed.",
+          example: 'a = ["x", "y"]\nfor item in a:\n    print(item)',
+          starterCode: 'colors = ["red", "green", "blue"]\n\n# Print each color\n',
+          hint: "for color in colors:\n    print(color)",
+        },
       },
       {
         title: "Out of Range",
@@ -714,6 +997,14 @@ const REAL_WORLDS = [
           '// Define a function called greet that prints "Hi!"\n// Then call greet()\n\n',
         expectedOutput: "Hi!",
         hint: 'function greet() {\n  console.log("Hi!");\n}\ngreet();',
+        python: {
+          tutorial:
+            "A function is a reusable block of code with a name. Define it once with def, then run it any time by calling its name with ().",
+          example: 'def say_hi():\n    print("Hi!")\nsay_hi()\n# prints: Hi!',
+          starterCode:
+            '# Define a function called greet that prints "Hi!"\n# Then call greet()\n\n',
+          hint: 'def greet():\n    print("Hi!")\ngreet()',
+        },
       },
       {
         title: "Taking a Parameter",
@@ -726,6 +1017,13 @@ const REAL_WORLDS = [
         starterCode: "// Define shout(word) and call shout(\"go\")\n\n",
         expectedOutput: "GO",
         hint: "function shout(word) {\n  console.log(word.toUpperCase());\n}\nshout(\"go\");",
+        python: {
+          tutorial:
+            "Parameters let you pass information into a function so it can use it, like a blank the function fills in.",
+          example: 'def greet(name):\n    print("Hi " + name)\ngreet("Sam")\n# Hi Sam',
+          starterCode: '# Define shout(word) and call shout("go")\n\n',
+          hint: 'def shout(word):\n    print(word.upper())\nshout("go")',
+        },
       },
       {
         title: "Returning a Value",
@@ -738,6 +1036,13 @@ const REAL_WORLDS = [
         starterCode: "// Define add(a, b) that returns a + b, then print add(4, 5)\n\n",
         expectedOutput: "9",
         hint: "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(4, 5));",
+        python: {
+          tutorial:
+            "return sends a value back out of a function so you can use it later, instead of just printing it directly.",
+          example: "def add(a, b):\n    return a + b\nprint(add(2, 3))\n# 5",
+          starterCode: "# Define add(a, b) that returns a + b, then print add(4, 5)\n\n",
+          hint: "def add(a, b):\n    return a + b\nprint(add(4, 5))",
+        },
       },
       {
         title: "Two Parameters",
@@ -749,6 +1054,12 @@ const REAL_WORLDS = [
         starterCode: "// Define multiply(a, b), then print multiply(3, 4)\n\n",
         expectedOutput: "12",
         hint: "function multiply(a, b) {\n  return a * b;\n}\nconsole.log(multiply(3, 4));",
+        python: {
+          tutorial: "Functions can take more than one parameter, separated by commas.",
+          example: "def multiply(a, b):\n    return a * b",
+          starterCode: "# Define multiply(a, b), then print multiply(3, 4)\n\n",
+          hint: "def multiply(a, b):\n    return a * b\nprint(multiply(3, 4))",
+        },
       },
       {
         title: "Arrow Functions",
@@ -760,6 +1071,13 @@ const REAL_WORLDS = [
         starterCode: "// Define square as an arrow function, then print square(5)\n\n",
         expectedOutput: "25",
         hint: "const square = n => n * n;\nconsole.log(square(5));",
+        python: {
+          tutorial:
+            "Python's version of a short, one-line function is a lambda, written with the lambda keyword.",
+          example: "add = lambda a, b: a + b\nprint(add(2, 3))\n# 5",
+          starterCode: "# Define square as a lambda, then print square(5)\n\n",
+          hint: "square = lambda n: n * n\nprint(square(5))",
+        },
       },
       {
         title: "Default Parameters",
@@ -806,6 +1124,14 @@ const REAL_WORLDS = [
         starterCode: 'let dog = { name: "Rex", age: 3 };\n\n// Print dog\'s name\n',
         expectedOutput: "Rex",
         hint: "console.log(dog.name);",
+        python: {
+          tutorial:
+            "A dictionary stores key-value pairs. You read a value back using square brackets with the key.",
+          example: 'cat = {"name": "Whiskers"}\nprint(cat["name"])\n# Whiskers',
+          starterCode:
+            'dog = {"name": "Rex", "age": 3}\n\n# Print dog\'s name\n',
+          hint: 'print(dog["name"])',
+        },
       },
       {
         title: "Updating a Property",
@@ -816,6 +1142,13 @@ const REAL_WORLDS = [
         starterCode: "let user = { score: 0 };\n\n// Set score to 100, then print it\n",
         expectedOutput: "100",
         hint: "user.score = 100;\nconsole.log(user.score);",
+        python: {
+          tutorial:
+            "You can change a value after creating the dictionary, just by assigning it a new value with its key.",
+          example: 'car = {"color": "red"}\ncar["color"] = "blue"',
+          starterCode: 'user = {"score": 0}\n\n# Set score to 100, then print it\n',
+          hint: 'user["score"] = 100\nprint(user["score"])',
+        },
       },
       {
         title: "Adding a Property",
@@ -826,6 +1159,13 @@ const REAL_WORLDS = [
         starterCode: 'let pet = { name: "Milo" };\n\n// Add sound, then print it\n',
         expectedOutput: "Woof",
         hint: 'pet.sound = "Woof";\nconsole.log(pet.sound);',
+        python: {
+          tutorial:
+            "You can add a brand-new key to a dictionary just by assigning it, even if it wasn't there before.",
+          example: 'obj = {}\nobj["newKey"] = "value"',
+          starterCode: 'pet = {"name": "Milo"}\n\n# Add sound, then print it\n',
+          hint: 'pet["sound"] = "Woof"\nprint(pet["sound"])',
+        },
       },
       {
         title: "Bracket Notation",

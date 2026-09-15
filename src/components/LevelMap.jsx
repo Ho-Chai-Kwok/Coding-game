@@ -1,16 +1,18 @@
 import LevelNode from "./LevelNode";
+import { useI18n } from "../i18n/I18nContext";
 
 const ZIGZAG_PATTERN = [0, 1, 2, 2, 1, 0, -1, -2, -2, -1];
 const ZIGZAG_STEP = 44; // px of horizontal offset per pattern unit
 
-function getEncouragement(completedCount, total) {
-  if (completedCount === 0) return "You've got this — let's begin! 🚀";
-  if (completedCount === total) return "World complete! You're amazing! 🏆";
-  if (completedCount / total >= 0.5) return "Halfway there — keep it up! 🌟";
-  return "Great progress — keep going! 💪";
+function getEncouragementKey(completedCount, total) {
+  if (completedCount === 0) return "levelMap.encourageStart";
+  if (completedCount === total) return "levelMap.encourageDone";
+  if (completedCount / total >= 0.5) return "levelMap.encourageHalf";
+  return "levelMap.encourageProgress";
 }
 
 export default function LevelMap({ world, onSelectLevel, onBack }) {
+  const { t } = useI18n();
   const completedCount = world.levels.filter(
     (l) => l.status === "completed",
   ).length;
@@ -22,16 +24,16 @@ export default function LevelMap({ world, onSelectLevel, onBack }) {
     >
       <header className="level-map__header">
         <button className="back-link" onClick={onBack}>
-          ← Worlds
+          ← {t("backToWorlds")}
         </button>
         <span className="level-map__world-icon">{world.icon}</span>
         <h1>{world.name}</h1>
         <p>
-          World {world.id} · {completedCount}/{world.totalStages} stages
-          complete
+          World {world.id} · {completedCount}/{world.totalStages}{" "}
+          {t("levelMap.stagesComplete")}
         </p>
         <p className="level-map__encouragement">
-          {getEncouragement(completedCount, world.totalStages)}
+          {t(getEncouragementKey(completedCount, world.totalStages))}
         </p>
       </header>
 

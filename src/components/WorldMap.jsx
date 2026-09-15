@@ -1,15 +1,4 @@
-const CHAPTER_NAMES = [
-  "Foundations",
-  "Core Skills",
-  "Data & Structures",
-  "Functions Deep Dive",
-  "Web Basics",
-  "Async & APIs",
-  "Patterns & Practices",
-  "Problem Solving",
-  "Interview Prep",
-  "Final Challenges",
-];
+import { useI18n } from "../i18n/I18nContext";
 
 function chunk(array, size) {
   const chunks = [];
@@ -19,23 +8,40 @@ function chunk(array, size) {
   return chunks;
 }
 
-export default function WorldMap({ worlds, onSelectWorld, onBack }) {
+export default function WorldMap({
+  worlds,
+  language,
+  onChangeLanguage,
+  onSelectWorld,
+  onBack,
+}) {
+  const { t } = useI18n();
   const chapters = chunk(worlds, 10);
+  const chapterNames = t("worldMap.chapters");
 
   return (
     <div className="world-map">
       <header className="world-map__header">
         <button className="back-link" onClick={onBack}>
-          ← Modes
+          ← {t("backToModes")}
         </button>
-        <h1>Choose a World 🗺️</h1>
-        <p>100 worlds, one topic each — learn slowly, one step at a time!</p>
+        <h1>{t("worldMap.title")}</h1>
+        <p>{t("worldMap.subtitle")}</p>
+        {language && (
+          <button
+            className={`language-pill language-pill--${language}`}
+            onClick={onChangeLanguage}
+          >
+            {language === "python" ? "🐍 Python" : "💛 JavaScript"} · {t("worldMap.change")}
+          </button>
+        )}
       </header>
 
       {chapters.map((chapterWorlds, chapterIndex) => (
         <section className="world-map__chapter" key={chapterIndex}>
           <h2 className="world-map__chapter-title">
-            Chapter {chapterIndex + 1}: {CHAPTER_NAMES[chapterIndex] ?? "More Adventures"}
+            {t("worldMap.chapterLabel").replace("{n}", chapterIndex + 1)}:{" "}
+            {chapterNames[chapterIndex] ?? t("worldMap.moreAdventures")}
           </h2>
           <div className="world-map__grid">
             {chapterWorlds.map((world) => {
@@ -60,7 +66,7 @@ export default function WorldMap({ worlds, onSelectWorld, onBack }) {
                   </span>
                   <span className="world-card__name">{world.name}</span>
                   <span className="world-card__progress">
-                    {completedCount}/{world.totalStages} stages
+                    {completedCount}/{world.totalStages} {t("worldMap.stages")}
                   </span>
                   <span className="world-card__bar">
                     <span

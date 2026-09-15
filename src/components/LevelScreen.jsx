@@ -1,26 +1,23 @@
 import CodeChallenge from "./CodeChallenge";
 import QuizChallenge from "./QuizChallenge";
-
-const FUN_MESSAGES = [
-  "Your guide is warming up its circuits...",
-  "This lesson is still being coded (very meta, we know).",
-  "Great choice! The exercises for this one are on their way.",
-];
+import { useI18n } from "../i18n/I18nContext";
 
 export default function LevelScreen({
   level,
   mode = "learning",
+  language = "javascript",
   onBack,
   onCompleteLevel,
   onFinishRanked,
 }) {
-  const message =
-    FUN_MESSAGES[level.stageNumber % FUN_MESSAGES.length] ?? FUN_MESSAGES[0];
+  const { t } = useI18n();
+  const placeholders = t("levelScreen.placeholder");
+  const message = placeholders[level.stageNumber % placeholders.length] ?? placeholders[0];
 
   return (
     <div className="level-screen">
       <button className="level-screen__back" onClick={onBack}>
-        ← Back
+        ← {t("back")}
       </button>
 
       <div className="level-screen__character">{level.character}</div>
@@ -29,6 +26,7 @@ export default function LevelScreen({
       {mode !== "ranked" && level.content?.type === "code" && (
         <CodeChallenge
           content={level.content}
+          language={language}
           onSolved={() => onCompleteLevel(level)}
         />
       )}
@@ -46,21 +44,19 @@ export default function LevelScreen({
 
       {mode === "ranked" && (
         <div className="level-screen__ranked-actions">
-          <p className="level-screen__ranked-hint">
-            Demo controls — report how the match went:
-          </p>
+          <p className="level-screen__ranked-hint">{t("levelScreen.rankedHint")}</p>
           <div className="level-screen__ranked-buttons">
             <button
               className="level-screen__ranked-btn level-screen__ranked-btn--win"
               onClick={() => onFinishRanked(true)}
             >
-              🎉 I Won
+              {t("levelScreen.won")}
             </button>
             <button
               className="level-screen__ranked-btn level-screen__ranked-btn--loss"
               onClick={() => onFinishRanked(false)}
             >
-              💔 I Lost
+              {t("levelScreen.lost")}
             </button>
           </div>
         </div>
