@@ -1,7 +1,16 @@
 import { getRankInfo } from "../data/rank";
 import { useI18n } from "../i18n/I18nContext";
+import CharacterRig from "./CharacterRig";
 
-export default function RankedHome({ points, wins, losses, onPlay, onBack }) {
+export default function RankedHome({
+  points,
+  wins,
+  losses,
+  selectedCharacter,
+  onPlay,
+  onOpenCharacters,
+  onBack,
+}) {
   const { t } = useI18n();
   const rank = getRankInfo(points);
 
@@ -19,6 +28,19 @@ export default function RankedHome({ points, wins, losses, onPlay, onBack }) {
         <span className="ranked-home__tier">{rank.label}</span>
         <span className="ranked-home__points">{rank.points} LP</span>
       </div>
+
+      {selectedCharacter && (
+        <button className="ranked-home__character" onClick={onOpenCharacters}>
+          <span className="ranked-home__character-rig">
+            <CharacterRig character={selectedCharacter} state="idle" showSparkles={false} />
+          </span>
+          <span className="ranked-home__character-text">
+            <span className="ranked-home__character-label">{t("rankedHome.playingAs")}</span>
+            <span className="ranked-home__character-name">{selectedCharacter.name}</span>
+          </span>
+          <span className="ranked-home__character-change">{t("rankedHome.changeCharacter")}</span>
+        </button>
+      )}
 
       <div className="ranked-home__progress">
         <div className="ranked-home__progress-track">

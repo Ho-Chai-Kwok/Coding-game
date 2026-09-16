@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TutorialCard from "./TutorialCard";
+import Confetti from "./Confetti";
 import { useI18n } from "../i18n/I18nContext";
 
 export default function QuizChallenge({ content, onSolved }) {
@@ -20,9 +21,13 @@ export default function QuizChallenge({ content, onSolved }) {
 
   return (
     <div className="quiz-challenge">
+      {content.recap && <div className="quiz-challenge__recap-badge">🔁 Quick Recap</div>}
+
       <TutorialCard tutorial={content.tutorial} example={content.example} />
 
-      <p className="quiz-challenge__instructions">{content.instructions}</p>
+      {content.instructions && (
+        <p className="quiz-challenge__instructions">{content.instructions}</p>
+      )}
       <p className="quiz-challenge__question">{content.question}</p>
 
       <div className="quiz-challenge__options">
@@ -46,6 +51,7 @@ export default function QuizChallenge({ content, onSolved }) {
 
       {status && (
         <div className={`quiz-challenge__feedback quiz-challenge__feedback--${status}`}>
+          {status === "correct" && <Confetti />}
           <p className="quiz-challenge__feedback-title">
             {status === "correct" ? t("quizChallenge.correct") : t("quizChallenge.incorrect")}
           </p>

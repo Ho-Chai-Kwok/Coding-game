@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TutorialCard from "./TutorialCard";
+import Confetti from "./Confetti";
 import { runPythonCode } from "../utils/pyRuntime";
 import { useI18n } from "../i18n/I18nContext";
 
@@ -52,13 +53,20 @@ export default function CodeChallenge({ content, language = "javascript", onSolv
 
       <p className="code-challenge__instructions">{active.instructions}</p>
 
-      <textarea
-        className="code-challenge__editor"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        spellCheck={false}
-        rows={5}
-      />
+      <div className="code-challenge__editor-frame">
+        <div className="code-challenge__editor-chrome">
+          <span className="code-challenge__dot code-challenge__dot--red" />
+          <span className="code-challenge__dot code-challenge__dot--yellow" />
+          <span className="code-challenge__dot code-challenge__dot--green" />
+        </div>
+        <textarea
+          className="code-challenge__editor"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          spellCheck={false}
+          rows={5}
+        />
+      </div>
 
       <button className="code-challenge__run" onClick={handleRun} disabled={running}>
         {running ? t("codeChallenge.running") : t("codeChallenge.run")}
@@ -68,6 +76,7 @@ export default function CodeChallenge({ content, language = "javascript", onSolv
         <div className={`code-challenge__result code-challenge__result--${result.status}`}>
           {result.status === "success" && (
             <>
+              <Confetti />
               <p className="code-challenge__result-title">
                 {t("codeChallenge.success")} {active.expectedOutput}
               </p>

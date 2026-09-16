@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import ModeSelect from "./components/ModeSelect";
 import WorldMap from "./components/WorldMap";
 import LevelMap from "./components/LevelMap";
@@ -8,12 +8,19 @@ import SideQuestMap from "./components/SideQuestMap";
 import SideQuestPath from "./components/SideQuestPath";
 import LanguageSelect from "./components/LanguageSelect";
 import Settings from "./components/Settings";
+import LoginCalendar from "./components/LoginCalendar";
+import CharacterRoster from "./components/CharacterRoster";
 import AuthGate from "./components/AuthGate";
 import { useAuth } from "./auth/AuthContext";
 import { useProgressSync } from "./hooks/useProgressSync";
+import { computeStreak } from "./utils/streak";
+import { STREAK_MILESTONES, BASE_AVATARS } from "./data/rewards";
 import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
+import { CHARACTERS, buildUnlockContext } from "./data/characters";
 import "./App.css";
+
+const DEFAULT_PROFILE = { displayName: "Coder", avatar: "🦊" };
 
 const RANKED_CHALLENGES = [
   { id: "ranked-1", stageNumber: 1, title: "Speed Syntax Duel", character: "⚔️" },
@@ -51,19 +58,117 @@ function AppShell() {
   const [rankedWins, setRankedWins] = useState(7);
   const [rankedLosses, setRankedLosses] = useState(4);
 
+  // Profile, appearance, and "real app" dashboard bits
+  const [profile, setProfile] = useState(DEFAULT_PROFILE);
+  const [theme, setTheme] = useState("system"); // "system" | "light" | "dark"
+  const [streak, setStreak] = useState(1);
+  const [lastPlayedDate, setLastPlayedDate] = useState(null);
+  const [continueWorldId, setContinueWorldId] = useState(null);
+  const [loginDates, setLoginDates] = useState([]);
+  const [claimedMilestones, setClaimedMilestones] = useState([]);
+  const [unlockedAvatars, setUnlockedAvatars] = useState(BASE_AVATARS);
+  const [newlyEarnedRewards, setNewlyEarnedRewards] = useState([]);
+
+  // Characters: unlocked through real progress (see src/data/characters.js),
+  // selectable to represent the player in Ranked Mode.
+  const [selectedCharacterId, setSelectedCharacterId] = useState(CHARACTERS[0].id);
+
+  useEffect(() => {
+    if (theme === "system") {
+      delete document.documentElement.dataset.theme;
+    } else {
+      document.documentElement.dataset.theme = theme;
+    }
+  }, [theme]);
+
   // Persist progress: Supabase when logged in, localStorage as a guest.
   const progressSnapshot = useMemo(
-    () => ({ worldsState, sideQuestsState, rankedPoints, rankedWins, rankedLosses }),
-    [worldsState, sideQuestsState, rankedPoints, rankedWins, rankedLosses],
+    () => ({
+      worldsState,
+      sideQuestsState,
+      rankedPoints,
+      rankedWins,
+      rankedLosses,
+      profile,
+      theme,
+      streak,
+      lastPlayedDate,
+      continueWorldId,
+      loginDates,
+      claimedMilestones,
+      unlockedAvatars,
+      selectedCharacterId,
+    }),
+    [
+      worldsState,
+      sideQuestsState,
+      rankedPoints,
+      rankedWins,
+      rankedLosses,
+      profile,
+      theme,
+      streak,
+      lastPlayedDate,
+      continueWorldId,
+      loginDates,
+      claimedMilestones,
+      unlockedAvatars,
+      selectedCharacterId,
+    ],
   );
 
+  const hasHydratedRef = useRef(false);
+
   const onHydrate = useCallback((saved) => {
-    if (!saved) return;
-    if (saved.worldsState) setWorldsState(saved.worldsState);
-    if (saved.sideQuestsState) setSideQuestsState(saved.sideQuestsState);
-    if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
-    if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
-    if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
+    // Guard against granting daily rewards twice: React's StrictMode
+    // intentionally double-invokes effects in development, and this
+    // callback should only ever apply its one-time hydration/reward
+    // logic once per real app load regardless.
+    if (hasHydratedRef.current) return;
+    hasHydratedRef.current = true;
+
+    if (saved) {
+      if (saved.worldsState) setWorldsState(saved.worldsState);
+      if (saved.sideQuestsState) setSideQuestsState(saved.sideQuestsState);
+      if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
+      if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
+      if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
+      if (saved.profile) setProfile(saved.profile);
+      if (saved.theme) setTheme(saved.theme);
+      if (saved.continueWorldId) setContinueWorldId(saved.continueWorldId);
+      if (saved.selectedCharacterId) setSelectedCharacterId(saved.selectedCharacterId);
+    }
+
+    const { streak: nextStreak, lastPlayedDate: today } = computeStreak(
+      saved?.streak,
+      saved?.lastPlayedDate,
+    );
+    setStreak(nextStreak);
+    setLastPlayedDate(today);
+
+    const prevLoginDates = saved?.loginDates ?? [];
+    const prevClaimed = saved?.claimedMilestones ?? [];
+    const prevAvatars = saved?.unlockedAvatars ?? BASE_AVATARS;
+    const isNewLoginDay = !prevLoginDates.includes(today);
+
+    setLoginDates(isNewLoginDay ? [...prevLoginDates, today] : prevLoginDates);
+
+    if (isNewLoginDay) {
+      const newlyEarned = STREAK_MILESTONES.filter(
+        (m) => m.day <= nextStreak && !prevClaimed.includes(m.day),
+      );
+      if (newlyEarned.length > 0) {
+        const bonusLp = newlyEarned.reduce((sum, m) => sum + (m.lp || 0), 0);
+        const newAvatars = newlyEarned.filter((m) => m.avatar).map((m) => m.avatar);
+        setClaimedMilestones([...prevClaimed, ...newlyEarned.map((m) => m.day)]);
+        setUnlockedAvatars([...new Set([...prevAvatars, ...newAvatars])]);
+        if (bonusLp > 0) setRankedPoints((p) => p + bonusLp);
+        setNewlyEarnedRewards(newlyEarned);
+        return;
+      }
+    }
+    setClaimedMilestones(prevClaimed);
+    setUnlockedAvatars(prevAvatars);
   }, []);
 
   useProgressSync({ userId: user?.id ?? null, state: progressSnapshot, onHydrate });
@@ -74,6 +179,17 @@ function AppShell() {
     setRankedPoints(1240);
     setRankedWins(7);
     setRankedLosses(4);
+    setContinueWorldId(null);
+    setLoginDates([]);
+    setClaimedMilestones([]);
+    setUnlockedAvatars(BASE_AVATARS);
+    setNewlyEarnedRewards([]);
+    setSelectedCharacterId(CHARACTERS[0].id);
+  }
+
+  function enterWorld(worldId) {
+    setActiveWorldId(worldId);
+    setContinueWorldId(worldId);
   }
 
   function backToModes() {
@@ -146,12 +262,97 @@ function AppShell() {
     setRankedChallenge(null);
   }
 
+  const overallProgress = useMemo(() => {
+    const worldLevels = worldsState.flatMap((w) => w.levels);
+    const questLevels = sideQuestsState.flatMap((q) => q.lessons);
+    const all = [...worldLevels, ...questLevels];
+    return {
+      completed: all.filter((l) => l.status === "completed").length,
+      total: all.length,
+    };
+  }, [worldsState, sideQuestsState]);
+
+  const unlockCtx = useMemo(
+    () =>
+      buildUnlockContext({
+        overallProgress,
+        rankedWins,
+        rankedLosses,
+        rankedPoints,
+        streak,
+      }),
+    [overallProgress, rankedWins, rankedLosses, rankedPoints, streak],
+  );
+
+  const selectedCharacter = useMemo(
+    () => CHARACTERS.find((c) => c.id === selectedCharacterId) ?? CHARACTERS[0],
+    [selectedCharacterId],
+  );
+
+  const continueWorld = useMemo(() => {
+    const world = worldsState.find((w) => w.id === continueWorldId);
+    if (!world) return null;
+    const completedCount = world.levels.filter((l) => l.status === "completed").length;
+    if (completedCount >= world.levels.length) return null;
+    return { ...world, completedCount };
+  }, [worldsState, continueWorldId]);
+
+  function handleContinueLearning() {
+    if (!continueWorld) return;
+    setMode("learning");
+    enterWorld(continueWorld.id);
+  }
+
   let screen;
 
   if (!mode) {
-    screen = <ModeSelect onSelect={setMode} onOpenSettings={() => setMode("settings")} />;
+    screen = (
+      <ModeSelect
+        profile={profile}
+        streak={streak}
+        overallProgress={overallProgress}
+        continueWorld={continueWorld}
+        onContinueLearning={handleContinueLearning}
+        onSelect={setMode}
+        onOpenSettings={() => setMode("settings")}
+        onOpenCalendar={() => setMode("calendar")}
+        onOpenCharacters={() => setMode("characters")}
+      />
+    );
+  } else if (mode === "characters") {
+    screen = (
+      <CharacterRoster
+        unlockCtx={unlockCtx}
+        selectedCharacterId={selectedCharacterId}
+        onSelectCharacter={setSelectedCharacterId}
+        onBack={backToModes}
+      />
+    );
+  } else if (mode === "calendar") {
+    screen = (
+      <LoginCalendar
+        loginDates={loginDates}
+        streak={streak}
+        claimedMilestones={claimedMilestones}
+        newlyEarnedRewards={newlyEarnedRewards}
+        onDismissRewards={() => setNewlyEarnedRewards([])}
+        onBack={backToModes}
+      />
+    );
   } else if (mode === "settings") {
-    screen = <Settings onBack={backToModes} onResetProgress={resetProgress} />;
+    screen = (
+      <Settings
+        profile={profile}
+        onChangeProfile={setProfile}
+        theme={theme}
+        onChangeTheme={setTheme}
+        codingLanguage={language}
+        onChangeCodingLanguage={setLanguage}
+        unlockedAvatars={unlockedAvatars}
+        onBack={backToModes}
+        onResetProgress={resetProgress}
+      />
+    );
   } else if (mode === "learning") {
     const activeWorld = worldsState.find((w) => w.id === activeWorldId);
 
@@ -182,7 +383,7 @@ function AppShell() {
           worlds={worldsState}
           language={language}
           onChangeLanguage={() => setLanguage(null)}
-          onSelectWorld={setActiveWorldId}
+          onSelectWorld={enterWorld}
           onBack={backToModes}
         />
       );
@@ -232,7 +433,9 @@ function AppShell() {
           points={rankedPoints}
           wins={rankedWins}
           losses={rankedLosses}
+          selectedCharacter={selectedCharacter}
           onPlay={startRankedMatch}
+          onOpenCharacters={() => setMode("characters")}
           onBack={backToModes}
         />
       );

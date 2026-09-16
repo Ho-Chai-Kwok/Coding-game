@@ -1,9 +1,13 @@
-// Curriculum data. Each world now teaches exactly ONE topic, broken into
+// Curriculum data. Each world teaches exactly ONE topic, broken into
 // several small, gradually-harder steps (Duolingo-style) instead of one
-// level per topic. Worlds 1-12 are fully authored; worlds 13-100 are
-// placeholder "coming soon" scaffolding so the full 100-world map exists
-// and can be filled in over time (see `content: null` handling already
-// supported by LevelScreen).
+// level per topic. Worlds 1-12 mix hands-on code exercises (with real
+// JS/Python execution) and quizzes; worlds 13-100 (see extraWorlds.js)
+// are quiz-based so they work correctly no matter which language the
+// learner picked, without needing a hand-authored JS/Python pair for
+// every single one. Every world ends with a 🔁 recap level reviewing
+// something from an earlier topic.
+
+import { EXTRA_WORLD_DEFS } from "./extraWorlds.js";
 
 const REAL_WORLDS = [
   {
@@ -1182,126 +1186,6 @@ const REAL_WORLDS = [
   },
 ];
 
-// A curated palette so the map still looks colorful even before every
-// world has real content. Cycled for worlds 13-100.
-const PALETTE = [
-  { from: "#4ade80", to: "#16a34a", icon: "🧩" },
-  { from: "#22d3ee", to: "#0891b2", icon: "🎯" },
-  { from: "#fb923c", to: "#ea580c", icon: "🛠️" },
-  { from: "#c084fc", to: "#7c3aed", icon: "📐" },
-  { from: "#38bdf8", to: "#0284c7", icon: "🔭" },
-  { from: "#f87171", to: "#b91c1c", icon: "🎨" },
-  { from: "#818cf8", to: "#4338ca", icon: "🧭" },
-  { from: "#fbbf24", to: "#d97706", icon: "🛡️" },
-  { from: "#f472b6", to: "#db2777", icon: "🏹" },
-  { from: "#a78bfa", to: "#3b82f6", icon: "⚗️" },
-  { from: "#34d399", to: "#047857", icon: "🧬" },
-  { from: "#fca5a5", to: "#dc2626", icon: "🪄" },
-  { from: "#67e8f9", to: "#0e7490", icon: "🎓" },
-  { from: "#fdba74", to: "#c2410c", icon: "🏆" },
-  { from: "#d8b4fe", to: "#9333ea", icon: "🌌" },
-  { from: "#7dd3fc", to: "#0369a1", icon: "🔦" },
-  { from: "#fde047", to: "#ca8a04", icon: "🗝️" },
-  { from: "#6ee7b7", to: "#059669", icon: "🧊" },
-  { from: "#f9a8d4", to: "#be185d", icon: "🛰️" },
-  { from: "#93c5fd", to: "#1d4ed8", icon: "🌋" },
-];
-
-const PLACEHOLDER_CHARACTERS = ["✨", "🌟", "🎈", "🎉"];
-
-// A full 100-topic curriculum roadmap. Worlds 13-100 stay locked
-// placeholders ("coming soon") until they're authored with real content.
-const PLACEHOLDER_TOPICS = [
-  "Array Methods (Map, Filter, forEach)",
-  "Debugging Basics",
-  "Functions II: Defaults & Rest",
-  "Template Literals II",
-  "Destructuring",
-  "Spread & Rest Operators",
-  "Objects II: Methods & this",
-  "Classes: Basics",
-  "Classes: Inheritance",
-  "Error Handling: try/catch",
-  "Recursion",
-  "Higher-Order Functions",
-  "Closures",
-  "Scope & Hoisting",
-  "Sorting Algorithms",
-  "Searching Algorithms",
-  "Big O Notation",
-  "Stacks",
-  "Queues",
-  "Linked Lists",
-  "Trees",
-  "Hash Maps",
-  "Graphs",
-  "Dynamic Programming Intro",
-  "Regular Expressions",
-  "Date & Time",
-  "Math Object Deep Dive",
-  "Type Coercion",
-  "Truthy & Falsy",
-  "Ternary Operator",
-  "Callback Functions",
-  "Promises",
-  "Async/Await",
-  "The Event Loop",
-  "JSON",
-  "Map & Set",
-  "Modules: Import & Export",
-  "DOM Basics",
-  "DOM Events",
-  "Fetch API",
-  "LocalStorage",
-  "HTTP Basics",
-  "REST Concepts",
-  "Status Codes",
-  "Databases 101",
-  "SQL Basics",
-  "NoSQL Basics",
-  "Command Line Basics",
-  "Environment Variables",
-  "Package Managers",
-  "Semantic Versioning",
-  "Testing Basics",
-  "Clean Code Principles",
-  "Naming Conventions",
-  "Design Patterns: Singleton",
-  "Design Patterns: Factory",
-  "Design Patterns: Observer",
-  "SOLID Principles",
-  "Immutability",
-  "Pure Functions",
-  "Currying",
-  "Memoization",
-  "State Management",
-  "Bit Manipulation",
-  "Two Pointers Technique",
-  "Sliding Window Technique",
-  "Backtracking",
-  "Greedy Algorithms",
-  "Graph Traversal: BFS",
-  "Graph Traversal: DFS",
-  "HTML Basics",
-  "CSS Basics",
-  "Responsive Design",
-  "Accessibility Basics",
-  "Web Security Basics",
-  "Performance Optimization",
-  "Version Control Concepts",
-  "Code Review Skills",
-  "Pseudocode & Planning",
-  "Problem Solving Strategies",
-  "Interview Prep: Arrays",
-  "Interview Prep: Strings",
-  "Interview Prep: Trees",
-  "Final Boss: Mixed Review I",
-  "Final Boss: Mixed Review II",
-  "Final Boss: Mixed Review III",
-  "Final Boss: Mixed Review IV",
-  "Capstone Project",
-];
-
 function finalizeRealWorld(def, id, isFirstWorld) {
   const levels = def.levels.map((lvl, i) => {
     const stageNumber = i + 1;
@@ -1329,34 +1213,8 @@ function finalizeRealWorld(def, id, isFirstWorld) {
   };
 }
 
-function buildPlaceholderWorld(id, name, paletteIndex) {
-  const p = PALETTE[paletteIndex % PALETTE.length];
-  const totalStages = 5;
-  const levels = Array.from({ length: totalStages }, (_, i) => ({
-    id: `${id}-${i + 1}`,
-    worldId: id,
-    stageNumber: i + 1,
-    title: `Stage ${i + 1}`,
-    character: PLACEHOLDER_CHARACTERS[i % PLACEHOLDER_CHARACTERS.length],
-    status: "locked",
-    content: null,
-  }));
+const ALL_WORLD_DEFS = [...REAL_WORLDS, ...EXTRA_WORLD_DEFS];
 
-  return {
-    id,
-    name,
-    icon: p.icon,
-    from: p.from,
-    to: p.to,
-    status: "locked",
-    totalStages,
-    levels,
-  };
-}
-
-export const worlds = [
-  ...REAL_WORLDS.map((def, i) => finalizeRealWorld(def, i + 1, i === 0)),
-  ...PLACEHOLDER_TOPICS.map((name, i) =>
-    buildPlaceholderWorld(REAL_WORLDS.length + 1 + i, name, i),
-  ),
-];
+export const worlds = ALL_WORLD_DEFS.map((def, i) =>
+  finalizeRealWorld(def, i + 1, i === 0),
+);
