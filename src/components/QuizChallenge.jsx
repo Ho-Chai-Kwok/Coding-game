@@ -3,7 +3,7 @@ import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
 import { useI18n } from "../i18n/I18nContext";
 
-export default function QuizChallenge({ content, onSolved }) {
+export default function QuizChallenge({ content, onSolved, disabledOptionIndex = null }) {
   const { t } = useI18n();
   const [selected, setSelected] = useState(null);
   const [status, setStatus] = useState(null); // null | "correct" | "incorrect"
@@ -36,12 +36,13 @@ export default function QuizChallenge({ content, onSolved }) {
           if (selected === i) {
             variant = status === "correct" ? " quiz-challenge__option--correct" : " quiz-challenge__option--incorrect";
           }
+          const isRevealedWrong = i === disabledOptionIndex;
           return (
             <button
               key={option}
-              className={`quiz-challenge__option${variant}`}
+              className={`quiz-challenge__option${variant}${isRevealedWrong ? " quiz-challenge__option--disabled" : ""}`}
               onClick={() => handleSelect(i)}
-              disabled={status === "correct"}
+              disabled={status === "correct" || isRevealedWrong}
             >
               {option}
             </button>

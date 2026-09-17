@@ -1,23 +1,10 @@
 import { useState } from "react";
 import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
+import CodeEditor from "./CodeEditor";
 import { runPythonCode } from "../utils/pyRuntime";
+import { runJsCode } from "../utils/runCode";
 import { useI18n } from "../i18n/I18nContext";
-
-function runJsCode(code) {
-  const logs = [];
-  const fakeConsole = {
-    log: (...args) => logs.push(args.map(String).join(" ")),
-  };
-
-  try {
-    const fn = new Function("console", code);
-    fn(fakeConsole);
-    return { logs, error: null };
-  } catch (err) {
-    return { logs, error: err.message };
-  }
-}
 
 function resolveContent(content, language) {
   if (language !== "python" || !content.python) return content;
@@ -59,11 +46,11 @@ export default function CodeChallenge({ content, language = "javascript", onSolv
           <span className="code-challenge__dot code-challenge__dot--yellow" />
           <span className="code-challenge__dot code-challenge__dot--green" />
         </div>
-        <textarea
+        <CodeEditor
           className="code-challenge__editor"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          spellCheck={false}
+          language={language}
           rows={5}
         />
       </div>

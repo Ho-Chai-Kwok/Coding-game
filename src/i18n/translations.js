@@ -73,9 +73,6 @@ export const translations = {
     },
 
     levelScreen: {
-      rankedHint: "Demo controls — report how the match went:",
-      won: "🎉 I Won",
-      lost: "💔 I Lost",
       placeholder: [
         "Your guide is warming up its circuits...",
         "This lesson is still being coded (very meta, we know).",
@@ -112,9 +109,112 @@ export const translations = {
       changeCharacter: "Change →",
     },
 
+    rankedModes: {
+      selectTitle: "Choose Your Mode 🎮",
+      selectSubtitle: "Two arena favorites, plus modes that rotate daily — just like the pros!",
+      rotationBadge: "🔄 Today Only",
+      comingSoonBadge: "🚧 Coming Soon",
+      archetypeBonus: "Bonus for:",
+      round: "Round",
+      roundsCompleted: "Rounds Completed",
+      timeLeft: "Time Left",
+      score: "Score",
+      nextRound: "Next Round →",
+      finish: "Finish →",
+      continue: "Continue →",
+      backToLobby: "← Back to Ranked",
+
+      codeRace: {
+        name: "Code Race",
+        desc: "Solve coding puzzles back to back before the clock runs out.",
+        winTitle: "🏁 You Finished the Race!",
+        loseTitle: "⏱️ Time Ran Out",
+        dashBonus: "Dash's speed bonus added extra seconds to your clock!",
+      },
+
+      bugHunt: {
+        name: "Bug Hunt",
+        desc: "Spot the buggy line, then pick the fix — before time's up.",
+        winTitle: "🐞 Bug Hunt Complete!",
+        loseTitle: "🔍 Better Luck Next Hunt",
+        debuggerBonus: "Your Debugger's sharp eyes boosted your score!",
+        findPrompt: "Tap the line with the bug:",
+        fixPrompt: "Now pick the fix:",
+      },
+
+      predictOutput: {
+        name: "Predict the Output",
+        desc: "Read the code, guess what it prints — fast rounds, no mercy.",
+        winTitle: "🔮 Nailed It!",
+        loseTitle: "💭 So Close!",
+        scopeBonus: "Scope revealed a wrong answer before you chose!",
+      },
+
+      codeGolf: {
+        name: "Code Golf",
+        desc: "Same puzzle for everyone — shortest working solution wins.",
+        winTitle: "⛳ Solved!",
+        loseTitle: "⏱️ Out of Time",
+        yourLines: "Your Lines",
+        par: "Par",
+        lines: "lines",
+        trimBonus: "Trim's refactoring bonus shaved extra points onto your score!",
+      },
+
+      showdown: {
+        name: "Showdown",
+        desc: "Survive as long as you can — one wrong answer and you're out.",
+        winTitle: "🥇 Showdown Champion!",
+        loseTitle: "💥 Eliminated",
+        roundsSurvived: "Rounds Survived",
+        nullPointerSave: "Null Pointer's streak protection saved your run!",
+        getReady: "Get ready...",
+      },
+
+      debugDuel: {
+        name: "Debug Duel",
+        desc: "Race a ghost time to find and fix the bug first.",
+        winTitle: "⚔️ Duel Won!",
+        loseTitle: "💀 Duel Lost",
+        yourTime: "Your Time",
+        ghostTime: "Ghost Time",
+        beatGhost: "You beat the ghost's time!",
+        tankBonus: "Bastion's toughness gave you an extra life!",
+      },
+
+      chaosRound: {
+        name: "Chaos Round",
+        desc: "A familiar puzzle with a random twist. Anything can happen!",
+        winTitle: "🌀 Chaos Tamed!",
+        loseTitle: "💫 Chaos Wins This Time",
+        modifier: "Modifier",
+        glitchBonus: "Glitch turned your loss into a lucky wash!",
+        modifiers: {
+          doublePoints: { name: "Double Points", desc: "Win this round for double the ranked points." },
+          halfTime: { name: "Half Time", desc: "The clock is cut in half — think fast!" },
+          oneShot: { name: "One Shot", desc: "No retries. One answer, make it count." },
+          noHints: { name: "No Hints", desc: "The tutorial and explanation are hidden this round." },
+        },
+      },
+
+      relay: {
+        name: "Relay",
+        desc: "A 2-4 player team relay — coming once team matchmaking is ready.",
+        comingSoon: "Relay needs real teammates to race with, so it's still in the workshop. Check back soon!",
+      },
+
+      shuffle: {
+        title: "Shuffling...",
+        spinning: "Spinning the wheel...",
+        landed: "You got:",
+        reshuffle: "Reshuffle",
+        go: "Let's Go! →",
+      },
+    },
+
     sideQuestMap: {
       title: "Side Quests 🧭",
-      subtitle: "20 short courses on real tools —",
+      subtitle: "28 short courses on real tools —",
       lessonsComplete: "lessons complete!",
       lessons: "lessons",
       completed: "Completed",
@@ -254,9 +354,6 @@ export const translations = {
     },
 
     levelScreen: {
-      rankedHint: "Controles de demostración — indica cómo fue la partida:",
-      won: "🎉 Gané",
-      lost: "💔 Perdí",
       placeholder: [
         "Tu guía está calentando sus circuitos...",
         "Esta lección todavía se está programando (muy irónico, lo sabemos).",
@@ -293,9 +390,112 @@ export const translations = {
       changeCharacter: "Cambiar →",
     },
 
+    rankedModes: {
+      selectTitle: "Elige tu Modo 🎮",
+      selectSubtitle: "Dos favoritos del arena, más modos que rotan cada día — ¡como los profesionales!",
+      rotationBadge: "🔄 Solo Hoy",
+      comingSoonBadge: "🚧 Próximamente",
+      archetypeBonus: "Bono para:",
+      round: "Ronda",
+      roundsCompleted: "Rondas Completadas",
+      timeLeft: "Tiempo Restante",
+      score: "Puntuación",
+      nextRound: "Siguiente Ronda →",
+      finish: "Terminar →",
+      continue: "Continuar →",
+      backToLobby: "← Volver a Clasificado",
+
+      codeRace: {
+        name: "Carrera de Código",
+        desc: "Resuelve acertijos de código uno tras otro antes de que se acabe el tiempo.",
+        winTitle: "🏁 ¡Terminaste la Carrera!",
+        loseTitle: "⏱️ Se Acabó el Tiempo",
+        dashBonus: "¡El bono de velocidad de Dash añadió segundos extra a tu reloj!",
+      },
+
+      bugHunt: {
+        name: "Caza de Bichos",
+        desc: "Encuentra la línea con el error y elige la solución — antes de que se acabe el tiempo.",
+        winTitle: "🐞 ¡Caza Completa!",
+        loseTitle: "🔍 Mejor Suerte la Próxima",
+        debuggerBonus: "¡Los ojos agudos de tu Debugger aumentaron tu puntuación!",
+        findPrompt: "Toca la línea con el error:",
+        fixPrompt: "Ahora elige la solución:",
+      },
+
+      predictOutput: {
+        name: "Predice la Salida",
+        desc: "Lee el código, adivina qué imprime — rondas rápidas, sin piedad.",
+        winTitle: "🔮 ¡Lo Lograste!",
+        loseTitle: "💭 ¡Tan Cerca!",
+        scopeBonus: "¡Scope reveló una respuesta incorrecta antes de elegir!",
+      },
+
+      codeGolf: {
+        name: "Golf de Código",
+        desc: "El mismo acertijo para todos — gana la solución más corta que funcione.",
+        winTitle: "⛳ ¡Resuelto!",
+        loseTitle: "⏱️ Sin Tiempo",
+        yourLines: "Tus Líneas",
+        par: "Par",
+        lines: "líneas",
+        trimBonus: "¡El bono de refactorización de Trim añadió puntos extra a tu puntuación!",
+      },
+
+      showdown: {
+        name: "Enfrentamiento",
+        desc: "Sobrevive todo lo que puedas — una respuesta incorrecta y estás fuera.",
+        winTitle: "🥇 ¡Campeón del Enfrentamiento!",
+        loseTitle: "💥 Eliminado",
+        roundsSurvived: "Rondas Sobrevividas",
+        nullPointerSave: "¡La protección de racha de Null Pointer salvó tu partida!",
+        getReady: "Prepárate...",
+      },
+
+      debugDuel: {
+        name: "Duelo de Depuración",
+        desc: "Compite contra un tiempo fantasma para encontrar y arreglar el error primero.",
+        winTitle: "⚔️ ¡Duelo Ganado!",
+        loseTitle: "💀 Duelo Perdido",
+        yourTime: "Tu Tiempo",
+        ghostTime: "Tiempo Fantasma",
+        beatGhost: "¡Venciste el tiempo del fantasma!",
+        tankBonus: "¡La resistencia de Bastion te dio una vida extra!",
+      },
+
+      chaosRound: {
+        name: "Ronda del Caos",
+        desc: "Un acertijo familiar con un giro aleatorio. ¡Todo puede pasar!",
+        winTitle: "🌀 ¡Caos Domado!",
+        loseTitle: "💫 El Caos Gana Esta Vez",
+        modifier: "Modificador",
+        glitchBonus: "¡Glitch convirtió tu derrota en un empate afortunado!",
+        modifiers: {
+          doublePoints: { name: "Puntos Dobles", desc: "Gana esta ronda por el doble de puntos clasificados." },
+          halfTime: { name: "Medio Tiempo", desc: "¡El reloj se reduce a la mitad — piensa rápido!" },
+          oneShot: { name: "Una Oportunidad", desc: "Sin reintentos. Una respuesta, que cuente." },
+          noHints: { name: "Sin Pistas", desc: "El tutorial y la explicación están ocultos esta ronda." },
+        },
+      },
+
+      relay: {
+        name: "Relevos",
+        desc: "Un relevo en equipo de 2 a 4 jugadores — llegará cuando el emparejamiento en equipo esté listo.",
+        comingSoon: "Relevos necesita compañeros de equipo reales para competir, así que todavía está en construcción. ¡Vuelve pronto!",
+      },
+
+      shuffle: {
+        title: "Barajando...",
+        spinning: "Girando la ruleta...",
+        landed: "Te tocó:",
+        reshuffle: "Volver a Barajar",
+        go: "¡Vamos! →",
+      },
+    },
+
     sideQuestMap: {
       title: "Misiones Secundarias 🧭",
-      subtitle: "20 cursos cortos sobre herramientas reales —",
+      subtitle: "28 cursos cortos sobre herramientas reales —",
       lessonsComplete: "lecciones completadas!",
       lessons: "lecciones",
       completed: "Completado",
@@ -435,9 +635,6 @@ export const translations = {
     },
 
     levelScreen: {
-      rankedHint: "示範控制項——回報這場比賽的結果：",
-      won: "🎉 我贏了",
-      lost: "💔 我輸了",
       placeholder: [
         "你的導師正在熱機...",
         "這堂課還在製作中（真的很有梗，我們知道）。",
@@ -474,9 +671,112 @@ export const translations = {
       changeCharacter: "更換 →",
     },
 
+    rankedModes: {
+      selectTitle: "選擇你的模式 🎮",
+      selectSubtitle: "兩個競技場常駐模式，加上每日輪替的模式 — 就像職業選手一樣！",
+      rotationBadge: "🔄 僅限今日",
+      comingSoonBadge: "🚧 即將推出",
+      archetypeBonus: "加成對象：",
+      round: "回合",
+      roundsCompleted: "完成回合數",
+      timeLeft: "剩餘時間",
+      score: "分數",
+      nextRound: "下一回合 →",
+      finish: "完成 →",
+      continue: "繼續 →",
+      backToLobby: "← 返回排名模式",
+
+      codeRace: {
+        name: "程式碼競速",
+        desc: "在時間耗盡前連續解出程式謎題。",
+        winTitle: "🏁 完成競速！",
+        loseTitle: "⏱️ 時間到",
+        dashBonus: "Dash 的速度加成為你的時鐘增加了額外的秒數！",
+      },
+
+      bugHunt: {
+        name: "抓蟲行動",
+        desc: "找出有錯誤的那一行，然後選出修正方式 — 在時間耗盡前完成。",
+        winTitle: "🐞 抓蟲完成！",
+        loseTitle: "🔍 下次再加油",
+        debuggerBonus: "你的 Debugger 銳利的眼光提升了你的分數！",
+        findPrompt: "點選有錯誤的那一行：",
+        fixPrompt: "現在選擇修正方式：",
+      },
+
+      predictOutput: {
+        name: "預測輸出",
+        desc: "閱讀程式碼，猜猜它會印出什麼 — 快節奏回合，毫不留情。",
+        winTitle: "🔮 猜中了！",
+        loseTitle: "💭 就差一點！",
+        scopeBonus: "Scope 在你作答前揭露了一個錯誤選項！",
+      },
+
+      codeGolf: {
+        name: "程式碼高爾夫",
+        desc: "每個人都解同一道題 — 最短的可行解法獲勝。",
+        winTitle: "⛳ 解出來了！",
+        loseTitle: "⏱️ 時間到",
+        yourLines: "你的行數",
+        par: "標準桿",
+        lines: "行",
+        trimBonus: "Trim 的重構加成幫你的分數多加了一些！",
+      },
+
+      showdown: {
+        name: "生存對決",
+        desc: "盡可能撐下去 — 答錯一題就出局。",
+        winTitle: "🥇 對決冠軍！",
+        loseTitle: "💥 已淘汰",
+        roundsSurvived: "存活回合數",
+        nullPointerSave: "Null Pointer 的連續保護拯救了你的紀錄！",
+        getReady: "準備好...",
+      },
+
+      debugDuel: {
+        name: "除錯對決",
+        desc: "與幽靈時間競速，率先找到並修正錯誤。",
+        winTitle: "⚔️ 對決獲勝！",
+        loseTitle: "💀 對決落敗",
+        yourTime: "你的時間",
+        ghostTime: "幽靈時間",
+        beatGhost: "你打敗了幽靈的時間！",
+        tankBonus: "Bastion 的堅韌給了你一條額外的生命！",
+      },
+
+      chaosRound: {
+        name: "混亂回合",
+        desc: "熟悉的題型，加上隨機的變化。什麼事都可能發生！",
+        winTitle: "🌀 馴服混亂！",
+        loseTitle: "💫 這次混亂獲勝",
+        modifier: "修飾條件",
+        glitchBonus: "Glitch 把你的落敗變成了幸運的平局！",
+        modifiers: {
+          doublePoints: { name: "雙倍分數", desc: "贏得這回合可獲得雙倍排名點數。" },
+          halfTime: { name: "時間減半", desc: "時鐘減半 — 動作要快！" },
+          oneShot: { name: "一擊必殺", desc: "沒有重試機會。只有一次作答，把握機會。" },
+          noHints: { name: "沒有提示", desc: "這回合會隱藏教學內容與解說。" },
+        },
+      },
+
+      relay: {
+        name: "接力賽",
+        desc: "2 到 4 人的團隊接力賽 — 等團隊配對功能準備好後就會推出。",
+        comingSoon: "接力賽需要真正的隊友才能進行，所以還在製作中。敬請期待！",
+      },
+
+      shuffle: {
+        title: "洗牌中...",
+        spinning: "轉盤轉動中...",
+        landed: "你抽到了：",
+        reshuffle: "重新洗牌",
+        go: "出發！→",
+      },
+    },
+
     sideQuestMap: {
       title: "支線任務 🧭",
-      subtitle: "20 個關於真實工具的短課程 —",
+      subtitle: "28 個關於真實工具的短課程 —",
       lessonsComplete: "堂課已完成！",
       lessons: "堂課",
       completed: "已完成",
@@ -615,9 +915,6 @@ export const translations = {
     },
 
     levelScreen: {
-      rankedHint: "데모 컨트롤 — 경기 결과를 알려주세요:",
-      won: "🎉 이겼어요",
-      lost: "💔 졌어요",
       placeholder: [
         "가이드가 시동을 걸고 있어요...",
         "이 레슨은 아직 만드는 중이에요 (정말 딱 맞는 상황이죠).",
@@ -654,9 +951,112 @@ export const translations = {
       changeCharacter: "변경 →",
     },
 
+    rankedModes: {
+      selectTitle: "모드를 선택하세요 🎮",
+      selectSubtitle: "항상 열려있는 두 가지 모드와 매일 바뀌는 모드 — 프로처럼!",
+      rotationBadge: "🔄 오늘만",
+      comingSoonBadge: "🚧 출시 예정",
+      archetypeBonus: "보너스 대상:",
+      round: "라운드",
+      roundsCompleted: "완료한 라운드",
+      timeLeft: "남은 시간",
+      score: "점수",
+      nextRound: "다음 라운드 →",
+      finish: "완료 →",
+      continue: "계속하기 →",
+      backToLobby: "← 랭크 모드로 돌아가기",
+
+      codeRace: {
+        name: "코드 레이스",
+        desc: "시간이 다 되기 전에 코딩 퍼즐을 연달아 풀어보세요.",
+        winTitle: "🏁 레이스 완주!",
+        loseTitle: "⏱️ 시간 종료",
+        dashBonus: "Dash의 속도 보너스로 시계에 시간이 추가됐어요!",
+      },
+
+      bugHunt: {
+        name: "버그 헌트",
+        desc: "버그가 있는 줄을 찾고 수정 방법을 고르세요 — 시간이 다 되기 전에.",
+        winTitle: "🐞 버그 헌트 완료!",
+        loseTitle: "🔍 다음 기회에",
+        debuggerBonus: "디버거의 날카로운 눈썰미로 점수가 올라갔어요!",
+        findPrompt: "버그가 있는 줄을 탭하세요:",
+        fixPrompt: "이제 수정 방법을 고르세요:",
+      },
+
+      predictOutput: {
+        name: "출력 예측",
+        desc: "코드를 읽고 무엇이 출력될지 맞혀보세요 — 빠른 라운드, 봐주기 없음.",
+        winTitle: "🔮 정확해요!",
+        loseTitle: "💭 아깝네요!",
+        scopeBonus: "Scope가 답을 고르기 전에 오답 하나를 보여줬어요!",
+      },
+
+      codeGolf: {
+        name: "코드 골프",
+        desc: "모두 같은 문제를 풀어요 — 가장 짧은 정답 코드가 이깁니다.",
+        winTitle: "⛳ 풀었어요!",
+        loseTitle: "⏱️ 시간 초과",
+        yourLines: "내 코드 줄 수",
+        par: "기준 줄 수",
+        lines: "줄",
+        trimBonus: "Trim의 리팩토링 보너스로 점수가 더 올라갔어요!",
+      },
+
+      showdown: {
+        name: "서바이벌 대결",
+        desc: "최대한 오래 버티세요 — 한 번이라도 틀리면 탈락이에요.",
+        winTitle: "🥇 서바이벌 챔피언!",
+        loseTitle: "💥 탈락",
+        roundsSurvived: "생존한 라운드",
+        nullPointerSave: "Null Pointer의 연속 보호로 살아남았어요!",
+        getReady: "준비하세요...",
+      },
+
+      debugDuel: {
+        name: "디버그 듀얼",
+        desc: "고스트 기록과 경쟁하며 누가 먼저 버그를 찾아 고치는지 겨뤄보세요.",
+        winTitle: "⚔️ 듀얼 승리!",
+        loseTitle: "💀 듀얼 패배",
+        yourTime: "내 기록",
+        ghostTime: "고스트 기록",
+        beatGhost: "고스트의 기록을 이겼어요!",
+        tankBonus: "Bastion의 강인함 덕분에 생명이 하나 더 생겼어요!",
+      },
+
+      chaosRound: {
+        name: "카오스 라운드",
+        desc: "익숙한 문제에 무작위 변화가 더해져요. 무슨 일이든 일어날 수 있어요!",
+        winTitle: "🌀 카오스 정복!",
+        loseTitle: "💫 이번엔 카오스 승리",
+        modifier: "수정 조건",
+        glitchBonus: "Glitch가 패배를 운 좋은 무승부로 바꿔줬어요!",
+        modifiers: {
+          doublePoints: { name: "점수 두 배", desc: "이 라운드에서 이기면 랭크 점수가 두 배가 돼요." },
+          halfTime: { name: "시간 절반", desc: "시계가 절반으로 줄어요 — 빨리 생각하세요!" },
+          oneShot: { name: "단판 승부", desc: "재도전 없이 한 번의 답으로 승부를 봐요." },
+          noHints: { name: "힌트 없음", desc: "이 라운드는 튜토리얼과 설명이 숨겨져 있어요." },
+        },
+      },
+
+      relay: {
+        name: "릴레이",
+        desc: "2~4인 팀 릴레이 — 팀 매칭 기능이 준비되면 만나볼 수 있어요.",
+        comingSoon: "릴레이는 진짜 팀원이 필요해서 아직 준비 중이에요. 곧 다시 확인해주세요!",
+      },
+
+      shuffle: {
+        title: "셔플 중...",
+        spinning: "돌아가는 중...",
+        landed: "당첨된 모드:",
+        reshuffle: "다시 셔플",
+        go: "시작하기! →",
+      },
+    },
+
     sideQuestMap: {
       title: "사이드 퀘스트 🧭",
-      subtitle: "실전 도구를 다루는 20개의 짧은 코스 —",
+      subtitle: "실전 도구를 다루는 28개의 짧은 코스 —",
       lessonsComplete: "레슨 완료!",
       lessons: "레슨",
       completed: "완료됨",

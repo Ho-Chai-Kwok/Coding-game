@@ -4,11 +4,9 @@ import { useI18n } from "../i18n/I18nContext";
 
 export default function LevelScreen({
   level,
-  mode = "learning",
   language = "javascript",
   onBack,
   onCompleteLevel,
-  onFinishRanked,
 }) {
   const { t } = useI18n();
   const placeholders = t("levelScreen.placeholder");
@@ -23,7 +21,7 @@ export default function LevelScreen({
       <div className="level-screen__character">{level.character}</div>
       <h2>{level.title}</h2>
 
-      {mode !== "ranked" && level.content?.type === "code" && (
+      {level.content?.type === "code" && (
         <CodeChallenge
           content={level.content}
           language={language}
@@ -31,36 +29,14 @@ export default function LevelScreen({
         />
       )}
 
-      {mode !== "ranked" && level.content?.type === "quiz" && (
+      {level.content?.type === "quiz" && (
         <QuizChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}
         />
       )}
 
-      {(mode === "ranked" || !level.content) && (
-        <p className="level-screen__message">{message}</p>
-      )}
-
-      {mode === "ranked" && (
-        <div className="level-screen__ranked-actions">
-          <p className="level-screen__ranked-hint">{t("levelScreen.rankedHint")}</p>
-          <div className="level-screen__ranked-buttons">
-            <button
-              className="level-screen__ranked-btn level-screen__ranked-btn--win"
-              onClick={() => onFinishRanked(true)}
-            >
-              {t("levelScreen.won")}
-            </button>
-            <button
-              className="level-screen__ranked-btn level-screen__ranked-btn--loss"
-              onClick={() => onFinishRanked(false)}
-            >
-              {t("levelScreen.lost")}
-            </button>
-          </div>
-        </div>
-      )}
+      {!level.content && <p className="level-screen__message">{message}</p>}
     </div>
   );
 }

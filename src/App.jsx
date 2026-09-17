@@ -4,6 +4,8 @@ import WorldMap from "./components/WorldMap";
 import LevelMap from "./components/LevelMap";
 import LevelScreen from "./components/LevelScreen";
 import RankedHome from "./components/RankedHome";
+import RankedShuffle from "./components/RankedShuffle";
+import RankedModeRunner from "./components/RankedModeRunner";
 import SideQuestMap from "./components/SideQuestMap";
 import SideQuestPath from "./components/SideQuestPath";
 import LanguageSelect from "./components/LanguageSelect";
@@ -21,12 +23,6 @@ import { CHARACTERS, buildUnlockContext } from "./data/characters";
 import "./App.css";
 
 const DEFAULT_PROFILE = { displayName: "Coder", avatar: "🦊" };
-
-const RANKED_CHALLENGES = [
-  { id: "ranked-1", stageNumber: 1, title: "Speed Syntax Duel", character: "⚔️" },
-  { id: "ranked-2", stageNumber: 2, title: "Bug Hunt Showdown", character: "🐞" },
-  { id: "ranked-3", stageNumber: 3, title: "Logic Lightning Round", character: "⚡" },
-];
 
 function freshWorlds() {
   return structuredClone(worlds);
@@ -52,8 +48,9 @@ function AppShell() {
   const [activeSideQuestId, setActiveSideQuestId] = useState(null);
   const [activeSideQuestLesson, setActiveSideQuestLesson] = useState(null);
 
-  // Ranked mode state
-  const [rankedChallenge, setRankedChallenge] = useState(null);
+  // Ranked mode state. rankedMode is null (home) | "shuffle" (spin-the-
+  // wheel screen) | a MODE_IDS value while a match is being played.
+  const [rankedMode, setRankedMode] = useState(null);
   const [rankedPoints, setRankedPoints] = useState(1240);
   const [rankedWins, setRankedWins] = useState(7);
   const [rankedLosses, setRankedLosses] = useState(4);
@@ -198,7 +195,7 @@ function AppShell() {
     setActiveLevel(null);
     setActiveSideQuestId(null);
     setActiveSideQuestLesson(null);
-    setRankedChallenge(null);
+    setRankedMode(null);
   }
 
   function completeLevel(level) {
@@ -249,17 +246,11 @@ function AppShell() {
     setActiveSideQuestLesson(null);
   }
 
-  function startRankedMatch() {
-    const challenge =
-      RANKED_CHALLENGES[Math.floor(Math.random() * RANKED_CHALLENGES.length)];
-    setRankedChallenge(challenge);
-  }
-
-  function handleFinishRanked(didWin) {
-    setRankedPoints((p) => Math.max(0, p + (didWin ? 25 : -18)));
+  function handleFinishRankedMode(pointsDelta, didWin) {
+    setRankedPoints((p) => Math.max(0, p + pointsDelta));
     if (didWin) setRankedWins((w) => w + 1);
     else setRankedLosses((l) => l + 1);
-    setRankedChallenge(null);
+    setRankedMode(null);
   }
 
   const overallProgress = useMemo(() => {
@@ -395,7 +386,6 @@ function AppShell() {
       screen = (
         <LevelScreen
           level={activeSideQuestLesson}
-          mode="sidequest"
           onBack={() => setActiveSideQuestLesson(null)}
           onCompleteLevel={completeSideQuestLesson}
         />
@@ -418,13 +408,21 @@ function AppShell() {
       );
     }
   } else {
-    if (rankedChallenge) {
+    if (rankedMode === "shuffle") {
       screen = (
-        <LevelScreen
-          level={rankedChallenge}
-          mode="ranked"
-          onBack={() => setRankedChallenge(null)}
-          onFinishRanked={handleFinishRanked}
+        <RankedShuffle
+          onPlayMode={setRankedMode}
+          onExit={() => setRankedMode(null)}
+        />
+      );
+    } else if (rankedMode) {
+      screen = (
+        <RankedModeRunner
+          modeId={rankedMode}
+          character={selectedCharacter}
+          language={language ?? "javascript"}
+          onExit={() => setRankedMode(null)}
+          onFinish={handleFinishRankedMode}
         />
       );
     } else {
@@ -434,7 +432,7 @@ function AppShell() {
           wins={rankedWins}
           losses={rankedLosses}
           selectedCharacter={selectedCharacter}
-          onPlay={startRankedMatch}
+          onPlay={() => setRankedMode("shuffle")}
           onOpenCharacters={() => setMode("characters")}
           onBack={backToModes}
         />
