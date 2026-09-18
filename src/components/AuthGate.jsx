@@ -73,6 +73,7 @@ export default function AuthGate({ children }) {
               placeholder={t("auth.displayName")}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
+              maxLength={20}
             />
           )}
           <input
@@ -92,6 +93,8 @@ export default function AuthGate({ children }) {
             required
             minLength={6}
           />
+
+          {tab === "signUp" && <p className="auth-gate__privacy-note">{t("auth.privacyNote")}</p>}
 
           {formError && <p className="auth-gate__error">{formError}</p>}
 

@@ -1,17 +1,9 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from "react";
 import ModeSelect from "./components/ModeSelect";
 import WorldMap from "./components/WorldMap";
 import LevelMap from "./components/LevelMap";
 import LevelScreen from "./components/LevelScreen";
-import RankedHome from "./components/RankedHome";
-import RankedShuffle from "./components/RankedShuffle";
-import RankedModeRunner from "./components/RankedModeRunner";
-import SideQuestMap from "./components/SideQuestMap";
-import SideQuestPath from "./components/SideQuestPath";
 import LanguageSelect from "./components/LanguageSelect";
-import Settings from "./components/Settings";
-import LoginCalendar from "./components/LoginCalendar";
-import CharacterRoster from "./components/CharacterRoster";
 import AuthGate from "./components/AuthGate";
 import { useAuth } from "./auth/AuthContext";
 import { useProgressSync } from "./hooks/useProgressSync";
@@ -21,6 +13,19 @@ import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import { CHARACTERS, buildUnlockContext } from "./data/characters";
 import "./App.css";
+
+// Lazy-loaded: these aren't needed for the first paint (mode select ->
+// learning path is the happy path most sessions take), so splitting them
+// out keeps the initial bundle smaller instead of shipping all of Ranked
+// Mode's 8 game components, the question bank, Settings, etc. up front.
+const RankedHome = lazy(() => import("./components/RankedHome"));
+const RankedShuffle = lazy(() => import("./components/RankedShuffle"));
+const RankedModeRunner = lazy(() => import("./components/RankedModeRunner"));
+const SideQuestMap = lazy(() => import("./components/SideQuestMap"));
+const SideQuestPath = lazy(() => import("./components/SideQuestPath"));
+const Settings = lazy(() => import("./components/Settings"));
+const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
+const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 
 const DEFAULT_PROFILE = { displayName: "Coder", avatar: "🦊" };
 
@@ -421,6 +426,7 @@ function AppShell() {
           modeId={rankedMode}
           character={selectedCharacter}
           language={language ?? "javascript"}
+          rankedPoints={rankedPoints}
           onExit={() => setRankedMode(null)}
           onFinish={handleFinishRankedMode}
         />
@@ -440,7 +446,11 @@ function AppShell() {
     }
   }
 
-  return <div className="app">{screen}</div>;
+  return (
+    <div className="app">
+      <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>{screen}</Suspense>
+    </div>
+  );
 }
 
 export default function App() {

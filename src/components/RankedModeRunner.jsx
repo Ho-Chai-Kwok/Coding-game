@@ -8,22 +8,22 @@ import ChaosRound from "./ranked/ChaosRound";
 import RelayComingSoon from "./ranked/RelayComingSoon";
 import { MODE_IDS } from "../data/rankedModes";
 
-export default function RankedModeRunner({ modeId, character, language, onExit, onFinish }) {
+export default function RankedModeRunner({ modeId, character, language, rankedPoints, onExit, onFinish }) {
   switch (modeId) {
     case MODE_IDS.CODE_RACE:
       return <CodeRace character={character} language={language} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.BUG_HUNT:
       return <BugHunt character={character} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.PREDICT_OUTPUT:
-      return <PredictOutput character={character} onExit={onExit} onFinish={onFinish} />;
+      return <PredictOutput character={character} rankedPoints={rankedPoints} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.CODE_GOLF:
       return <CodeGolf character={character} language={language} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.SHOWDOWN:
-      return <Showdown character={character} onExit={onExit} onFinish={onFinish} />;
+      return <Showdown character={character} rankedPoints={rankedPoints} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.DEBUG_DUEL:
       return <DebugDuel character={character} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.CHAOS_ROUND:
-      return <ChaosRound character={character} onExit={onExit} onFinish={onFinish} />;
+      return <ChaosRound character={character} rankedPoints={rankedPoints} onExit={onExit} onFinish={onFinish} />;
     case MODE_IDS.RELAY:
       return <RelayComingSoon onExit={onExit} />;
     default:

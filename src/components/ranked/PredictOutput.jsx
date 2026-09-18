@@ -4,12 +4,9 @@ import RankedTimerBar from "./RankedTimerBar";
 import RankedResult from "./RankedResult";
 import { useCountdown } from "../../hooks/useCountdown";
 import { useI18n } from "../../i18n/I18nContext";
-import {
-  getQuizPool,
-  shuffledSample,
-  applyBonusMultiplier,
-  predictOutputRevealsWrong,
-} from "../../data/rankedModes";
+import { shuffledSample, applyBonusMultiplier, predictOutputRevealsWrong } from "../../data/rankedModes";
+import { getQuestionPool } from "../../data/rankedQuestionBank";
+import { getDifficultyLevel } from "../../data/rank";
 
 const ROUND_COUNT = 8;
 const TOTAL_SECONDS = 90;
@@ -22,9 +19,14 @@ function pickWrongOptionIndex(content) {
   return wrongIndexes[Math.floor(Math.random() * wrongIndexes.length)];
 }
 
-export default function PredictOutput({ character, onFinish, onExit }) {
+export default function PredictOutput({ character, rankedPoints, onFinish, onExit }) {
   const { t } = useI18n();
-  const questions = useMemo(() => shuffledSample(getQuizPool(), ROUND_COUNT), []);
+  const difficulty = getDifficultyLevel(rankedPoints);
+  const questions = useMemo(
+    () => shuffledSample(getQuestionPool(difficulty), ROUND_COUNT),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const [roundIndex, setRoundIndex] = useState(0);
   const [finished, setFinished] = useState(null);
   const revealsWrong = predictOutputRevealsWrong(character);
@@ -59,7 +61,7 @@ export default function PredictOutput({ character, onFinish, onExit }) {
   // Memoized per round so the timer ticking (which re-renders this
   // component every second) doesn't reroll which option gets revealed.
   const disabledOptionIndex = useMemo(
-    () => (revealsWrong && question ? pickWrongOptionIndex(question.content) : null),
+    () => (revealsWrong && question ? pickWrongOptionIndex(question) : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [roundIndex, revealsWrong],
   );
@@ -96,8 +98,8 @@ export default function PredictOutput({ character, onFinish, onExit }) {
       </p>
       {question && (
         <QuizChallenge
-          key={question.id}
-          content={question.content}
+          key={roundIndex}
+          content={question}
           onSolved={handleRoundSolved}
           disabledOptionIndex={disabledOptionIndex}
         />

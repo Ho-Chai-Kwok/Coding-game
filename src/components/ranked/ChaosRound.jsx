@@ -5,12 +5,9 @@ import RankedTimerBar from "./RankedTimerBar";
 import RankedResult from "./RankedResult";
 import { useCountdown } from "../../hooks/useCountdown";
 import { useI18n } from "../../i18n/I18nContext";
-import {
-  getQuizPool,
-  shuffledSample,
-  applyBonusMultiplier,
-  chaosRoundFavorable,
-} from "../../data/rankedModes";
+import { shuffledSample, applyBonusMultiplier, chaosRoundFavorable } from "../../data/rankedModes";
+import { getQuestionPool } from "../../data/rankedQuestionBank";
+import { getDifficultyLevel } from "../../data/rank";
 
 // Same core puzzle type (Predict the Output), twisted by a random
 // modifier each match — the "Chaos Round" concept from the design brief.
@@ -23,9 +20,14 @@ const MODIFIERS = [
 
 const BASE_SECONDS = 20;
 
-export default function ChaosRound({ character, onFinish, onExit }) {
+export default function ChaosRound({ character, rankedPoints, onFinish, onExit }) {
   const { t } = useI18n();
-  const question = useMemo(() => shuffledSample(getQuizPool(), 1)[0], []);
+  const difficulty = getDifficultyLevel(rankedPoints);
+  const question = useMemo(
+    () => shuffledSample(getQuestionPool(difficulty), 1)[0],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const modifier = useMemo(() => MODIFIERS[Math.floor(Math.random() * MODIFIERS.length)], []);
   const totalSeconds = Math.round(BASE_SECONDS * (modifier.timeFactor ?? 1));
   const favorable = chaosRoundFavorable(character);
@@ -51,7 +53,7 @@ export default function ChaosRound({ character, onFinish, onExit }) {
   function handleSelect(i) {
     if (status === "correct" || finished) return;
     setSelected(i);
-    const correct = i === question.content.correctIndex;
+    const correct = i === question.correctIndex;
     setStatus(correct ? "correct" : "incorrect");
     if (correct) {
       finish(true);
@@ -79,7 +81,7 @@ export default function ChaosRound({ character, onFinish, onExit }) {
     );
   }
 
-  const content = question.content;
+  const content = question;
 
   return (
     <div className="ranked-mode-screen">

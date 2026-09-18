@@ -1,10 +1,11 @@
-const TIERS = [
+export const TIERS = [
   { name: "Bronze", min: 0, color: "#b08d57" },
   { name: "Silver", min: 1000, color: "#9ca3af" },
   { name: "Gold", min: 2000, color: "#f59e0b" },
   { name: "Platinum", min: 3000, color: "#22d3ee" },
   { name: "Diamond", min: 4000, color: "#818cf8" },
   { name: "Master", min: 5000, color: "#f43f5e" },
+  { name: "Grandmaster", min: 6000, color: "#d946ef" },
 ];
 
 const DIVISIONS = ["III", "II", "I"];
@@ -49,4 +50,19 @@ export function getRankInfo(points) {
     progressPercent,
     isMaxTier,
   };
+}
+
+// Which of the 7 ranked-question difficulty levels a player's LP maps to
+// (1 = Bronze, easiest, 7 = Grandmaster, hardest) — used to pick
+// appropriately-hard questions from the ranked question bank.
+export function getDifficultyLevel(points) {
+  const clamped = Math.max(0, points);
+  let tierIndex = 0;
+  for (let i = TIERS.length - 1; i >= 0; i--) {
+    if (clamped >= TIERS[i].min) {
+      tierIndex = i;
+      break;
+    }
+  }
+  return tierIndex + 1;
 }

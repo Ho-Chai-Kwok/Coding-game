@@ -168,6 +168,7 @@ export default function Settings({
         <p className="settings__about-title">{t("settings.about")}</p>
         <p className="settings__about-text">Code Quest · v1.0</p>
         <p className="settings__about-text">{t("settings.madeWith")}</p>
+        <p className="settings__about-privacy">🔒 {t("settings.privacyNote")}</p>
       </footer>
     </div>
   );

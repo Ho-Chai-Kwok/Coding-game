@@ -4,12 +4,13 @@ import RankedResult from "./RankedResult";
 import { useCountdown } from "../../hooks/useCountdown";
 import { useI18n } from "../../i18n/I18nContext";
 import {
-  getQuizPool,
   shuffledSample,
   applyBonusMultiplier,
   showdownSeesCategoryEarly,
   hasStreakForgiveness,
 } from "../../data/rankedModes";
+import { getQuestionPool } from "../../data/rankedQuestionBank";
+import { getDifficultyLevel } from "../../data/rank";
 
 const MAX_ROUNDS = 15;
 const ROUND_TIME_START = 14;
@@ -19,9 +20,14 @@ function roundSeconds(i) {
   return Math.max(ROUND_TIME_FLOOR, ROUND_TIME_START - i);
 }
 
-export default function Showdown({ character, onFinish, onExit }) {
+export default function Showdown({ character, rankedPoints, onFinish, onExit }) {
   const { t } = useI18n();
-  const questions = useMemo(() => shuffledSample(getQuizPool(), MAX_ROUNDS), []);
+  const difficulty = getDifficultyLevel(rankedPoints);
+  const questions = useMemo(
+    () => shuffledSample(getQuestionPool(difficulty), MAX_ROUNDS),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const [roundIndex, setRoundIndex] = useState(0);
   const [previewing, setPreviewing] = useState(false);
   const [forgivenessUsed, setForgivenessUsed] = useState(false);
@@ -76,7 +82,7 @@ export default function Showdown({ character, onFinish, onExit }) {
 
   function handleAnswer(optionIndex) {
     if (previewing || finished) return;
-    const correct = optionIndex === question.content.correctIndex;
+    const correct = optionIndex === question.correctIndex;
     if (correct) {
       advanceRound();
       return;
@@ -122,15 +128,15 @@ export default function Showdown({ character, onFinish, onExit }) {
         {t("rankedModes.showdown.roundsSurvived")}: {roundIndex}
       </p>
 
-      <div className="showdown__category">{question.worldName}</div>
+      <div className="showdown__category">{question.topic}</div>
 
       {previewing ? (
         <p className="showdown__preview-hint">{t("rankedModes.showdown.getReady")}</p>
       ) : (
         <div className="quiz-challenge">
-          <p className="quiz-challenge__question">{question.content.question}</p>
+          <p className="quiz-challenge__question">{question.question}</p>
           <div className="quiz-challenge__options">
-            {question.content.options.map((option, i) => (
+            {question.options.map((option, i) => (
               <button key={option} className="quiz-challenge__option" onClick={() => handleAnswer(i)}>
                 {option}
               </button>

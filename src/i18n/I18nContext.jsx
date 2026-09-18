@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useContext, useState, useMemo, useEffect } from "react";
 import { getTranslation, LOCALES } from "./translations";
 
 const STORAGE_KEY = "codequest-locale";
@@ -17,6 +17,13 @@ function detectInitialLocale() {
 
 export function I18nProvider({ children }) {
   const [locale, setLocaleState] = useState(detectInitialLocale);
+
+  // Keeps the <html lang> attribute in sync with the chosen locale —
+  // screen readers and browser translation prompts rely on this, and it
+  // costs nothing to keep accurate.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   function setLocale(code) {
     setLocaleState(code);

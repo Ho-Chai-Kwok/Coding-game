@@ -247,6 +247,7 @@ export const translations = {
       genericError: "Something went wrong. Please try again.",
       backendNotConfigured:
         "Accounts aren't set up yet — continue as a guest for now.",
+      privacyNote: "🔒 We'll store your email & progress securely — no ads, ever. Under 13? Ask a parent first!",
     },
 
     calendar: {
@@ -275,6 +276,7 @@ export const translations = {
       resetConfirm: "This will erase all your progress on this device. Are you sure?",
       about: "About",
       madeWith: "Made with 💜 for young coders everywhere.",
+      privacyNote: "Guest mode keeps everything on this device. Making an account stores your email and progress securely — no ads, no data selling. Under 13? Ask a parent first!",
     },
 
     characters: {
@@ -528,6 +530,7 @@ export const translations = {
       genericError: "Algo salió mal. Inténtalo de nuevo.",
       backendNotConfigured:
         "Las cuentas aún no están configuradas — continúa como invitado por ahora.",
+      privacyNote: "🔒 Guardaremos tu correo y progreso de forma segura — sin anuncios, nunca. ¿Tienes menos de 13 años? ¡Pregúntale primero a un adulto!",
     },
 
     calendar: {
@@ -556,6 +559,7 @@ export const translations = {
       resetConfirm: "Esto borrará todo tu progreso en este dispositivo. ¿Estás seguro?",
       about: "Acerca de",
       madeWith: "Hecho con 💜 para jóvenes programadores de todo el mundo.",
+      privacyNote: "El modo invitado guarda todo solo en este dispositivo. Crear una cuenta guarda tu correo y progreso de forma segura — sin anuncios ni venta de datos. ¿Tienes menos de 13 años? ¡Pregúntale primero a un adulto!",
     },
 
     characters: {
@@ -808,6 +812,7 @@ export const translations = {
       loading: "載入中...",
       genericError: "發生錯誤，請再試一次。",
       backendNotConfigured: "帳號功能尚未設定完成——請先以訪客身分繼續。",
+      privacyNote: "🔒 我們會安全地儲存你的電子郵件與進度——絕不投放廣告。未滿 13 歲嗎？請先問問家長！",
     },
 
     calendar: {
@@ -836,6 +841,7 @@ export const translations = {
       resetConfirm: "這將清除你在此裝置上的所有進度，確定要繼續嗎？",
       about: "關於",
       madeWith: "用 💜 為全世界的小小程式設計師打造。",
+      privacyNote: "訪客模式的所有資料只會留在這台裝置上。建立帳號會安全地儲存你的電子郵件與進度——沒有廣告，也不會販售資料。未滿 13 歲嗎？請先問問家長！",
     },
 
     characters: {
@@ -1088,6 +1094,7 @@ export const translations = {
       loading: "불러오는 중...",
       genericError: "문제가 발생했어요. 다시 시도해주세요.",
       backendNotConfigured: "계정 기능이 아직 설정되지 않았어요 — 지금은 게스트로 계속해주세요.",
+      privacyNote: "🔒 이메일과 진행 상황을 안전하게 저장할게요 — 광고는 절대 없어요. 13세 미만이라면 먼저 부모님께 여쭤보세요!",
     },
 
     calendar: {
@@ -1116,6 +1123,7 @@ export const translations = {
       resetConfirm: "이 기기의 모든 진행 상황이 삭제돼요. 계속할까요?",
       about: "앱 정보",
       madeWith: "전 세계 어린이 코더들을 위해 💜 를 담아 만들었어요.",
+      privacyNote: "게스트 모드에서는 모든 데이터가 이 기기에만 저장돼요. 계정을 만들면 이메일과 진행 상황이 안전하게 저장돼요 — 광고도 없고 데이터를 팔지도 않아요. 13세 미만이라면 먼저 부모님께 여쭤보세요!",
     },
 
     characters: {
