@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase, isSupabaseConfigured } from "../lib/supabaseClient";
+import { getSupabase, isSupabaseConfigured } from "../lib/supabaseClient";
 
 const GUEST_STORAGE_KEY = "codequest-guest";
 
@@ -20,16 +20,24 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
-    supabase.auth.getSession().then(({ data }) => {
+    let subscription;
+    let cancelled = false;
+
+    getSupabase().then(async (supabase) => {
+      if (cancelled) return;
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
       setSession(data.session);
       setLoading(false);
+      subscription = supabase.auth.onAuthStateChange((_event, newSession) => {
+        setSession(newSession);
+      }).data.subscription;
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
-
-    return () => listener.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription?.unsubscribe();
+    };
   }, []);
 
   function continueAsGuest() {
@@ -47,6 +55,7 @@ export function AuthProvider({ children }) {
       return { error: "backendNotConfigured" };
     }
     setAuthError(null);
+    const supabase = await getSupabase();
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -62,13 +71,14 @@ export function AuthProvider({ children }) {
       return { error: "backendNotConfigured" };
     }
     setAuthError(null);
+    const supabase = await getSupabase();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setAuthError(error.message);
     return { error: error?.message ?? null };
   }
 
   async function signOut() {
-    if (isSupabaseConfigured) await supabase.auth.signOut();
+    if (isSupabaseConfigured) await (await getSupabase()).auth.signOut();
     setIsGuest(false);
     try {
       localStorage.removeItem(GUEST_STORAGE_KEY);

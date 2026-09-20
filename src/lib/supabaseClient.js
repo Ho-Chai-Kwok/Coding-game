@@ -1,5 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
-
 const url = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -9,4 +7,15 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // mode instead of crashing.
 export const isSupabaseConfigured = Boolean(url && anonKey);
 
-export const supabase = isSupabaseConfigured ? createClient(url, anonKey) : null;
+let clientPromise = null;
+
+// The SDK is ~200kB, so it's loaded on demand rather than in the first bundle.
+export function getSupabase() {
+  if (!isSupabaseConfigured) return Promise.resolve(null);
+  if (!clientPromise) {
+    clientPromise = import("@supabase/supabase-js").then(({ createClient }) =>
+      createClient(url, anonKey),
+    );
+  }
+  return clientPromise;
+}

@@ -18,6 +18,7 @@ export default function Settings({
   unlockedAvatars = BASE_AVATARS,
   onBack,
   onResetProgress,
+  syncStatus = "guest",
 }) {
   const { t, locale, setLocale } = useI18n();
   const { user, isGuest, signOut } = useAuth();
@@ -163,6 +164,10 @@ export default function Settings({
           {t("settings.resetProgress")}
         </button>
       </section>
+
+      <p className={`settings__sync settings__sync--${syncStatus}`} role="status">
+        {t(`settings.sync${syncStatus[0].toUpperCase()}${syncStatus.slice(1)}`)}
+      </p>
 
       <footer className="settings__about">
         <p className="settings__about-title">{t("settings.about")}</p>

@@ -277,6 +277,10 @@ export const translations = {
       about: "About",
       madeWith: "Made with 💜 for young coders everywhere.",
       privacyNote: "Guest mode keeps everything on this device. Making an account stores your email and progress securely — no ads, no data selling. Under 13? Ask a parent first!",
+      syncGuest: "Progress saved on this device only. Log in to keep it safe in the cloud.",
+      syncSaving: "Saving to the cloud…",
+      syncSaved: "Progress saved to your account ☁️",
+      syncError: "Couldn't reach the cloud — progress is safe on this device and will sync when you're back online.",
     },
 
     characters: {
@@ -560,6 +564,10 @@ export const translations = {
       about: "Acerca de",
       madeWith: "Hecho con 💜 para jóvenes programadores de todo el mundo.",
       privacyNote: "El modo invitado guarda todo solo en este dispositivo. Crear una cuenta guarda tu correo y progreso de forma segura — sin anuncios ni venta de datos. ¿Tienes menos de 13 años? ¡Pregúntale primero a un adulto!",
+      syncGuest: "Progreso guardado solo en este dispositivo. Inicia sesión para guardarlo en la nube.",
+      syncSaving: "Guardando en la nube…",
+      syncSaved: "Progreso guardado en tu cuenta ☁️",
+      syncError: "No se pudo conectar con la nube — tu progreso está a salvo en este dispositivo y se sincronizará al volver a conectarte.",
     },
 
     characters: {
@@ -842,6 +850,10 @@ export const translations = {
       about: "關於",
       madeWith: "用 💜 為全世界的小小程式設計師打造。",
       privacyNote: "訪客模式的所有資料只會留在這台裝置上。建立帳號會安全地儲存你的電子郵件與進度——沒有廣告，也不會販售資料。未滿 13 歲嗎？請先問問家長！",
+      syncGuest: "進度只儲存在這台裝置上。登入後即可安全備份到雲端。",
+      syncSaving: "正在儲存到雲端…",
+      syncSaved: "進度已儲存到你的帳號 ☁️",
+      syncError: "無法連線到雲端——進度已安全存在這台裝置，恢復連線後會自動同步。",
     },
 
     characters: {
@@ -1124,6 +1136,10 @@ export const translations = {
       about: "앱 정보",
       madeWith: "전 세계 어린이 코더들을 위해 💜 를 담아 만들었어요.",
       privacyNote: "게스트 모드에서는 모든 데이터가 이 기기에만 저장돼요. 계정을 만들면 이메일과 진행 상황이 안전하게 저장돼요 — 광고도 없고 데이터를 팔지도 않아요. 13세 미만이라면 먼저 부모님께 여쭤보세요!",
+      syncGuest: "진행 상황은 이 기기에만 저장돼요. 로그인하면 클라우드에 안전하게 보관돼요.",
+      syncSaving: "클라우드에 저장 중…",
+      syncSaved: "진행 상황이 계정에 저장되었어요 ☁️",
+      syncError: "클라우드에 연결할 수 없어요 — 진행 상황은 이 기기에 안전하게 있고 다시 온라인이 되면 동기화돼요.",
     },
 
     characters: {

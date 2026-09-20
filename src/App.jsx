@@ -8,6 +8,7 @@ import AuthGate from "./components/AuthGate";
 import { useAuth } from "./auth/AuthContext";
 import { useProgressSync } from "./hooks/useProgressSync";
 import { computeStreak } from "./utils/streak";
+import { packWorlds, unpackWorlds, packSideQuests, unpackSideQuests } from "./utils/progressSerialize";
 import { STREAK_MILESTONES, BASE_AVATARS } from "./data/rewards";
 import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
@@ -86,8 +87,9 @@ function AppShell() {
   // Persist progress: Supabase when logged in, localStorage as a guest.
   const progressSnapshot = useMemo(
     () => ({
-      worldsState,
-      sideQuestsState,
+      worldsState: packWorlds(worldsState),
+      sideQuestsState: packSideQuests(sideQuestsState),
+      language,
       rankedPoints,
       rankedWins,
       rankedLosses,
@@ -104,6 +106,7 @@ function AppShell() {
     [
       worldsState,
       sideQuestsState,
+      language,
       rankedPoints,
       rankedWins,
       rankedLosses,
@@ -130,8 +133,9 @@ function AppShell() {
     hasHydratedRef.current = true;
 
     if (saved) {
-      if (saved.worldsState) setWorldsState(saved.worldsState);
-      if (saved.sideQuestsState) setSideQuestsState(saved.sideQuestsState);
+      if (saved.worldsState) setWorldsState(unpackWorlds(saved.worldsState));
+      if (saved.sideQuestsState) setSideQuestsState(unpackSideQuests(saved.sideQuestsState));
+      if (saved.language) setLanguage(saved.language);
       if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
       if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
       if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
@@ -173,7 +177,11 @@ function AppShell() {
     setUnlockedAvatars(prevAvatars);
   }, []);
 
-  useProgressSync({ userId: user?.id ?? null, state: progressSnapshot, onHydrate });
+  const { syncStatus } = useProgressSync({
+    userId: user?.id ?? null,
+    state: progressSnapshot,
+    onHydrate,
+  });
 
   function resetProgress() {
     setWorldsState(freshWorlds());
@@ -347,6 +355,7 @@ function AppShell() {
         unlockedAvatars={unlockedAvatars}
         onBack={backToModes}
         onResetProgress={resetProgress}
+        syncStatus={syncStatus}
       />
     );
   } else if (mode === "learning") {

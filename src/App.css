@@ -3024,3 +3024,18 @@ button:not(:disabled):active {
   margin-top: 20vh;
   animation: float-bob 1.2s ease-in-out infinite;
 }
+
+.settings__sync {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 2px solid var(--border);
+}
+.settings__sync--saved { border-color: #22c55e; }
+.settings__sync--saving { border-color: #f59e0b; }
+.settings__sync--error { border-color: #ef4444; }
