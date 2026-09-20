@@ -1,9 +1,11 @@
-import { getRankInfo } from "../data/rank";
+import { getRankInfo, TIERS } from "../data/rank";
 import { useI18n } from "../i18n/I18nContext";
 import CharacterRig from "./CharacterRig";
 
 export default function RankedHome({
   points,
+  shield = 0,
+  peakPoints = 0,
   wins,
   losses,
   selectedCharacter,
@@ -13,6 +15,8 @@ export default function RankedHome({
 }) {
   const { t } = useI18n();
   const rank = getRankInfo(points);
+  const peak = getRankInfo(peakPoints);
+  const floorLabel = getRankInfo(TIERS[rank.tierIndex].min).label;
 
   return (
     <div className="ranked-home">
@@ -28,6 +32,18 @@ export default function RankedHome({
         <span className="ranked-home__tier">{rank.label}</span>
         <span className="ranked-home__points">{rank.points} LP</span>
       </div>
+
+      {peak.label !== rank.label && (
+        <p className="ranked-home__peak">
+          📈 {t("rankedHome.peak")}: <strong>{peak.label}</strong>
+        </p>
+      )}
+
+      {shield > 0 && (
+        <p className="ranked-home__shield">
+          {t("rankedHome.shield").replace("{n}", shield).replace("{rank}", floorLabel)}
+        </p>
+      )}
 
       {selectedCharacter && (
         <button className="ranked-home__character" onClick={onOpenCharacters}>

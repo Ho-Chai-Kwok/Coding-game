@@ -41,6 +41,8 @@ export function getRankInfo(points) {
   );
 
   return {
+    tierIndex,
+    divisionIndex: isMaxTier ? 0 : divisionIndex,
     tierName: tier.name,
     color: tier.color,
     division,
@@ -65,4 +67,52 @@ export function getDifficultyLevel(points) {
     }
   }
   return tierIndex + 1;
+}
+
+// After a promotion into a new tier the player gets a shield: for the next
+// few matches a loss can't drop them back below that tier's floor. Stops one
+// unlucky match from instantly undoing a promotion.
+export const PROMOTION_SHIELD_MATCHES = 3;
+
+// A rank position that orders divisions across tiers (Silver III > Bronze I).
+function rankPosition(info) {
+  return info.tierIndex * DIVISIONS.length + info.divisionIndex;
+}
+
+// Applies one finished ranked match. Returns the new LP and shield state,
+// plus a `change` describing any rank movement for the UI to celebrate or
+// soften: kind is "promoted" | "divisionUp" | "demoted" | "divisionDown" |
+// "shielded" | null.
+export function applyRankedResult({ points, shield = 0 }, pointsDelta) {
+  const before = getRankInfo(points);
+  let next = Math.max(0, points + pointsDelta);
+  let shieldSaved = false;
+
+  if (pointsDelta < 0 && shield > 0) {
+    const floor = TIERS[before.tierIndex].min;
+    if (next < floor) {
+      next = floor;
+      shieldSaved = true;
+    }
+  }
+
+  const after = getRankInfo(next);
+  const beforePos = rankPosition(before);
+  const afterPos = rankPosition(after);
+
+  let nextShield = Math.max(0, shield - 1);
+  if (after.tierIndex > before.tierIndex) nextShield = PROMOTION_SHIELD_MATCHES;
+
+  let kind = null;
+  if (after.tierIndex > before.tierIndex) kind = "promoted";
+  else if (after.tierIndex < before.tierIndex) kind = "demoted";
+  else if (afterPos > beforePos) kind = "divisionUp";
+  else if (afterPos < beforePos) kind = "divisionDown";
+  else if (shieldSaved) kind = "shielded";
+
+  return {
+    points: next,
+    shield: nextShield,
+    change: kind && { kind, from: before, to: after, shieldSaved },
+  };
 }

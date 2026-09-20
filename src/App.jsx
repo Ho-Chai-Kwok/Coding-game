@@ -13,6 +13,7 @@ import { STREAK_MILESTONES, BASE_AVATARS } from "./data/rewards";
 import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import { CHARACTERS, buildUnlockContext } from "./data/characters";
+import { applyRankedResult } from "./data/rank";
 import "./App.css";
 
 // Lazy-loaded: these aren't needed for the first paint (mode select ->
@@ -27,6 +28,7 @@ const SideQuestPath = lazy(() => import("./components/SideQuestPath"));
 const Settings = lazy(() => import("./components/Settings"));
 const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
+const RankChange = lazy(() => import("./components/RankChange"));
 
 const DEFAULT_PROFILE = { displayName: "Coder", avatar: "🦊" };
 
@@ -57,9 +59,12 @@ function AppShell() {
   // Ranked mode state. rankedMode is null (home) | "shuffle" (spin-the-
   // wheel screen) | a MODE_IDS value while a match is being played.
   const [rankedMode, setRankedMode] = useState(null);
-  const [rankedPoints, setRankedPoints] = useState(1240);
-  const [rankedWins, setRankedWins] = useState(7);
-  const [rankedLosses, setRankedLosses] = useState(4);
+  const [rankedPoints, setRankedPoints] = useState(0);
+  const [rankedWins, setRankedWins] = useState(0);
+  const [rankedLosses, setRankedLosses] = useState(0);
+  const [rankedShield, setRankedShield] = useState(0); // matches left of promotion shield
+  const [peakPoints, setPeakPoints] = useState(0);
+  const [rankChange, setRankChange] = useState(null); // set after a match that moved rank
 
   // Profile, appearance, and "real app" dashboard bits
   const [profile, setProfile] = useState(DEFAULT_PROFILE);
@@ -93,6 +98,8 @@ function AppShell() {
       rankedPoints,
       rankedWins,
       rankedLosses,
+      rankedShield,
+      peakPoints,
       profile,
       theme,
       streak,
@@ -110,6 +117,8 @@ function AppShell() {
       rankedPoints,
       rankedWins,
       rankedLosses,
+      rankedShield,
+      peakPoints,
       profile,
       theme,
       streak,
@@ -139,6 +148,8 @@ function AppShell() {
       if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
       if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
       if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
+      if (typeof saved.rankedShield === "number") setRankedShield(saved.rankedShield);
+      setPeakPoints(Math.max(saved.peakPoints ?? 0, saved.rankedPoints ?? 0));
       if (saved.profile) setProfile(saved.profile);
       if (saved.theme) setTheme(saved.theme);
       if (saved.continueWorldId) setContinueWorldId(saved.continueWorldId);
@@ -186,9 +197,11 @@ function AppShell() {
   function resetProgress() {
     setWorldsState(freshWorlds());
     setSideQuestsState(freshSideQuests());
-    setRankedPoints(1240);
-    setRankedWins(7);
-    setRankedLosses(4);
+    setRankedPoints(0);
+    setRankedWins(0);
+    setRankedLosses(0);
+    setRankedShield(0);
+    setPeakPoints(0);
     setContinueWorldId(null);
     setLoginDates([]);
     setClaimedMilestones([]);
@@ -260,7 +273,11 @@ function AppShell() {
   }
 
   function handleFinishRankedMode(pointsDelta, didWin) {
-    setRankedPoints((p) => Math.max(0, p + pointsDelta));
+    const result = applyRankedResult({ points: rankedPoints, shield: rankedShield }, pointsDelta);
+    setRankedPoints(result.points);
+    setRankedShield(result.shield);
+    setPeakPoints((peak) => Math.max(peak, result.points));
+    setRankChange(result.change);
     if (didWin) setRankedWins((w) => w + 1);
     else setRankedLosses((l) => l + 1);
     setRankedMode(null);
@@ -440,10 +457,14 @@ function AppShell() {
           onFinish={handleFinishRankedMode}
         />
       );
+    } else if (rankChange) {
+      screen = <RankChange change={rankChange} onContinue={() => setRankChange(null)} />;
     } else {
       screen = (
         <RankedHome
           points={rankedPoints}
+          shield={rankedShield}
+          peakPoints={peakPoints}
           wins={rankedWins}
           losses={rankedLosses}
           selectedCharacter={selectedCharacter}

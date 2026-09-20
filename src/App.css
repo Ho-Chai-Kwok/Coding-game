@@ -3039,3 +3039,84 @@ button:not(:disabled):active {
 .settings__sync--saved { border-color: #22c55e; }
 .settings__sync--saving { border-color: #f59e0b; }
 .settings__sync--error { border-color: #ef4444; }
+
+.rank-change {
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 30px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  align-self: center;
+  margin-block: auto;
+  border: 3px solid var(--rank-color);
+  background: var(--bg);
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.rank-change--up { background: linear-gradient(160deg, color-mix(in srgb, var(--rank-color) 22%, var(--bg)), var(--bg)); }
+.rank-change--down { border-color: #ef4444; }
+.rank-change--shield { border-color: #22d3ee; }
+.rank-change__emoji { font-size: 56px; line-height: 1; }
+.rank-change__title { margin: 0; font-family: var(--heading); font-size: 26px; color: var(--text-h); }
+.rank-change__badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--heading);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-h);
+}
+.rank-change__from { opacity: 0.55; }
+.rank-change__to {
+  padding: 6px 16px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--rank-color);
+  box-shadow: var(--shadow);
+}
+.rank-change__text { margin: 0; font-weight: 600; color: var(--text); }
+.rank-change__note {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-h);
+  background: color-mix(in srgb, var(--rank-color) 14%, transparent);
+}
+.rank-change__continue {
+  margin-top: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 30px;
+  font-family: var(--heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(155deg, #f97316, #db2777);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.rank-change__continue:hover { transform: translateY(-2px) scale(1.05); }
+
+.ranked-home__peak,
+.ranked-home__shield {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-h);
+}
+.ranked-home__shield {
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2px solid #22d3ee;
+}

@@ -107,6 +107,24 @@ export const translations = {
       play: "⚔️ Play Ranked Match",
       playingAs: "Playing as",
       changeCharacter: "Change →",
+      peak: "Peak rank",
+      shield: "🛡️ Promotion shield ({n} left) — you can't drop below {rank}.",
+    },
+
+    rankChange: {
+      promotedTitle: "Promoted! 🎉",
+      promotedText: "You climbed into a new tier. Nice work!",
+      divisionUpTitle: "Division up!",
+      divisionUpText: "You moved up a division. Keep the streak going!",
+      demotedTitle: "Demoted",
+      demotedText: "Every champion has been here. Win a couple matches to climb right back!",
+      divisionDownTitle: "Division down",
+      divisionDownText: "A small slip — the next win gets you back up.",
+      shieldedTitle: "Shield saved you!",
+      shieldedText: "Your promotion shield stopped that loss from dropping your rank.",
+      harderQuestions: "Questions are now tougher — difficulty level",
+      shieldGranted: "Promotion shield: you can't drop below this tier for {n} matches.",
+      shieldHelped: "Your promotion shield softened that loss.",
     },
 
     rankedModes: {
@@ -394,6 +412,24 @@ export const translations = {
       play: "⚔️ Jugar Partida Clasificada",
       playingAs: "Jugando como",
       changeCharacter: "Cambiar →",
+      peak: "Mejor rango",
+      shield: "🛡️ Escudo de ascenso ({n} restantes) — no puedes bajar de {rank}.",
+    },
+
+    rankChange: {
+      promotedTitle: "¡Ascendiste! 🎉",
+      promotedText: "Subiste a una nueva liga. ¡Buen trabajo!",
+      divisionUpTitle: "¡Subes de división!",
+      divisionUpText: "Subiste una división. ¡Sigue con la racha!",
+      demotedTitle: "Descendiste",
+      demotedText: "Todo campeón ha pasado por aquí. ¡Gana un par de partidas y vuelve a subir!",
+      divisionDownTitle: "Bajas de división",
+      divisionDownText: "Un pequeño tropiezo — la próxima victoria te devuelve arriba.",
+      shieldedTitle: "¡El escudo te salvó!",
+      shieldedText: "Tu escudo de ascenso evitó que esa derrota bajara tu rango.",
+      harderQuestions: "Las preguntas ahora son más difíciles — nivel de dificultad",
+      shieldGranted: "Escudo de ascenso: no puedes bajar de esta liga durante {n} partidas.",
+      shieldHelped: "Tu escudo de ascenso suavizó esa derrota.",
     },
 
     rankedModes: {
@@ -681,6 +717,24 @@ export const translations = {
       play: "⚔️ 開始排名對戰",
       playingAs: "目前使用角色",
       changeCharacter: "更換 →",
+      peak: "最高段位",
+      shield: "🛡️ 晉級護盾（剩 {n} 場）——不會掉到 {rank} 以下。",
+    },
+
+    rankChange: {
+      promotedTitle: "晉級成功！🎉",
+      promotedText: "你升上了新的段位，太棒了！",
+      divisionUpTitle: "升級小段！",
+      divisionUpText: "你升了一個小段位，繼續保持！",
+      demotedTitle: "降級了",
+      demotedText: "每位冠軍都經歷過這一步。多贏幾場就能馬上升回來！",
+      divisionDownTitle: "降了一個小段",
+      divisionDownText: "只是小失誤——下一場勝利就能回升。",
+      shieldedTitle: "護盾救了你！",
+      shieldedText: "你的晉級護盾擋下了這場失敗，段位沒有下滑。",
+      harderQuestions: "題目變難了——難度等級",
+      shieldGranted: "晉級護盾：接下來 {n} 場不會掉出這個段位。",
+      shieldHelped: "你的晉級護盾減輕了這次失敗的影響。",
     },
 
     rankedModes: {
@@ -967,6 +1021,24 @@ export const translations = {
       play: "⚔️ 랭크 경기 시작",
       playingAs: "현재 캐릭터",
       changeCharacter: "변경 →",
+      peak: "최고 랭크",
+      shield: "🛡️ 승급 방패 ({n}경기 남음) — {rank} 아래로 내려가지 않아요.",
+    },
+
+    rankChange: {
+      promotedTitle: "승급했어요! 🎉",
+      promotedText: "새로운 티어에 올라갔어요. 잘했어요!",
+      divisionUpTitle: "디비전 상승!",
+      divisionUpText: "한 디비전 올라갔어요. 이 기세를 이어가요!",
+      demotedTitle: "강등",
+      demotedText: "모든 챔피언이 겪는 일이에요. 몇 판만 이기면 바로 다시 올라가요!",
+      divisionDownTitle: "디비전 하락",
+      divisionDownText: "작은 실수일 뿐 — 다음 승리로 다시 올라가요.",
+      shieldedTitle: "방패가 지켜줬어요!",
+      shieldedText: "승급 방패가 이번 패배로 랭크가 내려가는 걸 막아줬어요.",
+      harderQuestions: "문제가 더 어려워졌어요 — 난이도 레벨",
+      shieldGranted: "승급 방패: {n}경기 동안 이 티어 아래로 내려가지 않아요.",
+      shieldHelped: "승급 방패가 이번 패배의 충격을 줄여줬어요.",
     },
 
     rankedModes: {
