@@ -1,3 +1,4 @@
+import { getLanguage } from "../data/languages";
 import { useI18n } from "../i18n/I18nContext";
 
 function chunk(array, size) {
@@ -32,7 +33,7 @@ export default function WorldMap({
             className={`language-pill language-pill--${language}`}
             onClick={onChangeLanguage}
           >
-            {language === "python" ? "🐍 Python" : "💛 JavaScript"} · {t("worldMap.change")}
+            {getLanguage(language).icon} {getLanguage(language).name} · {t("worldMap.change")}
           </button>
         )}
       </header>

@@ -1,0 +1,25 @@
+name: Keep Supabase awake
+
+# Supabase free projects pause after about a week without API activity,
+# which breaks login and progress sync. A tiny request twice a week keeps it
+# active. (The URL and anon key are public values — they ship in the site.)
+on:
+  schedule:
+    - cron: "17 6 * * 1,4"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL || 'https://aezzqoxzzzpbjfvzdnvh.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Add the SUPABASE_ANON_KEY repository secret to enable keep-alive."; exit 1
+          fi
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$SUPABASE_URL/auth/v1/settings" -H "apikey: $SUPABASE_ANON_KEY")
+          echo "Supabase responded: $code"
+          test "$code" = "200"

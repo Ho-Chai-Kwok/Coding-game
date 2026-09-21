@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useI18n } from "../i18n/I18nContext";
 import { LOCALES } from "../i18n/translations";
 import { useAuth } from "../auth/AuthContext";
 import { BASE_AVATARS, REWARD_AVATARS } from "../data/rewards";
+import { LANGUAGES } from "../data/languages";
 
 const ALL_AVATARS = [
   ...BASE_AVATARS.map((a) => ({ avatar: a, day: null })),
@@ -21,7 +23,21 @@ export default function Settings({
   syncStatus = "guest",
 }) {
   const { t, locale, setLocale } = useI18n();
-  const { user, isGuest, signOut } = useAuth();
+  const { user, isGuest, signOut, deleteAccount } = useAuth();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
+
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    setDeleteError(null);
+    const { error } = await deleteAccount();
+    // On success the account is gone and this screen unmounts.
+    if (error) {
+      setDeleting(false);
+      setDeleteError(error);
+    }
+  }
 
   function handleReset() {
     if (window.confirm(t("settings.resetConfirm"))) {
@@ -98,22 +114,17 @@ export default function Settings({
         <section className="settings__section">
           <h2 className="settings__section-title">{t("settings.codingLanguage")}</h2>
           <div className="settings__pill-row">
-            <button
-              className={`settings__pill${
-                codingLanguage === "javascript" ? " settings__pill--active" : ""
-              }`}
-              onClick={() => onChangeCodingLanguage("javascript")}
-            >
-              💛 JavaScript
-            </button>
-            <button
-              className={`settings__pill${
-                codingLanguage === "python" ? " settings__pill--active" : ""
-              }`}
-              onClick={() => onChangeCodingLanguage("python")}
-            >
-              🐍 Python
-            </button>
+            {LANGUAGES.map((lang) => (
+              <button
+                key={lang.id}
+                className={`settings__pill${
+                  codingLanguage === lang.id ? " settings__pill--active" : ""
+                }`}
+                onClick={() => onChangeCodingLanguage(lang.id)}
+              >
+                {lang.icon} {lang.name}
+              </button>
+            ))}
           </div>
         </section>
       )}
@@ -146,6 +157,40 @@ export default function Settings({
             <button className="settings__signout" onClick={signOut}>
               {t("auth.signOut")}
             </button>
+
+            {confirmingDelete ? (
+              <div className="settings__delete-panel" role="alertdialog">
+                <p>{t("settings.deleteWarning")}</p>
+                {deleteError && (
+                  <p className="settings__delete-error">
+                    {t("settings.deleteError")} ({deleteError})
+                  </p>
+                )}
+                <div className="settings__delete-actions">
+                  <button
+                    className="settings__delete-confirm"
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                  >
+                    {deleting ? t("auth.loading") : t("settings.deleteConfirm")}
+                  </button>
+                  <button
+                    className="settings__delete-cancel"
+                    onClick={() => {
+                      setConfirmingDelete(false);
+                      setDeleteError(null);
+                    }}
+                    disabled={deleting}
+                  >
+                    {t("settings.deleteCancel")}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button className="settings__delete" onClick={() => setConfirmingDelete(true)}>
+                {t("settings.deleteAccount")}
+              </button>
+            )}
           </>
         ) : (
           isGuest && (
@@ -174,6 +219,9 @@ export default function Settings({
         <p className="settings__about-text">Code Quest · v1.0</p>
         <p className="settings__about-text">{t("settings.madeWith")}</p>
         <p className="settings__about-privacy">🔒 {t("settings.privacyNote")}</p>
+        <p className="settings__about-links">
+          <a href="#/terms">{t("legal.terms")}</a> · <a href="#/privacy">{t("legal.privacy")}</a>
+        </p>
       </footer>
     </div>
   );

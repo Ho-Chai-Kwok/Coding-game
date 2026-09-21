@@ -5,6 +5,7 @@ import CharacterRig from "./CharacterRig";
 export default function RankedHome({
   points,
   shield = 0,
+  usesJsFallback = false,
   peakPoints = 0,
   wins,
   losses,
@@ -94,6 +95,8 @@ export default function RankedHome({
           <span className="ranked-home__stat-label">{t("rankedHome.winRate")}</span>
         </div>
       </div>
+
+      {usesJsFallback && <p className="ranked-home__note">ℹ️ {t("rankedHome.jsFallback")}</p>}
 
       <button className="ranked-home__play" onClick={onPlay}>
         {t("rankedHome.play")}

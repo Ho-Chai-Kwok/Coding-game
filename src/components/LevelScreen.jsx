@@ -24,6 +24,7 @@ export default function LevelScreen({
       {level.content?.type === "code" && (
         <CodeChallenge
           content={level.content}
+          levelId={level.id}
           language={language}
           onSolved={() => onCompleteLevel(level)}
         />

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
 import CodeEditor from "./CodeEditor";
 import { runPythonCode } from "../utils/pyRuntime";
 import { runJsCode } from "../utils/runCode";
+import { runCompiledCode } from "../utils/remoteRun";
+import { isCompiledLanguage } from "../data/languages";
 import { useI18n } from "../i18n/I18nContext";
 
 function resolveContent(content, language) {
@@ -11,9 +13,53 @@ function resolveContent(content, language) {
   return { ...content, ...content.python };
 }
 
-export default function CodeChallenge({ content, language = "javascript", onSolved }) {
+// C, C++ and Java lessons live in their own lazy-loaded chunk; wait for it,
+// then hand the merged lesson to the challenge below.
+export default function CodeChallenge({ content, levelId, language = "javascript", onSolved }) {
+  const compiled = isCompiledLanguage(language);
+  const [loaded, setLoaded] = useState(null); // { key, lesson }
+  const key = `${levelId}:${language}`;
+
+  useEffect(() => {
+    if (!compiled) return;
+    let cancelled = false;
+    import("../data/codeLessons").then((mod) => {
+      if (!cancelled) setLoaded({ key, lesson: mod.getCompiledLesson(levelId, language) });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [compiled, key, levelId, language]);
+
+  if (compiled) {
+    if (loaded?.key !== key) return <p className="code-challenge__loading">⏳</p>;
+    if (loaded.lesson) {
+      return (
+        <CodeChallengeBody
+          key={key}
+          active={{ ...content, ...loaded.lesson }}
+          language={language}
+          onSolved={onSolved}
+        />
+      );
+    }
+    // No hand-written lesson for this level in that language: fall back to JavaScript.
+    return <CodeChallengeBody key={key} active={content} language="javascript" onSolved={onSolved} />;
+  }
+
+  return (
+    <CodeChallengeBody
+      key={key}
+      active={resolveContent(content, language)}
+      language={language}
+      onSolved={onSolved}
+    />
+  );
+}
+
+function CodeChallengeBody({ active, language, onSolved }) {
   const { t } = useI18n();
-  const active = resolveContent(content, language);
+  const compiled = isCompiledLanguage(language);
   const [code, setCode] = useState(active.starterCode);
   const [result, setResult] = useState(null); // { status, logs, error }
   const [running, setRunning] = useState(false);
@@ -21,7 +67,11 @@ export default function CodeChallenge({ content, language = "javascript", onSolv
   async function handleRun() {
     setRunning(true);
     const { logs, error } =
-      language === "python" ? await runPythonCode(code) : runJsCode(code);
+      language === "python"
+        ? await runPythonCode(code)
+        : compiled
+          ? await runCompiledCode(language, code)
+          : runJsCode(code);
     setRunning(false);
 
     if (error) {
@@ -51,13 +101,18 @@ export default function CodeChallenge({ content, language = "javascript", onSolv
           value={code}
           onChange={(e) => setCode(e.target.value)}
           language={language}
-          rows={5}
+          rows={Math.min(16, Math.max(5, active.starterCode.split("\n").length + 1))}
         />
       </div>
 
       <button className="code-challenge__run" onClick={handleRun} disabled={running}>
         {running ? t("codeChallenge.running") : t("codeChallenge.run")}
       </button>
+      {compiled && (
+        <p className="code-challenge__online-note">
+          ☁️ {running ? t("codeChallenge.compiling") : t("codeChallenge.onlineNote")}
+        </p>
+      )}
 
       {result && (
         <div className={`code-challenge__result code-challenge__result--${result.status}`}>

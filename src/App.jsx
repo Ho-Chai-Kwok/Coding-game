@@ -14,6 +14,7 @@ import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import { CHARACTERS, buildUnlockContext } from "./data/characters";
 import { applyRankedResult } from "./data/rank";
+import { toInstantLanguage, isCompiledLanguage } from "./data/languages";
 import "./App.css";
 
 // Lazy-loaded: these aren't needed for the first paint (mode select ->
@@ -29,6 +30,7 @@ const Settings = lazy(() => import("./components/Settings"));
 const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 const RankChange = lazy(() => import("./components/RankChange"));
+const LegalPage = lazy(() => import("./components/LegalPage"));
 
 const DEFAULT_PROFILE = { displayName: "Coder", avatar: "🦊" };
 
@@ -451,7 +453,7 @@ function AppShell() {
         <RankedModeRunner
           modeId={rankedMode}
           character={selectedCharacter}
-          language={language ?? "javascript"}
+          language={toInstantLanguage(language ?? "javascript")}
           rankedPoints={rankedPoints}
           onExit={() => setRankedMode(null)}
           onFinish={handleFinishRankedMode}
@@ -464,6 +466,7 @@ function AppShell() {
         <RankedHome
           points={rankedPoints}
           shield={rankedShield}
+          usesJsFallback={isCompiledLanguage(language)}
           peakPoints={peakPoints}
           wins={rankedWins}
           losses={rankedLosses}
@@ -483,7 +486,32 @@ function AppShell() {
   );
 }
 
+// Privacy/Terms live at #/privacy and #/terms so they can be linked to from
+// anywhere (including the log-in screen) without a router.
+function readLegalRoute() {
+  const match = window.location.hash.match(/^#\/(privacy|terms)$/);
+  return match ? match[1] : null;
+}
+
 export default function App() {
+  const [legalPage, setLegalPage] = useState(readLegalRoute);
+
+  useEffect(() => {
+    const onHashChange = () => setLegalPage(readLegalRoute());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  if (legalPage) {
+    return (
+      <div className="app">
+        <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>
+          <LegalPage page={legalPage} />
+        </Suspense>
+      </div>
+    );
+  }
+
   return (
     <AuthGate>
       <AppShell />

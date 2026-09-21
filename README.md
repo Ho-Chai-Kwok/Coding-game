@@ -7,10 +7,14 @@ and unlocking characters along the way.
 ## Features
 
 - **100-world learning path** — one topic per world, broken into small
-  gradually-harder steps. The first 12 worlds run real, graded JavaScript
-  *and* Python code right in the browser (Python via
-  [Pyodide](https://pyodide.org)); the rest are fast concept quizzes so
-  every world works no matter which language you picked.
+  gradually-harder steps. The first 12 worlds run real, graded code in
+  **five languages**: JavaScript and Python run right in the browser
+  (Python via [Pyodide](https://pyodide.org)), while **C, C++ and Java** run
+  on the free [Wandbox](https://wandbox.org) online compiler (the learner's
+  code is sent to it when they press Run — see the Privacy Policy). The rest
+  are fast concept quizzes so every world works no matter which language you
+  picked. Timed Ranked modes use JavaScript for C/C++/Java learners, since
+  online compiling is too slow for them.
 - **28 Side Quests** — optional 10-lesson courses on real tools: Git,
   Docker, SQL, React, AWS, Kubernetes, and AI/ML topics like Prompt
   Engineering, LangChain, LangGraph, Computer Vision, NLP, and RAG.
@@ -73,7 +77,7 @@ src/
   i18n/           Translations and the locale context
   auth/           Supabase auth context (guest-mode fallback built in)
   hooks/          useProgressSync, useCountdown
-  utils/          Streak math, JS/Python code execution
+  utils/          Streak math, JS/Python/online-compiler code execution
 ```
 
 ## Privacy

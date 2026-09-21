@@ -41,6 +41,11 @@ export const translations = {
       subtitle: "Which language do you want to code in?",
       jsDesc: "The language of the web — runs instantly in your browser!",
       pyDesc: "Friendly and readable — a favorite for beginners!",
+      cDesc: "The classic — close to the hardware, and the root of many languages!",
+      cppDesc: "C with superpowers — used in games and high-performance apps!",
+      javaDesc: "Runs on billions of devices — big in apps, games and business!",
+      onlineBadge: "Runs online",
+      onlineNote: "C, C++ and Java run on a free online compiler, so your code is sent to it when you press Run. Don't put personal details in your code. A run can take a few seconds.",
     },
 
     worldMap: {
@@ -89,6 +94,8 @@ export const translations = {
       output: "Output:",
       nothingPrinted: "(nothing printed)",
       error: "Oops, a little hiccup! 🔧",
+      onlineNote: "Runs on an online compiler — it can take a few seconds.",
+      compiling: "Compiling online… this can take a few seconds.",
     },
 
     quizChallenge: {
@@ -109,6 +116,7 @@ export const translations = {
       changeCharacter: "Change →",
       peak: "Peak rank",
       shield: "🛡️ Promotion shield ({n} left) — you can't drop below {rank}.",
+      jsFallback: "Code Race and Code Golf use JavaScript while your language is C, C++ or Java — they're timed, and online compiling is too slow for that.",
     },
 
     rankChange: {
@@ -266,6 +274,22 @@ export const translations = {
       backendNotConfigured:
         "Accounts aren't set up yet — continue as a guest for now.",
       privacyNote: "🔒 We'll store your email & progress securely — no ads, ever. Under 13? Ask a parent first!",
+      forgotPassword: "Forgot password?",
+      resetTitle: "Reset your password",
+      resetSubtitle: "Enter your email and we'll send you a link to choose a new password.",
+      resetSend: "Send reset link",
+      resetSent: "If that email has an account, a reset link is on its way. Check your inbox (and spam folder).",
+      backToLogin: "Back to log in",
+      newPasswordTitle: "Choose a new password",
+      newPassword: "New password",
+      newPasswordSave: "Save new password",
+    },
+
+    legal: {
+      agreePrefix: "By signing up you agree to our",
+      terms: "Terms of Use",
+      privacy: "Privacy Policy",
+      back: "Back to Code Quest",
     },
 
     calendar: {
@@ -299,6 +323,11 @@ export const translations = {
       syncSaving: "Saving to the cloud…",
       syncSaved: "Progress saved to your account ☁️",
       syncError: "Couldn't reach the cloud — progress is safe on this device and will sync when you're back online.",
+      deleteAccount: "Delete my account",
+      deleteWarning: "This permanently deletes your account, email and all saved progress. This can't be undone.",
+      deleteConfirm: "Yes, delete everything",
+      deleteCancel: "Cancel",
+      deleteError: "Couldn't delete your account. Please try again.",
     },
 
     characters: {
@@ -346,6 +375,11 @@ export const translations = {
       subtitle: "¿En qué lenguaje quieres programar?",
       jsDesc: "El lenguaje de la web — ¡se ejecuta al instante en tu navegador!",
       pyDesc: "Amigable y fácil de leer — ¡uno de los favoritos para principiantes!",
+      cDesc: "El clásico — cerca del hardware y raíz de muchos lenguajes.",
+      cppDesc: "C con superpoderes — usado en videojuegos y apps de alto rendimiento.",
+      javaDesc: "Funciona en miles de millones de dispositivos — fuerte en apps, juegos y empresas.",
+      onlineBadge: "Se ejecuta en línea",
+      onlineNote: "C, C++ y Java se ejecutan en un compilador en línea gratuito, así que tu código se envía allí al pulsar Ejecutar. No pongas datos personales en tu código. Una ejecución puede tardar unos segundos.",
     },
 
     worldMap: {
@@ -394,6 +428,8 @@ export const translations = {
       output: "Salida:",
       nothingPrinted: "(no se imprimió nada)",
       error: "¡Ups, un pequeño problema! 🔧",
+      onlineNote: "Se ejecuta en un compilador en línea — puede tardar unos segundos.",
+      compiling: "Compilando en línea… puede tardar unos segundos.",
     },
 
     quizChallenge: {
@@ -414,6 +450,7 @@ export const translations = {
       changeCharacter: "Cambiar →",
       peak: "Mejor rango",
       shield: "🛡️ Escudo de ascenso ({n} restantes) — no puedes bajar de {rank}.",
+      jsFallback: "Carrera de Código y Code Golf usan JavaScript mientras tu lenguaje sea C, C++ o Java — están cronometrados y compilar en línea es demasiado lento.",
     },
 
     rankChange: {
@@ -571,6 +608,22 @@ export const translations = {
       backendNotConfigured:
         "Las cuentas aún no están configuradas — continúa como invitado por ahora.",
       privacyNote: "🔒 Guardaremos tu correo y progreso de forma segura — sin anuncios, nunca. ¿Tienes menos de 13 años? ¡Pregúntale primero a un adulto!",
+      forgotPassword: "¿Olvidaste tu contraseña?",
+      resetTitle: "Restablece tu contraseña",
+      resetSubtitle: "Escribe tu correo y te enviaremos un enlace para elegir una nueva contraseña.",
+      resetSend: "Enviar enlace",
+      resetSent: "Si ese correo tiene una cuenta, el enlace va en camino. Revisa tu bandeja de entrada (y el spam).",
+      backToLogin: "Volver a iniciar sesión",
+      newPasswordTitle: "Elige una nueva contraseña",
+      newPassword: "Nueva contraseña",
+      newPasswordSave: "Guardar nueva contraseña",
+    },
+
+    legal: {
+      agreePrefix: "Al registrarte aceptas nuestros",
+      terms: "Términos de uso",
+      privacy: "Política de privacidad",
+      back: "Volver a Code Quest",
     },
 
     calendar: {
@@ -604,6 +657,11 @@ export const translations = {
       syncSaving: "Guardando en la nube…",
       syncSaved: "Progreso guardado en tu cuenta ☁️",
       syncError: "No se pudo conectar con la nube — tu progreso está a salvo en este dispositivo y se sincronizará al volver a conectarte.",
+      deleteAccount: "Eliminar mi cuenta",
+      deleteWarning: "Esto elimina para siempre tu cuenta, tu correo y todo tu progreso guardado. No se puede deshacer.",
+      deleteConfirm: "Sí, eliminar todo",
+      deleteCancel: "Cancelar",
+      deleteError: "No se pudo eliminar tu cuenta. Inténtalo de nuevo.",
     },
 
     characters: {
@@ -651,6 +709,11 @@ export const translations = {
       subtitle: "你想用哪種語言寫程式？",
       jsDesc: "網頁的語言——在瀏覽器中立即執行！",
       pyDesc: "親切易讀——初學者的最愛！",
+      cDesc: "經典語言——貼近硬體，也是許多語言的根源！",
+      cppDesc: "加強版的 C——常用於遊戲與高效能應用程式！",
+      javaDesc: "運行在數十億台裝置上——在應用程式、遊戲與商業領域都很重要！",
+      onlineBadge: "線上執行",
+      onlineNote: "C、C++ 與 Java 會在免費的線上編譯器上執行，所以按下執行時，你的程式碼會被傳送過去。請不要在程式碼中放入個人資料。每次執行可能需要幾秒鐘。",
     },
 
     worldMap: {
@@ -699,6 +762,8 @@ export const translations = {
       output: "輸出：",
       nothingPrinted: "（沒有印出任何內容）",
       error: "哎呀，出了個小狀況！🔧",
+      onlineNote: "在線上編譯器執行——可能需要幾秒鐘。",
+      compiling: "正在線上編譯…可能需要幾秒鐘。",
     },
 
     quizChallenge: {
@@ -719,6 +784,7 @@ export const translations = {
       changeCharacter: "更換 →",
       peak: "最高段位",
       shield: "🛡️ 晉級護盾（剩 {n} 場）——不會掉到 {rank} 以下。",
+      jsFallback: "當你的語言是 C、C++ 或 Java 時，程式競速與程式碼高爾夫會改用 JavaScript——這些模式有計時，線上編譯太慢。",
     },
 
     rankChange: {
@@ -875,6 +941,22 @@ export const translations = {
       genericError: "發生錯誤，請再試一次。",
       backendNotConfigured: "帳號功能尚未設定完成——請先以訪客身分繼續。",
       privacyNote: "🔒 我們會安全地儲存你的電子郵件與進度——絕不投放廣告。未滿 13 歲嗎？請先問問家長！",
+      forgotPassword: "忘記密碼？",
+      resetTitle: "重設密碼",
+      resetSubtitle: "輸入你的電子郵件，我們會寄給你設定新密碼的連結。",
+      resetSend: "寄送重設連結",
+      resetSent: "如果該電子郵件有帳號，重設連結已在路上。請檢查收件匣（以及垃圾郵件匣）。",
+      backToLogin: "返回登入",
+      newPasswordTitle: "設定新密碼",
+      newPassword: "新密碼",
+      newPasswordSave: "儲存新密碼",
+    },
+
+    legal: {
+      agreePrefix: "註冊即表示你同意我們的",
+      terms: "使用條款",
+      privacy: "隱私權政策",
+      back: "返回 Code Quest",
     },
 
     calendar: {
@@ -908,6 +990,11 @@ export const translations = {
       syncSaving: "正在儲存到雲端…",
       syncSaved: "進度已儲存到你的帳號 ☁️",
       syncError: "無法連線到雲端——進度已安全存在這台裝置，恢復連線後會自動同步。",
+      deleteAccount: "刪除我的帳號",
+      deleteWarning: "這會永久刪除你的帳號、電子郵件與所有已儲存的進度，且無法復原。",
+      deleteConfirm: "是的，全部刪除",
+      deleteCancel: "取消",
+      deleteError: "無法刪除你的帳號，請再試一次。",
     },
 
     characters: {
@@ -955,6 +1042,11 @@ export const translations = {
       subtitle: "어떤 언어로 코딩하고 싶나요?",
       jsDesc: "웹의 언어 — 브라우저에서 바로 실행돼요!",
       pyDesc: "친근하고 읽기 쉬운 — 초보자에게 인기 만점!",
+      cDesc: "고전 중의 고전 — 하드웨어와 가깝고 수많은 언어의 뿌리예요!",
+      cppDesc: "슈퍼파워를 얻은 C — 게임과 고성능 앱에 쓰여요!",
+      javaDesc: "수십억 대의 기기에서 실행돼요 — 앱, 게임, 비즈니스에서 활약해요!",
+      onlineBadge: "온라인 실행",
+      onlineNote: "C, C++, Java는 무료 온라인 컴파일러에서 실행돼요. 실행을 누르면 코드가 그곳으로 전송돼요. 코드에 개인 정보를 넣지 마세요. 실행에 몇 초가 걸릴 수 있어요.",
     },
 
     worldMap: {
@@ -1003,6 +1095,8 @@ export const translations = {
       output: "출력:",
       nothingPrinted: "(아무것도 출력되지 않았어요)",
       error: "앗, 작은 문제가 생겼어요! 🔧",
+      onlineNote: "온라인 컴파일러에서 실행돼요 — 몇 초 걸릴 수 있어요.",
+      compiling: "온라인에서 컴파일 중… 몇 초 걸릴 수 있어요.",
     },
 
     quizChallenge: {
@@ -1023,6 +1117,7 @@ export const translations = {
       changeCharacter: "변경 →",
       peak: "최고 랭크",
       shield: "🛡️ 승급 방패 ({n}경기 남음) — {rank} 아래로 내려가지 않아요.",
+      jsFallback: "언어가 C, C++, Java일 때 코드 레이스와 코드 골프는 JavaScript를 사용해요 — 시간제한이 있어서 온라인 컴파일은 너무 느려요.",
     },
 
     rankChange: {
@@ -1179,6 +1274,22 @@ export const translations = {
       genericError: "문제가 발생했어요. 다시 시도해주세요.",
       backendNotConfigured: "계정 기능이 아직 설정되지 않았어요 — 지금은 게스트로 계속해주세요.",
       privacyNote: "🔒 이메일과 진행 상황을 안전하게 저장할게요 — 광고는 절대 없어요. 13세 미만이라면 먼저 부모님께 여쭤보세요!",
+      forgotPassword: "비밀번호를 잊으셨나요?",
+      resetTitle: "비밀번호 재설정",
+      resetSubtitle: "이메일을 입력하면 새 비밀번호를 정할 수 있는 링크를 보내 드려요.",
+      resetSend: "재설정 링크 보내기",
+      resetSent: "해당 이메일로 가입한 계정이 있다면 재설정 링크가 발송됩니다. 받은편지함(스팸함 포함)을 확인하세요.",
+      backToLogin: "로그인으로 돌아가기",
+      newPasswordTitle: "새 비밀번호 정하기",
+      newPassword: "새 비밀번호",
+      newPasswordSave: "새 비밀번호 저장",
+    },
+
+    legal: {
+      agreePrefix: "가입하면 다음에 동의하는 것으로 간주돼요:",
+      terms: "이용약관",
+      privacy: "개인정보 처리방침",
+      back: "Code Quest로 돌아가기",
     },
 
     calendar: {
@@ -1212,6 +1323,11 @@ export const translations = {
       syncSaving: "클라우드에 저장 중…",
       syncSaved: "진행 상황이 계정에 저장되었어요 ☁️",
       syncError: "클라우드에 연결할 수 없어요 — 진행 상황은 이 기기에 안전하게 있고 다시 온라인이 되면 동기화돼요.",
+      deleteAccount: "내 계정 삭제",
+      deleteWarning: "계정, 이메일, 저장된 모든 진행 상황이 영구적으로 삭제돼요. 되돌릴 수 없어요.",
+      deleteConfirm: "네, 모두 삭제할게요",
+      deleteCancel: "취소",
+      deleteError: "계정을 삭제하지 못했어요. 다시 시도해 주세요.",
     },
 
     characters: {

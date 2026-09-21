@@ -18,7 +18,7 @@ export default function CodeEditor({
   className = "",
 }) {
   const textareaRef = useRef(null);
-  const indentUnit = language === "python" ? "    " : "  ";
+  const indentUnit = ["python", "c", "cpp", "java"].includes(language) ? "    " : "  ";
 
   function applyChange(newValue, selStart, selEnd = selStart) {
     // Write the DOM node directly and synchronously, instead of waiting
