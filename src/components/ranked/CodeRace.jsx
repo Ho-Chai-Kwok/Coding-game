@@ -14,9 +14,13 @@ const ROUND_COUNT = 6;
 const TOTAL_SECONDS = 240;
 const DASH_BONUS_SECONDS = 5;
 
-export default function CodeRace({ character, language, onFinish, onExit }) {
+export default function CodeRace({ character, language, seed, onFinish, onExit }) {
   const { t } = useI18n();
-  const puzzles = useMemo(() => shuffledSample(getCodePool(), ROUND_COUNT), []);
+  const puzzles = useMemo(
+    () => shuffledSample(getCodePool(), ROUND_COUNT, seed),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const [roundIndex, setRoundIndex] = useState(0);
   const [finished, setFinished] = useState(null);
   const [dashBonusFired, setDashBonusFired] = useState(false);

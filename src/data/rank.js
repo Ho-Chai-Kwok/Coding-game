@@ -75,33 +75,41 @@ export function getDifficultyLevel(points) {
 export const PROMOTION_SHIELD_MATCHES = 3;
 
 // A rank position that orders divisions across tiers (Silver III > Bronze I).
-function rankPosition(info) {
+export function rankPosition(info) {
   return info.tierIndex * DIVISIONS.length + info.divisionIndex;
 }
 
-// Applies one finished ranked match. Returns the new LP and shield state,
-// plus a `change` describing any rank movement for the UI to celebrate or
-// soften: kind is "promoted" | "divisionUp" | "demoted" | "divisionDown" |
-// "shielded" | null.
-export function applyRankedResult({ points, shield = 0 }, pointsDelta) {
-  const before = getRankInfo(points);
-  let next = Math.max(0, points + pointsDelta);
-  let shieldSaved = false;
-
-  if (pointsDelta < 0 && shield > 0) {
-    const floor = TIERS[before.tierIndex].min;
-    if (next < floor) {
-      next = floor;
-      shieldSaved = true;
-    }
-  }
-
-  const after = getRankInfo(next);
+// Describes how a real, already-settled match changed a player's rank —
+// purely for the celebration/softening UI (RankChange.jsx). The LP
+// arithmetic itself already happened server-side
+// (apply_ranked_settlement() in supabase/schema.sql, called from
+// submit_ranked_result()/claim_forfeit_win()); this only compares the
+// before/after totals the server gave back to decide which message to
+// show, it never computes or trusts a new points value itself. `delta`
+// (the server-computed per-match swing — still legitimate, see
+// estimatedEloDelta's comment below) is used only to notice a shield
+// save: a negative delta that would have dropped the raw total below the
+// tier floor, but didn't because the server's own floor-clamp caught it.
+// `hadShield` (the player's shield count going INTO the match) matters
+// because Bronze III's floor is 0 — the same value everyone's LP is
+// already clamped to regardless of any shield (see apply_ranked_settlement's
+// unconditional `greatest(0, ...)`) — so landing exactly on 0 doesn't by
+// itself prove a shield did anything; without checking hadShield, a
+// brand-new player at 0 LP taking any loss would wrongly get credited
+// with a "shield save" they never had.
+export function describeRankChange(oldPoints, newPoints, delta, hadShield) {
+  const before = getRankInfo(oldPoints);
+  const after = getRankInfo(newPoints);
   const beforePos = rankPosition(before);
   const afterPos = rankPosition(after);
 
-  let nextShield = Math.max(0, shield - 1);
-  if (after.tierIndex > before.tierIndex) nextShield = PROMOTION_SHIELD_MATCHES;
+  const floor = TIERS[before.tierIndex].min;
+  const shieldSaved =
+    hadShield &&
+    delta < 0 &&
+    oldPoints + delta < floor &&
+    after.tierIndex === before.tierIndex &&
+    newPoints === floor;
 
   let kind = null;
   if (after.tierIndex > before.tierIndex) kind = "promoted";
@@ -110,9 +118,21 @@ export function applyRankedResult({ points, shield = 0 }, pointsDelta) {
   else if (afterPos < beforePos) kind = "divisionDown";
   else if (shieldSaved) kind = "shielded";
 
-  return {
-    points: next,
-    shield: nextShield,
-    change: kind && { kind, from: before, to: after, shieldSaved },
-  };
+  return kind && { kind, from: before, to: after, shieldSaved };
+}
+
+// Ranked matches are player-vs-player: the LP swing depends on how the two
+// real opponents' ranks compare, not a fixed per-mode amount — beating a
+// higher-ranked opponent nets more, beating a lower-ranked one nets less
+// (and the mirror image for a loss). This is the same zero-sum,
+// ELO-style formula the server uses to actually settle a match
+// (submit_ranked_result() in supabase/schema.sql) — it's exported here
+// only so the client can show a "before the match" LP estimate; the real
+// number always comes back from the server afterward, never computed
+// or trusted from the client.
+export const RANKED_ELO_K = 40;
+
+export function estimatedEloDelta(myPoints, opponentPoints, outcome) {
+  const expected = 1 / (1 + 10 ** ((opponentPoints - myPoints) / 400));
+  return Math.round(RANKED_ELO_K * (outcome - expected));
 }

@@ -19,11 +19,11 @@ function pickWrongOptionIndex(content) {
   return wrongIndexes[Math.floor(Math.random() * wrongIndexes.length)];
 }
 
-export default function PredictOutput({ character, rankedPoints, onFinish, onExit }) {
+export default function PredictOutput({ character, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
   const difficulty = getDifficultyLevel(rankedPoints);
   const questions = useMemo(
-    () => shuffledSample(getQuestionPool(difficulty), ROUND_COUNT),
+    () => shuffledSample(getQuestionPool(difficulty), ROUND_COUNT, seed),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

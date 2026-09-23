@@ -5,7 +5,7 @@ import RankedTimerBar from "./RankedTimerBar";
 import RankedResult from "./RankedResult";
 import { useCountdown } from "../../hooks/useCountdown";
 import { useI18n } from "../../i18n/I18nContext";
-import { shuffledSample, applyBonusMultiplier, chaosRoundFavorable } from "../../data/rankedModes";
+import { shuffledSample, applyBonusMultiplier, chaosRoundFavorable, seededRandom } from "../../data/rankedModes";
 import { getQuestionPool } from "../../data/rankedQuestionBank";
 import { getDifficultyLevel } from "../../data/rank";
 
@@ -20,15 +20,23 @@ const MODIFIERS = [
 
 const BASE_SECONDS = 20;
 
-export default function ChaosRound({ character, rankedPoints, onFinish, onExit }) {
+export default function ChaosRound({ character, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
   const difficulty = getDifficultyLevel(rankedPoints);
   const question = useMemo(
-    () => shuffledSample(getQuestionPool(difficulty), 1)[0],
+    () => shuffledSample(getQuestionPool(difficulty), 1, seed)[0],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-  const modifier = useMemo(() => MODIFIERS[Math.floor(Math.random() * MODIFIERS.length)], []);
+  // Derived from the same seed as the question (offset so it isn't just a
+  // copy of whatever index the question shuffle landed on) — in a PvP
+  // match, both players get the identical modifier, not just the same
+  // question; solo/practice play still gets a fresh random one each time.
+  const modifier = useMemo(() => {
+    const rand = seed === undefined ? Math.random : seededRandom(seed + 1);
+    return MODIFIERS[Math.floor(rand() * MODIFIERS.length)];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const totalSeconds = Math.round(BASE_SECONDS * (modifier.timeFactor ?? 1));
   const favorable = chaosRoundFavorable(character);
 

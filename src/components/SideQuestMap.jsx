@@ -1,12 +1,31 @@
+import { useMemo, useState } from "react";
 import { useI18n } from "../i18n/I18nContext";
 
 export default function SideQuestMap({ sidequests, onSelectQuest, onBack }) {
   const { t } = useI18n();
+  const [activeTag, setActiveTag] = useState(null);
   const totalLessons = sidequests.reduce((sum, q) => sum + q.lessons.length, 0);
   const completedLessons = sidequests.reduce(
     (sum, q) => sum + q.lessons.filter((l) => l.status === "completed").length,
     0,
   );
+
+  // Every unique tag across all quests, in first-seen order, so a filter
+  // row only ever shows categories that actually exist — most quests have
+  // no tags at all today and simply aren't affected by any filter.
+  const tags = useMemo(() => {
+    const seen = [];
+    for (const q of sidequests) {
+      for (const tag of q.tags ?? []) {
+        if (!seen.includes(tag)) seen.push(tag);
+      }
+    }
+    return seen;
+  }, [sidequests]);
+
+  const visibleQuests = activeTag
+    ? sidequests.filter((q) => q.tags?.includes(activeTag))
+    : sidequests;
 
   return (
     <div className="world-map">
@@ -21,8 +40,28 @@ export default function SideQuestMap({ sidequests, onSelectQuest, onBack }) {
         </p>
       </header>
 
+      {tags.length > 0 && (
+        <div className="side-quest-map__tags">
+          <button
+            className={`side-quest-map__tag-chip${activeTag === null ? " side-quest-map__tag-chip--active" : ""}`}
+            onClick={() => setActiveTag(null)}
+          >
+            {t("sideQuestMap.allQuests")}
+          </button>
+          {tags.map((tag) => (
+            <button
+              key={tag}
+              className={`side-quest-map__tag-chip${activeTag === tag ? " side-quest-map__tag-chip--active" : ""}`}
+              onClick={() => setActiveTag(tag)}
+            >
+              {t(`sideQuestMap.tag_${tag}`)}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="world-map__grid">
-        {sidequests.map((quest) => {
+        {visibleQuests.map((quest) => {
           const completedCount = quest.lessons.filter(
             (l) => l.status === "completed",
           ).length;
@@ -36,6 +75,11 @@ export default function SideQuestMap({ sidequests, onSelectQuest, onBack }) {
               onClick={() => onSelectQuest(quest)}
             >
               {done && <span className="side-quest-card__badge">✓</span>}
+              {quest.tags?.length > 0 && (
+                <span className="side-quest-card__tag">
+                  {t(`sideQuestMap.tag_${quest.tags[0]}`)}
+                </span>
+              )}
               <span className="world-card__icon">{quest.icon}</span>
               <span className="world-card__name">{quest.name}</span>
               <span className="world-card__progress">

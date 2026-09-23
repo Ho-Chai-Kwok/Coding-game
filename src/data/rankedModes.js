@@ -66,7 +66,6 @@ export const RANKED_MODES = [
     archetype: "Tank",
     alwaysAvailable: false,
     playable: true,
-    solo: true, // approximation: "beat the ghost" until real 1v1 matchmaking exists
   },
   {
     id: MODE_IDS.CHAOS_ROUND,
@@ -109,7 +108,11 @@ export const MODE_I18N_KEY = {
 // rotating pool, deterministically reshuffled once per UTC calendar day so
 // every player sees the same lineup and it's stable for the whole day.
 
-function seededRandom(seed) {
+// Exported (unlike the module-private helpers around it) so a PvP match
+// can derive more than one deterministic value from a single shared seed
+// — e.g. ChaosRound picking the same random modifier for both players,
+// not just the same question.
+export function seededRandom(seed) {
   let t = seed;
   return function next() {
     t += 0x6d2b79f5;

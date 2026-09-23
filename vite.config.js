@@ -19,13 +19,18 @@ export default defineConfig(({ mode }) => {
   ],
   build: {
     // The main chunk holds the curriculum content (100 worlds + 28 side
-    // quests) and all 4 locales' translations, which genuinely are needed
-    // on first paint for the dashboard's progress counts — so ~540kB raw
-    // here is expected, not a red flag. It gzips down to ~170kB, which is
-    // what actually matters for load time. Ranked Mode, Settings, the
-    // character rig, and the login calendar are already split into their
-    // own lazy-loaded chunks (see the `lazy()` imports in App.jsx).
-    chunkSizeWarningLimit: 600,
+    // quests, growing as side quests gain real hands-on lessons) and all 4
+    // locales' translations, which genuinely are needed on first paint for
+    // the dashboard's progress counts — so raw size here keeps climbing as
+    // content grows, not a red flag by itself. Gzip size is what actually
+    // matters for load time. Ranked Mode, Settings, the character rig, the
+    // login calendar, and compiled-language lessons are already split into
+    // their own lazy-loaded chunks (see the `lazy()` imports in App.jsx).
+    // TODO once all 28 side quests are done: split sidequests.js into a
+    // lazy-loaded per-quest chunk, with just {id, name, icon, lessonCount}
+    // kept in the main bundle for the dashboard's progress math — see
+    // ROADMAP.md "Shrink the main bundle".
+    chunkSizeWarningLimit: 900,
   },
   }
 })

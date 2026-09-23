@@ -26,14 +26,25 @@ export const translations = {
       overallProgress: "lessons complete",
       continueLearning: "Continue Learning",
       continueButton: "Continue →",
+      nudgeTitle: "Ready for your first lesson?",
+      nudgeDesc: "Tap Learn below to pick a language and get started!",
       learningTitle: "Learning Mode",
       learningDesc: "100 worlds, one topic at a time — go slow, go steady!",
       sidequestTitle: "Side Quests",
-      sidequestDesc: "10-lesson courses on real tools like PyTorch, AWS, and NumPy!",
+      sidequestDesc: "Hands-on courses on real tools like Git, PyTorch, AWS, and NumPy!",
       rankedTitle: "Ranked Mode",
       rankedDesc: "Take on quick challenges and climb the rank ladder!",
       charactersTitle: "Characters",
       charactersDesc: "Unlock characters through your progress and pick your favorite!",
+    },
+
+    bottomNav: {
+      label: "Main navigation",
+      home: "Home",
+      learn: "Learn",
+      quests: "Quests",
+      ranked: "Ranked",
+      characters: "Characters",
     },
 
     languageSelect: {
@@ -96,6 +107,101 @@ export const translations = {
       error: "Oops, a little hiccup! 🔧",
       onlineNote: "Runs on an online compiler — it can take a few seconds.",
       compiling: "Compiling online… this can take a few seconds.",
+      packageNote: "First run loads {package} (a few MB) — this can take a moment, then it's cached.",
+      loadingPackage: "Loading package…",
+      htmlNote: "Your HTML/CSS renders in a real, sandboxed preview — scripts don't run, but layout and styling are genuine.",
+      rendering: "Rendering preview…",
+    },
+
+    onboarding: {
+      levelTitle: "How much coding have you done? 🌱",
+      levelSubtitle: "No wrong answers — this just helps us guide you.",
+      beginnerTitle: "Total beginner",
+      beginnerDesc: "I've never written code before",
+      someTitle: "Some experience",
+      someDesc: "I've tinkered a little, or taken a class",
+      confidentTitle: "Pretty confident",
+      confidentDesc: "I already write code sometimes",
+      goalTitle: "What's your big goal? 🎯",
+      goalSubtitle: "Pick whichever fits best right now.",
+      funTitle: "Just for fun",
+      funDesc: "I'm curious and want to explore",
+      schoolTitle: "School or exams",
+      schoolDesc: "I need this for class or homework",
+      jobTitle: "Get job-ready",
+      jobDesc: "I want real skills for a future job",
+      aiTitle: "AI & machine learning",
+      aiDesc: "I want to build with AI",
+      webTitle: "Build websites & apps",
+      webDesc: "I want to make real things people can use",
+      languageTitle: "Pick your first language 💻",
+      languageSubtitle: "You can always try another one later in Settings.",
+      summaryTitle: "You're all set!",
+      startMessage_beginner: "Start at World 1 and take it one step at a time — every lesson is short and builds on the last.",
+      startMessage_some: "We marked the absolute basics as done and started you at World 10 (Arrays) — jump straight into the good stuff.",
+      startMessage_confident: "We fast-forwarded you past the fundamentals and ES6 essentials, straight to World 20 (Classes) — everything before it is marked complete.",
+      recommendedQuests: "Side Quests picked for you:",
+      letsGo: "Let's go! →",
+    },
+
+    // A short "what do these words even mean" walkthrough shown ONLY when
+    // level === "beginner" (see PRIMER_STEPS in data/primer.js and the
+    // conditional STEPS list in Onboarding.jsx) — before a total beginner
+    // ever writes a line of code, explained the way you'd explain it to a
+    // curious kid with zero background.
+    primer: {
+      gotIt: "Got it! →",
+      keyTermLabel: "Remember this word:",
+
+      codeTitle: "What is code?",
+      codeBody: "Code is just a list of instructions you give a computer — like a recipe you'd hand to a robot chef. The computer follows each line, one at a time, in the exact order you wrote it.",
+
+      functionTitle: "What is a function?",
+      functionBody: "A function is a mini-machine that does ONE job. You build it once, then use it again and again without rewriting it — like a toaster: put bread in, get toast out, any time you like.",
+      functionCheckQuestion: "A function is most like...",
+      functionCheckOptions: [
+        "A machine you build once and reuse again and again",
+        "A single instruction that only ever runs one time",
+        "A type of number",
+        "The name of a computer",
+      ],
+      functionCheckExplanation: "Functions are reusable — that's exactly what makes them so useful!",
+
+      parensTitle: "What are parentheses?",
+      parensBody: "Parentheses () are how you tell a function \"go — do your job now!\" Writing sayHi() actually runs the sayHi function. Just writing sayHi by itself only mentions it, without running it.",
+
+      argumentsTitle: "What are arguments?",
+      argumentsBody: "Anything you put INSIDE the parentheses is called an argument — it's information you hand to the function, like an ingredient you give a cook. greet(\"Mia\") hands the greet function the argument \"Mia\".",
+      argumentsCheckQuestion: "In print(\"Hello!\"), what is \"Hello!\"?",
+      argumentsCheckOptions: [
+        "An argument being handed to the function",
+        "The name of the function",
+        "A type of loop",
+        "A parenthesis",
+      ],
+      argumentsCheckExplanation: "\"Hello!\" is the information being passed INTO print — that's the argument.",
+
+      argvTitle: "Fun fact: argc & argv",
+      argvBody: "Some programs get their arguments a special way when you start them by typing a command. argc (\"argument count\") is HOW MANY pieces of information were given. argv (\"argument values\") is the actual LIST of them. You won't need these yet — but now you'll recognize them when you see them!",
+
+      variablesTitle: "What is a variable?",
+      variablesBody: "A variable is a labeled box that holds a value, so you can use it again later. score = 10 creates a box named score with 10 inside it — you can peek at it or change it any time.",
+
+      typesTitle: "What is a \"type\"?",
+      typesBody: "Every value has a type — it tells the computer WHAT KIND of thing it is. Here are the ones you'll meet first:",
+      typesList: [
+        { term: "string", desc: "text, always in quotes — like \"Hello\"" },
+        { term: "char", desc: "a single letter or symbol — like 'A'" },
+        { term: "number", desc: "a number, no quotes — like 7 or -3" },
+        { term: "boolean", desc: "just true or false, like a light switch" },
+      ],
+      typesCheckQuestion: "Which of these is a string?",
+      typesCheckOptions: ['"Hello"', "7", "true", "A"],
+      typesCheckExplanation: "Text wrapped in quotes is a string — that's the giveaway!",
+    },
+
+    terminalChallenge: {
+      inputLabel: "Type a command…",
     },
 
     quizChallenge: {
@@ -117,6 +223,34 @@ export const translations = {
       peak: "Peak rank",
       shield: "🛡️ Promotion shield ({n} left) — you can't drop below {rank}.",
       jsFallback: "Code Race and Code Golf use JavaScript while your language is C, C++ or Java — they're timed, and online compiling is too slow for that.",
+      guestGate: "Ranked matches you against a real opponent, so it needs an account — guest progress carries over when you sign in.",
+    },
+
+    rankedQueue: {
+      searching: "Looking for someone near your rank…",
+      widening: "Widening the search…",
+      waitedFor: "Waited",
+      cancel: "Cancel",
+      error: "Couldn't reach matchmaking — check your connection and try again.",
+      practiceHint: "Nobody's around right now.",
+      practice: "🎯 Practice instead",
+    },
+
+    rankedPractice: {
+      banner: "Practice mode — this won't affect your rank.",
+    },
+
+    rankedMatch: {
+      waitingTitle: "Waiting for your opponent…",
+      waitingFor: "{name} is still finishing up.",
+      claimForfeit: "Claim win — opponent seems to have left",
+      draw: "It's a draw!",
+      youWon: "You beat {name}!",
+      youLost: "{name} won this one",
+      yourScore: "Your score",
+      opponentScore: "Opponent score",
+      opponentRank: "Opponent rank",
+      opponentFinished: "{name} finished — waiting on you now!",
     },
 
     rankChange: {
@@ -240,11 +374,13 @@ export const translations = {
 
     sideQuestMap: {
       title: "Side Quests 🧭",
-      subtitle: "28 short courses on real tools —",
+      subtitle: "31 short courses on real tools —",
       lessonsComplete: "lessons complete!",
       lessons: "lessons",
       completed: "Completed",
       notStarted: "Not started",
+      allQuests: "All",
+      tag_frontend: "Frontend",
     },
 
     sideQuestPath: {
@@ -360,14 +496,25 @@ export const translations = {
       overallProgress: "lecciones completadas",
       continueLearning: "Continuar Aprendiendo",
       continueButton: "Continuar →",
+      nudgeTitle: "¿Listo para tu primera lección?",
+      nudgeDesc: "Toca Aprender abajo para elegir un lenguaje y comenzar!",
       learningTitle: "Modo Aprendizaje",
       learningDesc: "100 mundos, un tema a la vez — ¡con calma, paso a paso!",
       sidequestTitle: "Misiones Secundarias",
-      sidequestDesc: "Cursos de 10 lecciones sobre herramientas reales como PyTorch, AWS y NumPy!",
+      sidequestDesc: "Cursos prácticos sobre herramientas reales como Git, PyTorch, AWS y NumPy!",
       rankedTitle: "Modo Clasificado",
       rankedDesc: "¡Enfréntate a retos rápidos y sube en la clasificación!",
       charactersTitle: "Personajes",
       charactersDesc: "¡Desbloquea personajes con tu progreso y elige tu favorito!",
+    },
+
+    bottomNav: {
+      label: "Navegación principal",
+      home: "Inicio",
+      learn: "Aprender",
+      quests: "Misiones",
+      ranked: "Clasific.",
+      characters: "Personajes",
     },
 
     languageSelect: {
@@ -430,6 +577,96 @@ export const translations = {
       error: "¡Ups, un pequeño problema! 🔧",
       onlineNote: "Se ejecuta en un compilador en línea — puede tardar unos segundos.",
       compiling: "Compilando en línea… puede tardar unos segundos.",
+      packageNote: "La primera ejecución carga {package} (varios MB) — puede tardar un momento, luego queda en caché.",
+      loadingPackage: "Cargando paquete…",
+      htmlNote: "Tu HTML/CSS se renderiza en una vista previa real y aislada — los scripts no se ejecutan, pero el diseño y los estilos son genuinos.",
+      rendering: "Renderizando vista previa…",
+    },
+
+    onboarding: {
+      levelTitle: "¿Cuánto has programado? 🌱",
+      levelSubtitle: "No hay respuestas incorrectas — esto solo nos ayuda a guiarte.",
+      beginnerTitle: "Totalmente principiante",
+      beginnerDesc: "Nunca he escrito código antes",
+      someTitle: "Algo de experiencia",
+      someDesc: "He probado un poco, o tomé una clase",
+      confidentTitle: "Bastante seguro/a",
+      confidentDesc: "Ya escribo código a veces",
+      goalTitle: "¿Cuál es tu gran objetivo? 🎯",
+      goalSubtitle: "Elige lo que mejor encaje ahora mismo.",
+      funTitle: "Solo por diversión",
+      funDesc: "Tengo curiosidad y quiero explorar",
+      schoolTitle: "Escuela o exámenes",
+      schoolDesc: "Lo necesito para clase o tareas",
+      jobTitle: "Prepararme para un trabajo",
+      jobDesc: "Quiero habilidades reales para un futuro empleo",
+      aiTitle: "IA y machine learning",
+      aiDesc: "Quiero crear cosas con IA",
+      webTitle: "Crear webs y apps",
+      webDesc: "Quiero hacer cosas reales que la gente pueda usar",
+      languageTitle: "Elige tu primer lenguaje 💻",
+      languageSubtitle: "Siempre puedes probar otro más tarde en Ajustes.",
+      summaryTitle: "¡Todo listo!",
+      startMessage_beginner: "Empieza en el Mundo 1 y ve paso a paso — cada lección es corta y se apoya en la anterior.",
+      startMessage_some: "Marcamos lo más básico como hecho y empezarás en el Mundo 10 (Arreglos) — directo a lo interesante.",
+      startMessage_confident: "Te adelantamos más allá de lo básico y de ES6 esencial, directo al Mundo 20 (Clases) — todo lo anterior queda marcado como completo.",
+      recommendedQuests: "Misiones Secundarias elegidas para ti:",
+      letsGo: "¡Vamos! →",
+    },
+
+    primer: {
+      gotIt: "¡Entendido! →",
+      keyTermLabel: "Recuerda esta palabra:",
+
+      codeTitle: "¿Qué es el código?",
+      codeBody: "El código es solo una lista de instrucciones que le das a una computadora — como una receta que le darías a un robot cocinero. La computadora sigue cada línea, una por una, en el orden exacto en que la escribiste.",
+
+      functionTitle: "¿Qué es una función?",
+      functionBody: "Una función es una mini-máquina que hace UN trabajo. La construyes una vez y luego la usas una y otra vez sin volver a escribirla — como una tostadora: metes pan, sacas tostadas, cuando quieras.",
+      functionCheckQuestion: "Una función se parece más a...",
+      functionCheckOptions: [
+        "Una máquina que construyes una vez y reutilizas una y otra vez",
+        "Una sola instrucción que solo se ejecuta una vez",
+        "Un tipo de número",
+        "El nombre de una computadora",
+      ],
+      functionCheckExplanation: "¡Las funciones son reutilizables — eso es justo lo que las hace tan útiles!",
+
+      parensTitle: "¿Qué son los paréntesis?",
+      parensBody: "Los paréntesis () son cómo le dices a una función \"¡anda, haz tu trabajo ahora!\". Escribir saludar() realmente ejecuta la función saludar. Escribir solo saludar solo la menciona, sin ejecutarla.",
+
+      argumentsTitle: "¿Qué son los argumentos?",
+      argumentsBody: "Todo lo que pones DENTRO de los paréntesis se llama argumento — es información que le entregas a la función, como un ingrediente que le das a un cocinero. saludar(\"Mia\") le entrega a la función saludar el argumento \"Mia\".",
+      argumentsCheckQuestion: "En print(\"¡Hola!\"), ¿qué es \"¡Hola!\"?",
+      argumentsCheckOptions: [
+        "Un argumento que se le entrega a la función",
+        "El nombre de la función",
+        "Un tipo de bucle",
+        "Un paréntesis",
+      ],
+      argumentsCheckExplanation: "\"¡Hola!\" es la información que se pasa DENTRO de print — eso es el argumento.",
+
+      argvTitle: "Dato curioso: argc y argv",
+      argvBody: "Algunos programas reciben sus argumentos de una forma especial cuando los inicias escribiendo un comando. argc (\"conteo de argumentos\") es CUÁNTOS datos se dieron. argv (\"valores de argumentos\") es la LISTA real de esos datos. Todavía no los necesitas — ¡pero ahora los reconocerás cuando los veas!",
+
+      variablesTitle: "¿Qué es una variable?",
+      variablesBody: "Una variable es una caja con etiqueta que guarda un valor, para que puedas usarlo después. puntos = 10 crea una caja llamada puntos con un 10 adentro — puedes revisarla o cambiarla cuando quieras.",
+
+      typesTitle: "¿Qué es un \"tipo\"?",
+      typesBody: "Cada valor tiene un tipo — le dice a la computadora QUÉ CLASE de cosa es. Estos son los primeros que conocerás:",
+      typesList: [
+        { term: "string", desc: "texto, siempre entre comillas — como \"Hola\"" },
+        { term: "char", desc: "una sola letra o símbolo — como 'A'" },
+        { term: "number", desc: "un número, sin comillas — como 7 o -3" },
+        { term: "boolean", desc: "solo verdadero o falso, como un interruptor de luz" },
+      ],
+      typesCheckQuestion: "¿Cuál de estos es un string?",
+      typesCheckOptions: ['"Hola"', "7", "true", "A"],
+      typesCheckExplanation: "El texto entre comillas es un string — ¡esa es la pista!",
+    },
+
+    terminalChallenge: {
+      inputLabel: "Escribe un comando…",
     },
 
     quizChallenge: {
@@ -451,6 +688,34 @@ export const translations = {
       peak: "Mejor rango",
       shield: "🛡️ Escudo de ascenso ({n} restantes) — no puedes bajar de {rank}.",
       jsFallback: "Carrera de Código y Code Golf usan JavaScript mientras tu lenguaje sea C, C++ o Java — están cronometrados y compilar en línea es demasiado lento.",
+      guestGate: "El modo Clasificado te enfrenta a un oponente real, así que necesita una cuenta — tu progreso como invitado se conserva al iniciar sesión.",
+    },
+
+    rankedQueue: {
+      searching: "Buscando a alguien de tu nivel…",
+      widening: "Ampliando la búsqueda…",
+      waitedFor: "Esperando",
+      cancel: "Cancelar",
+      error: "No se pudo conectar con el emparejamiento — revisa tu conexión e inténtalo de nuevo.",
+      practiceHint: "No hay nadie disponible ahora mismo.",
+      practice: "🎯 Practicar en su lugar",
+    },
+
+    rankedPractice: {
+      banner: "Modo práctica — esto no afectará tu rango.",
+    },
+
+    rankedMatch: {
+      waitingTitle: "Esperando a tu oponente…",
+      waitingFor: "{name} todavía está terminando.",
+      claimForfeit: "Reclamar victoria — el oponente parece haberse ido",
+      draw: "¡Es un empate!",
+      youWon: "¡Venciste a {name}!",
+      youLost: "{name} ganó esta vez",
+      yourScore: "Tu puntuación",
+      opponentScore: "Puntuación del oponente",
+      opponentRank: "Rango del oponente",
+      opponentFinished: "¡{name} terminó — ahora es tu turno!",
     },
 
     rankChange: {
@@ -574,11 +839,13 @@ export const translations = {
 
     sideQuestMap: {
       title: "Misiones Secundarias 🧭",
-      subtitle: "28 cursos cortos sobre herramientas reales —",
+      subtitle: "31 cursos cortos sobre herramientas reales —",
       lessonsComplete: "lecciones completadas!",
       lessons: "lecciones",
       completed: "Completado",
       notStarted: "Sin empezar",
+      allQuests: "Todas",
+      tag_frontend: "Frontend",
     },
 
     sideQuestPath: {
@@ -694,14 +961,25 @@ export const translations = {
       overallProgress: "堂課已完成",
       continueLearning: "繼續學習",
       continueButton: "繼續 →",
+      nudgeTitle: "準備好上第一堂課了嗎？",
+      nudgeDesc: "點選下方的「學習」選擇語言，開始學習吧！",
       learningTitle: "學習模式",
       learningDesc: "100 個世界，一次專注一個主題——慢慢來，穩紮穩打！",
       sidequestTitle: "支線任務",
-      sidequestDesc: "10 堂課程，帶你認識 PyTorch、AWS、NumPy 等真實工具！",
+      sidequestDesc: "透過實作學習 Git、PyTorch、AWS、NumPy 等真實工具！",
       rankedTitle: "排名模式",
       rankedDesc: "接受快速挑戰，攀登排名階梯！",
       charactersTitle: "角色",
       charactersDesc: "透過進度解鎖角色，選出你最喜歡的一個！",
+    },
+
+    bottomNav: {
+      label: "主導覽",
+      home: "首頁",
+      learn: "學習",
+      quests: "任務",
+      ranked: "排名",
+      characters: "角色",
     },
 
     languageSelect: {
@@ -764,6 +1042,96 @@ export const translations = {
       error: "哎呀，出了個小狀況！🔧",
       onlineNote: "在線上編譯器執行——可能需要幾秒鐘。",
       compiling: "正在線上編譯…可能需要幾秒鐘。",
+      packageNote: "第一次執行會載入 {package}（幾 MB）——可能需要一點時間，之後就會被快取。",
+      loadingPackage: "正在載入套件…",
+      htmlNote: "你的 HTML/CSS 會在真實的沙盒預覽中渲染——腳本不會執行，但版面配置與樣式都是真實的。",
+      rendering: "正在渲染預覽…",
+    },
+
+    onboarding: {
+      levelTitle: "你寫過多少程式了呢？🌱",
+      levelSubtitle: "沒有標準答案——這只是幫助我們引導你。",
+      beginnerTitle: "完全新手",
+      beginnerDesc: "我從來沒寫過程式",
+      someTitle: "有一點經驗",
+      someDesc: "我稍微摸過，或上過課",
+      confidentTitle: "蠻有自信",
+      confidentDesc: "我平常就會寫程式",
+      goalTitle: "你的目標是什麼？🎯",
+      goalSubtitle: "選一個現在最符合的。",
+      funTitle: "純粹好玩",
+      funDesc: "我很好奇，想探索看看",
+      schoolTitle: "學校或考試",
+      schoolDesc: "我需要用在課堂或作業上",
+      jobTitle: "為工作做準備",
+      jobDesc: "我想學到能用在未來工作上的真本領",
+      aiTitle: "AI 與機器學習",
+      aiDesc: "我想用 AI 做東西",
+      webTitle: "打造網站與應用程式",
+      webDesc: "我想做出大家真的能用的東西",
+      languageTitle: "選擇你的第一個語言 💻",
+      languageSubtitle: "之後你隨時可以在設定中嘗試別的語言。",
+      summaryTitle: "都設定好了！",
+      startMessage_beginner: "從第 1 個世界開始，一步一步來——每堂課都很短，而且會延續上一堂的內容。",
+      startMessage_some: "我們已將最基礎的內容標記為完成，直接從第 10 個世界（陣列）開始——直接進入精彩內容。",
+      startMessage_confident: "我們已跳過基礎與 ES6 核心內容，直接從第 20 個世界（類別）開始——之前的內容都已標記為完成。",
+      recommendedQuests: "為你挑選的支線任務：",
+      letsGo: "開始吧！→",
+    },
+
+    primer: {
+      gotIt: "了解了！→",
+      keyTermLabel: "記住這個詞：",
+
+      codeTitle: "什麼是程式碼？",
+      codeBody: "程式碼就是你給電腦的一串指令——就像你交給機器人主廚的一份食譜。電腦會按照你寫的順序，一行一行地執行。",
+
+      functionTitle: "什麼是函式？",
+      functionBody: "函式是一台只做「一件事」的小機器。你只要打造一次，之後就能重複使用，不必重寫——就像烤麵包機：放進麵包，就能拿到吐司，隨時都可以。",
+      functionCheckQuestion: "函式最像什麼？",
+      functionCheckOptions: [
+        "一台你打造一次、可以一直重複使用的機器",
+        "只會執行一次的單一指令",
+        "一種數字類型",
+        "電腦的名字",
+      ],
+      functionCheckExplanation: "函式可以重複使用——這正是它們這麼好用的原因！",
+
+      parensTitle: "什麼是括號？",
+      parensBody: "括號 () 就是你告訴函式「去吧，現在開始做你的工作！」的方式。寫 sayHi() 會真的執行 sayHi 這個函式；只寫 sayHi 只是提到它，並不會執行它。",
+
+      argumentsTitle: "什麼是引數？",
+      argumentsBody: "你放進括號「裡面」的任何東西都叫做引數——這是你交給函式的資訊，就像你給廚師的食材一樣。greet(\"Mia\") 把引數 \"Mia\" 交給了 greet 這個函式。",
+      argumentsCheckQuestion: "在 print(\"Hello!\") 中，\"Hello!\" 是什麼？",
+      argumentsCheckOptions: [
+        "交給函式的一個引數",
+        "函式的名稱",
+        "一種迴圈",
+        "一個括號",
+      ],
+      argumentsCheckExplanation: "\"Hello!\" 是傳「進」print 的資訊——那就是引數。",
+
+      argvTitle: "小知識：argc 和 argv",
+      argvBody: "有些程式在你用輸入指令的方式啟動時，會用特別的方式取得引數。argc（「引數數量」）是「給了幾個」資訊。argv（「引數值」）則是這些資訊的實際清單。你現在還用不到這些——但之後看到時，你就會認得它們了！",
+
+      variablesTitle: "什麼是變數？",
+      variablesBody: "變數就像一個貼了標籤的盒子，裡面裝著一個值，讓你之後可以再次使用。score = 10 會建立一個名叫 score、裡面裝著 10 的盒子——你隨時可以查看或改變它。",
+
+      typesTitle: "什麼是「型別」？",
+      typesBody: "每個值都有一個型別——它告訴電腦這是「哪一種」東西。以下是你會先認識的幾種：",
+      typesList: [
+        { term: "string（字串）", desc: "文字，永遠用引號括起來——像 \"Hello\"" },
+        { term: "char（字元）", desc: "單一個字母或符號——像 'A'" },
+        { term: "number（數字）", desc: "數字，不用引號——像 7 或 -3" },
+        { term: "boolean（布林值）", desc: "只有真或假，就像電燈開關" },
+      ],
+      typesCheckQuestion: "以下哪一個是字串（string）？",
+      typesCheckOptions: ['"Hello"', "7", "true", "A"],
+      typesCheckExplanation: "用引號括起來的文字就是字串——這就是辨認的關鍵！",
+    },
+
+    terminalChallenge: {
+      inputLabel: "輸入指令…",
     },
 
     quizChallenge: {
@@ -785,6 +1153,34 @@ export const translations = {
       peak: "最高段位",
       shield: "🛡️ 晉級護盾（剩 {n} 場）——不會掉到 {rank} 以下。",
       jsFallback: "當你的語言是 C、C++ 或 Java 時，程式競速與程式碼高爾夫會改用 JavaScript——這些模式有計時，線上編譯太慢。",
+      guestGate: "排名模式會讓你對戰真實對手，因此需要帳號——登入後訪客進度會自動保留。",
+    },
+
+    rankedQueue: {
+      searching: "正在尋找程度相近的對手…",
+      widening: "正在擴大搜尋範圍…",
+      waitedFor: "已等待",
+      cancel: "取消",
+      error: "無法連接配對系統——請檢查網路連線後重試。",
+      practiceHint: "現在沒有其他人在線。",
+      practice: "🎯 改為練習",
+    },
+
+    rankedPractice: {
+      banner: "練習模式——不會影響你的排名。",
+    },
+
+    rankedMatch: {
+      waitingTitle: "正在等待對手…",
+      waitingFor: "{name} 還在進行中。",
+      claimForfeit: "宣告勝利——對手似乎已離開",
+      draw: "平手！",
+      youWon: "你擊敗了 {name}！",
+      youLost: "{name} 贏得了這一局",
+      yourScore: "你的分數",
+      opponentScore: "對手分數",
+      opponentRank: "對手段位",
+      opponentFinished: "{name} 已完成——現在輪到你了！",
     },
 
     rankChange: {
@@ -908,11 +1304,13 @@ export const translations = {
 
     sideQuestMap: {
       title: "支線任務 🧭",
-      subtitle: "28 個關於真實工具的短課程 —",
+      subtitle: "31 個關於真實工具的短課程 —",
       lessonsComplete: "堂課已完成！",
       lessons: "堂課",
       completed: "已完成",
       notStarted: "尚未開始",
+      allQuests: "全部",
+      tag_frontend: "前端",
     },
 
     sideQuestPath: {
@@ -1027,14 +1425,25 @@ export const translations = {
       overallProgress: "레슨 완료",
       continueLearning: "이어서 학습하기",
       continueButton: "계속하기 →",
+      nudgeTitle: "첫 레슨을 시작할 준비가 됐나요?",
+      nudgeDesc: "아래의 학습 탭을 눌러 언어를 선택하고 시작해보세요!",
       learningTitle: "학습 모드",
       learningDesc: "100개의 월드, 한 번에 한 주제씩 — 천천히, 꾸준하게!",
       sidequestTitle: "사이드 퀘스트",
-      sidequestDesc: "PyTorch, AWS, NumPy 같은 실전 도구를 배우는 10강 코스!",
+      sidequestDesc: "Git, PyTorch, AWS, NumPy 같은 실전 도구를 직접 다뤄보는 코스!",
       rankedTitle: "랭크 모드",
       rankedDesc: "빠른 챌린지에 도전하고 랭크 사다리를 올라가 보세요!",
       charactersTitle: "캐릭터",
       charactersDesc: "진행 상황에 따라 캐릭터를 잠금 해제하고 좋아하는 캐릭터를 골라보세요!",
+    },
+
+    bottomNav: {
+      label: "기본 탐색",
+      home: "홈",
+      learn: "학습",
+      quests: "퀘스트",
+      ranked: "랭크",
+      characters: "캐릭터",
     },
 
     languageSelect: {
@@ -1097,6 +1506,96 @@ export const translations = {
       error: "앗, 작은 문제가 생겼어요! 🔧",
       onlineNote: "온라인 컴파일러에서 실행돼요 — 몇 초 걸릴 수 있어요.",
       compiling: "온라인에서 컴파일 중… 몇 초 걸릴 수 있어요.",
+      packageNote: "처음 실행하면 {package}를 불러와요 (몇 MB 정도) — 잠깐 걸릴 수 있고, 이후엔 캐시돼요.",
+      loadingPackage: "패키지 불러오는 중…",
+      htmlNote: "HTML/CSS는 실제 샌드박스 미리보기에서 렌더링돼요 — 스크립트는 실행되지 않지만 레이아웃과 스타일은 진짜예요.",
+      rendering: "미리보기 렌더링 중…",
+    },
+
+    onboarding: {
+      levelTitle: "코딩을 얼마나 해봤나요? 🌱",
+      levelSubtitle: "정답은 없어요 — 그냥 안내에 도움이 될 뿐이에요.",
+      beginnerTitle: "완전 초보",
+      beginnerDesc: "코드를 써본 적이 없어요",
+      someTitle: "약간의 경험",
+      someDesc: "조금 해봤거나 수업을 들어봤어요",
+      confidentTitle: "꽤 자신 있음",
+      confidentDesc: "가끔 코드를 직접 써요",
+      goalTitle: "큰 목표가 뭔가요? 🎯",
+      goalSubtitle: "지금 가장 맞는 걸 골라주세요.",
+      funTitle: "그냥 재미로",
+      funDesc: "호기심이 생겨서 탐험해보고 싶어요",
+      schoolTitle: "학교나 시험",
+      schoolDesc: "수업이나 숙제에 필요해요",
+      jobTitle: "취업 준비",
+      jobDesc: "미래 직업을 위한 진짜 실력을 원해요",
+      aiTitle: "AI와 머신러닝",
+      aiDesc: "AI로 무언가를 만들고 싶어요",
+      webTitle: "웹사이트와 앱 만들기",
+      webDesc: "사람들이 실제로 쓸 수 있는 걸 만들고 싶어요",
+      languageTitle: "첫 언어를 골라주세요 💻",
+      languageSubtitle: "나중에 설정에서 언제든 다른 언어도 써볼 수 있어요.",
+      summaryTitle: "준비 완료!",
+      startMessage_beginner: "월드 1부터 차근차근 시작해요 — 모든 레슨은 짧고 이전 내용 위에 쌓여요.",
+      startMessage_some: "가장 기본적인 내용은 완료 처리하고 월드 10(배열)부터 시작할게요 — 바로 흥미로운 내용으로!",
+      startMessage_confident: "기초와 ES6 필수 내용은 건너뛰고 월드 20(클래스)부터 시작할게요 — 그 이전 내용은 모두 완료 처리돼요.",
+      recommendedQuests: "당신을 위해 고른 사이드 퀘스트:",
+      letsGo: "시작할게요! →",
+    },
+
+    primer: {
+      gotIt: "알겠어요! →",
+      keyTermLabel: "이 단어를 기억하세요:",
+
+      codeTitle: "코드란 무엇인가요?",
+      codeBody: "코드는 컴퓨터에게 주는 지시 목록일 뿐이에요 — 로봇 요리사에게 건네는 레시피 같은 거예요. 컴퓨터는 당신이 쓴 순서 그대로, 한 줄씩 따라가요.",
+
+      functionTitle: "함수란 무엇인가요?",
+      functionBody: "함수는 딱 한 가지 일만 하는 작은 기계예요. 한 번 만들어두면 다시 쓸 때마다 새로 작성할 필요 없이 계속 사용할 수 있어요 — 토스터처럼요: 빵을 넣으면 언제든 토스트가 나오죠.",
+      functionCheckQuestion: "함수는 무엇에 가장 가까울까요?",
+      functionCheckOptions: [
+        "한 번 만들어서 계속 재사용하는 기계",
+        "딱 한 번만 실행되는 단일 명령",
+        "숫자의 한 종류",
+        "컴퓨터의 이름",
+      ],
+      functionCheckExplanation: "함수는 재사용할 수 있어요 — 그게 바로 함수가 유용한 이유예요!",
+
+      parensTitle: "괄호란 무엇인가요?",
+      parensBody: "괄호 ()는 함수에게 \"자, 이제 네 일을 시작해!\"라고 말하는 방법이에요. sayHi()라고 쓰면 실제로 sayHi 함수가 실행돼요. 그냥 sayHi라고만 쓰면 언급만 할 뿐 실행되지 않아요.",
+
+      argumentsTitle: "인자란 무엇인가요?",
+      argumentsBody: "괄호 '안'에 넣는 건 무엇이든 인자라고 불러요 — 요리사에게 건네는 재료처럼, 함수에게 건네는 정보예요. greet(\"Mia\")는 greet 함수에게 \"Mia\"라는 인자를 건네요.",
+      argumentsCheckQuestion: "print(\"Hello!\")에서 \"Hello!\"는 무엇인가요?",
+      argumentsCheckOptions: [
+        "함수에게 건네지는 인자",
+        "함수의 이름",
+        "반복문의 한 종류",
+        "괄호",
+      ],
+      argumentsCheckExplanation: "\"Hello!\"는 print '안으로' 전달되는 정보예요 — 그게 바로 인자예요.",
+
+      argvTitle: "재미있는 사실: argc와 argv",
+      argvBody: "어떤 프로그램은 명령어를 입력해서 실행할 때 특별한 방식으로 인자를 받아요. argc(\"인자 개수\")는 정보가 몇 개 주어졌는지를 나타내요. argv(\"인자 값\")는 그 정보들의 실제 목록이에요. 지금 당장은 필요 없지만, 나중에 보면 이제 알아볼 수 있을 거예요!",
+
+      variablesTitle: "변수란 무엇인가요?",
+      variablesBody: "변수는 값을 담아두는, 이름표가 붙은 상자예요. 나중에 다시 사용할 수 있죠. score = 10은 10이 들어있는 score라는 상자를 만들어요 — 언제든 들여다보거나 바꿀 수 있어요.",
+
+      typesTitle: "\"타입\"이란 무엇인가요?",
+      typesBody: "모든 값에는 타입이 있어요 — 컴퓨터에게 이게 '어떤 종류'의 것인지 알려주죠. 먼저 만나게 될 타입들이에요:",
+      typesList: [
+        { term: "string(문자열)", desc: "텍스트, 항상 따옴표 안에 — \"Hello\"처럼" },
+        { term: "char(문자)", desc: "글자나 기호 하나 — 'A'처럼" },
+        { term: "number(숫자)", desc: "숫자, 따옴표 없이 — 7이나 -3처럼" },
+        { term: "boolean(불리언)", desc: "참 아니면 거짓, 전등 스위치처럼" },
+      ],
+      typesCheckQuestion: "다음 중 문자열(string)은 무엇인가요?",
+      typesCheckOptions: ['"Hello"', "7", "true", "A"],
+      typesCheckExplanation: "따옴표로 감싼 텍스트가 문자열이에요 — 그게 알아보는 방법이에요!",
+    },
+
+    terminalChallenge: {
+      inputLabel: "명령어 입력…",
     },
 
     quizChallenge: {
@@ -1118,6 +1617,34 @@ export const translations = {
       peak: "최고 랭크",
       shield: "🛡️ 승급 방패 ({n}경기 남음) — {rank} 아래로 내려가지 않아요.",
       jsFallback: "언어가 C, C++, Java일 때 코드 레이스와 코드 골프는 JavaScript를 사용해요 — 시간제한이 있어서 온라인 컴파일은 너무 느려요.",
+      guestGate: "랭크 모드는 실제 상대와 대결하므로 계정이 필요해요 — 로그인하면 게스트 진행 상황이 그대로 이어져요.",
+    },
+
+    rankedQueue: {
+      searching: "비슷한 랭크의 상대를 찾는 중…",
+      widening: "검색 범위를 넓히는 중…",
+      waitedFor: "대기 시간",
+      cancel: "취소",
+      error: "매치메이킹에 연결할 수 없어요 — 연결 상태를 확인하고 다시 시도해 주세요.",
+      practiceHint: "지금은 주변에 아무도 없어요.",
+      practice: "🎯 대신 연습하기",
+    },
+
+    rankedPractice: {
+      banner: "연습 모드 — 랭크에 영향을 주지 않아요.",
+    },
+
+    rankedMatch: {
+      waitingTitle: "상대를 기다리는 중…",
+      waitingFor: "{name}님이 아직 진행 중이에요.",
+      claimForfeit: "승리 인정 — 상대가 나간 것 같아요",
+      draw: "무승부예요!",
+      youWon: "{name}님을 이겼어요!",
+      youLost: "{name}님이 이겼어요",
+      yourScore: "내 점수",
+      opponentScore: "상대 점수",
+      opponentRank: "상대 랭크",
+      opponentFinished: "{name}님이 끝냈어요 — 이제 당신 차례예요!",
     },
 
     rankChange: {
@@ -1241,11 +1768,13 @@ export const translations = {
 
     sideQuestMap: {
       title: "사이드 퀘스트 🧭",
-      subtitle: "실전 도구를 다루는 28개의 짧은 코스 —",
+      subtitle: "실전 도구를 다루는 31개의 짧은 코스 —",
       lessonsComplete: "레슨 완료!",
       lessons: "레슨",
       completed: "완료됨",
       notStarted: "시작 전",
+      allQuests: "전체",
+      tag_frontend: "프론트엔드",
     },
 
     sideQuestPath: {

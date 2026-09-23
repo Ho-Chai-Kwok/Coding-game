@@ -16,9 +16,13 @@ import {
 
 const TOTAL_SECONDS = 180;
 
-export default function CodeGolf({ character, language, onFinish, onExit }) {
+export default function CodeGolf({ character, language, seed, onFinish, onExit }) {
   const { t } = useI18n();
-  const puzzle = useMemo(() => shuffledSample(getCodeGolfPool(), 1)[0], []);
+  const puzzle = useMemo(
+    () => shuffledSample(getCodeGolfPool(), 1, seed)[0],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const [code, setCode] = useState(puzzle.starterCode[language] ?? puzzle.starterCode.javascript);
   const [result, setResult] = useState(null);
   const [running, setRunning] = useState(false);
@@ -50,7 +54,7 @@ export default function CodeGolf({ character, language, onFinish, onExit }) {
 
   async function handleRun() {
     setRunning(true);
-    const { logs, error } = language === "python" ? await runPythonCode(code) : runJsCode(code);
+    const { logs, error } = language === "python" ? await runPythonCode(code) : await runJsCode(code);
     setRunning(false);
 
     if (error) {

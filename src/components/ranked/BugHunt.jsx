@@ -15,9 +15,13 @@ import {
 const ROUND_COUNT = 5;
 const TOTAL_SECONDS = 100;
 
-export default function BugHunt({ character, onFinish, onExit }) {
+export default function BugHunt({ character, seed, onFinish, onExit }) {
   const { t } = useI18n();
-  const snippets = useMemo(() => shuffledSample(getBugHuntPool(), ROUND_COUNT), []);
+  const snippets = useMemo(
+    () => shuffledSample(getBugHuntPool(), ROUND_COUNT, seed),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const [roundIndex, setRoundIndex] = useState(0);
   const [phase, setPhase] = useState("find"); // "find" | "fix" | "roundDone"
   const [wrongLines, setWrongLines] = useState([]);

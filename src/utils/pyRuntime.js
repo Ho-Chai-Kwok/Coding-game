@@ -36,10 +36,16 @@ function lastMeaningfulLine(message) {
   return lines[lines.length - 1] || message;
 }
 
-export async function runPythonCode(code) {
+// Data-science packages (numpy, pandas, ...) are multi-megabyte downloads,
+// so they're only fetched for lessons that actually need them — never as
+// part of the base Python runtime every JS/Python lesson would otherwise
+// pay for. Pyodide caches a package once loaded, so this is a no-op on
+// every run after the first.
+export async function runPythonCode(code, packages = []) {
   let pyodide;
   try {
     pyodide = await getPyodide();
+    if (packages.length) await pyodide.loadPackage(packages);
   } catch {
     return {
       logs: [],

@@ -1,5 +1,6 @@
 import { getRankInfo, TIERS } from "../data/rank";
 import { useI18n } from "../i18n/I18nContext";
+import { useAuth } from "../auth/AuthContext";
 import CharacterRig from "./CharacterRig";
 
 export default function RankedHome({
@@ -15,6 +16,7 @@ export default function RankedHome({
   onBack,
 }) {
   const { t } = useI18n();
+  const { isLoggedIn, signOut } = useAuth();
   const rank = getRankInfo(points);
   const peak = getRankInfo(peakPoints);
   const floorLabel = getRankInfo(TIERS[rank.tierIndex].min).label;
@@ -98,9 +100,18 @@ export default function RankedHome({
 
       {usesJsFallback && <p className="ranked-home__note">ℹ️ {t("rankedHome.jsFallback")}</p>}
 
-      <button className="ranked-home__play" onClick={onPlay}>
-        {t("rankedHome.play")}
-      </button>
+      {isLoggedIn ? (
+        <button className="ranked-home__play" onClick={onPlay}>
+          {t("rankedHome.play")}
+        </button>
+      ) : (
+        <div className="ranked-home__guest-gate">
+          <p className="ranked-home__guest-gate-text">{t("rankedHome.guestGate")}</p>
+          <button className="ranked-home__play" onClick={signOut}>
+            {t("auth.logIn")} / {t("auth.signUp")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

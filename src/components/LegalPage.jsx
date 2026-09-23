@@ -2,7 +2,7 @@ import { useI18n } from "../i18n/I18nContext";
 import { isCaptchaEnabled } from "./TurnstileWidget";
 
 const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL;
-const UPDATED = "21 September 2026";
+const UPDATED = "23 September 2026";
 
 function Contact() {
   if (!CONTACT_EMAIL) return null;
@@ -61,6 +61,12 @@ function Privacy() {
           keep that code, but Wandbox has its own policies. Please never put personal information
           in your code.
         </li>
+        <li>
+          <strong>Side quest lessons on REST APIs and GraphQL</strong> send real requests, from your
+          browser, to free public test APIs (jsonplaceholder.typicode.com and
+          countries.trevorblades.com) so you can practice against a genuine server. These only
+          receive whatever request the lesson sends — never your account details.
+        </li>
       </ul>
 
       <h2>Services that help us run the app</h2>
@@ -82,6 +88,11 @@ function Privacy() {
         <li>
           <strong>Wandbox</strong> — only if you use C, C++ or Java lessons: it receives the code
           you run, and your IP address, to compile and run it.
+        </li>
+        <li>
+          <strong>JSONPlaceholder and the Countries GraphQL API</strong> — only if you use the REST
+          APIs or GraphQL side quests: these free public test services receive the practice
+          requests those lessons send, and your IP address.
         </li>
         <li>
           <strong>Google Fonts</strong> — the app’s fonts are loaded from Google, which therefore
@@ -153,9 +164,10 @@ function Terms() {
       <h2>Your code</h2>
       <p>
         JavaScript and Python code you write in lessons runs in your own browser. C, C++ and Java
-        code is sent to a third-party online compiler when you press Run, so don’t include personal
-        information in it. Only run code you understand; we are not responsible for what code you
-        choose to run, or for the availability of that third-party service.
+        code is sent to a third-party online compiler when you press Run, and REST API/GraphQL
+        lessons send real requests to third-party public test APIs — so don’t include personal
+        information in code you run. Only run code you understand; we are not responsible for what
+        code you choose to run, or for the availability of those third-party services.
       </p>
 
       <h2>Learning content</h2>

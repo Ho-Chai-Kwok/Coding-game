@@ -27,6 +27,13 @@ function writeLocal(key, data) {
 // the cloud save lands, the newer device copy wins on the next load and is
 // pushed up. `userId` null means guest mode (device only).
 //
+// `onHydrate(saved, userId)` gets the resolved blob plus the same userId
+// this load cycle resolved for — used by App.jsx to know whether a given
+// field in `saved` (like ranked LP) should still be trusted from this
+// blob, or has moved to its own server-authoritative storage that only
+// applies once someone's actually signed in (see ranked_stats in
+// supabase/schema.sql).
+//
 // Returns { syncStatus }: "guest" | "saving" | "saved" | "error".
 export function useProgressSync({ userId, state, onHydrate }) {
   const hydratedRef = useRef(false);
@@ -42,7 +49,7 @@ export function useProgressSync({ userId, state, onHydrate }) {
 
     async function load() {
       if (!(userId && isSupabaseConfigured)) {
-        onHydrate(readLocal(GUEST_KEY));
+        onHydrate(readLocal(GUEST_KEY), null);
         if (!cancelled) hydratedRef.current = true;
         return;
       }
@@ -81,7 +88,7 @@ export function useProgressSync({ userId, state, onHydrate }) {
         }
       }
 
-      onHydrate(chosen);
+      onHydrate(chosen, userId);
       hydratedRef.current = true;
       setSyncStatus(cloudFailed ? "error" : "saved");
     }

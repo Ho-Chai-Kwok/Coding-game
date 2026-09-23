@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from "react";
 import ModeSelect from "./components/ModeSelect";
+import BottomNav from "./components/BottomNav";
 import WorldMap from "./components/WorldMap";
 import LevelMap from "./components/LevelMap";
 import LevelScreen from "./components/LevelScreen";
@@ -9,12 +10,14 @@ import { useAuth } from "./auth/AuthContext";
 import { useProgressSync } from "./hooks/useProgressSync";
 import { computeStreak } from "./utils/streak";
 import { packWorlds, unpackWorlds, packSideQuests, unpackSideQuests } from "./utils/progressSerialize";
+import { bootstrapRankedStats, fetchRankedStats } from "./utils/rankedStats";
 import { STREAK_MILESTONES, BASE_AVATARS } from "./data/rewards";
 import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import { CHARACTERS, buildUnlockContext } from "./data/characters";
-import { applyRankedResult } from "./data/rank";
+import { describeRankChange } from "./data/rank";
 import { toInstantLanguage, isCompiledLanguage } from "./data/languages";
+import { applyHeadStart, getHeadStartWorldId } from "./data/onboarding";
 import "./App.css";
 
 // Lazy-loaded: these aren't needed for the first paint (mode select ->
@@ -23,7 +26,9 @@ import "./App.css";
 // Mode's 8 game components, the question bank, Settings, etc. up front.
 const RankedHome = lazy(() => import("./components/RankedHome"));
 const RankedShuffle = lazy(() => import("./components/RankedShuffle"));
-const RankedModeRunner = lazy(() => import("./components/RankedModeRunner"));
+const RankedQueue = lazy(() => import("./components/RankedQueue"));
+const RankedMatchRunner = lazy(() => import("./components/RankedMatchRunner"));
+const RankedPracticeRunner = lazy(() => import("./components/RankedPracticeRunner"));
 const SideQuestMap = lazy(() => import("./components/SideQuestMap"));
 const SideQuestPath = lazy(() => import("./components/SideQuestPath"));
 const Settings = lazy(() => import("./components/Settings"));
@@ -31,6 +36,7 @@ const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 const RankChange = lazy(() => import("./components/RankChange"));
 const LegalPage = lazy(() => import("./components/LegalPage"));
+const Onboarding = lazy(() => import("./components/Onboarding"));
 
 const DEFAULT_PROFILE = { displayName: "Coder", avatar: "🦊" };
 
@@ -59,8 +65,15 @@ function AppShell() {
   const [activeSideQuestLesson, setActiveSideQuestLesson] = useState(null);
 
   // Ranked mode state. rankedMode is null (home) | "shuffle" (spin-the-
-  // wheel screen) | a MODE_IDS value while a match is being played.
+  // wheel screen) | a MODE_IDS value once a mode's been picked. Ranked is
+  // real player-vs-player: picking a mode enters real matchmaking
+  // (rankedMatchId stays null while searching), and only once a real
+  // opponent is found does actual gameplay start. rankedPracticing is the
+  // explicit, clearly-labeled opt-out offered after a while in queue —
+  // solo play against no one, never affecting rankedPoints below.
   const [rankedMode, setRankedMode] = useState(null);
+  const [rankedMatchId, setRankedMatchId] = useState(null);
+  const [rankedPracticing, setRankedPracticing] = useState(false);
   const [rankedPoints, setRankedPoints] = useState(0);
   const [rankedWins, setRankedWins] = useState(0);
   const [rankedLosses, setRankedLosses] = useState(0);
@@ -82,6 +95,13 @@ function AppShell() {
   // Characters: unlocked through real progress (see src/data/characters.js),
   // selectable to represent the player in Ranked Mode.
   const [selectedCharacterId, setSelectedCharacterId] = useState(CHARACTERS[0].id);
+
+  // One-time "getting to know you" wizard (level/goal/language), shown
+  // once per account/guest device right after login. Starts as null
+  // ("unknown yet") rather than false, so a returning user whose answer is
+  // already saved never sees it flash before hydration confirms that.
+  const [onboardingComplete, setOnboardingComplete] = useState(null);
+  const [onboardingAnswers, setOnboardingAnswers] = useState(null);
 
   useEffect(() => {
     if (theme === "system") {
@@ -111,6 +131,8 @@ function AppShell() {
       claimedMilestones,
       unlockedAvatars,
       selectedCharacterId,
+      onboardingComplete,
+      onboardingAnswers,
     }),
     [
       worldsState,
@@ -130,12 +152,14 @@ function AppShell() {
       claimedMilestones,
       unlockedAvatars,
       selectedCharacterId,
+      onboardingComplete,
+      onboardingAnswers,
     ],
   );
 
   const hasHydratedRef = useRef(false);
 
-  const onHydrate = useCallback((saved) => {
+  const onHydrate = useCallback((saved, userId) => {
     // Guard against granting daily rewards twice: React's StrictMode
     // intentionally double-invokes effects in development, and this
     // callback should only ever apply its one-time hydration/reward
@@ -143,19 +167,53 @@ function AppShell() {
     if (hasHydratedRef.current) return;
     hasHydratedRef.current = true;
 
+    // Resolved unconditionally (saved may be null for a brand-new guest),
+    // so this always turns the null "unknown" state into a real boolean.
+    setOnboardingComplete(Boolean(saved?.onboardingComplete));
+    setOnboardingAnswers(saved?.onboardingAnswers ?? null);
+
     if (saved) {
       if (saved.worldsState) setWorldsState(unpackWorlds(saved.worldsState));
       if (saved.sideQuestsState) setSideQuestsState(unpackSideQuests(saved.sideQuestsState));
       if (saved.language) setLanguage(saved.language);
-      if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
-      if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
-      if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
-      if (typeof saved.rankedShield === "number") setRankedShield(saved.rankedShield);
-      setPeakPoints(Math.max(saved.peakPoints ?? 0, saved.rankedPoints ?? 0));
+      if (!userId) {
+        // Guest: no account, so no server-side ranked_stats row to read —
+        // these numbers still live entirely in the local blob, unchanged
+        // from before.
+        if (typeof saved.rankedPoints === "number") setRankedPoints(saved.rankedPoints);
+        if (typeof saved.rankedWins === "number") setRankedWins(saved.rankedWins);
+        if (typeof saved.rankedLosses === "number") setRankedLosses(saved.rankedLosses);
+        if (typeof saved.rankedShield === "number") setRankedShield(saved.rankedShield);
+        setPeakPoints(Math.max(saved.peakPoints ?? 0, saved.rankedPoints ?? 0));
+      }
       if (saved.profile) setProfile(saved.profile);
       if (saved.theme) setTheme(saved.theme);
       if (saved.continueWorldId) setContinueWorldId(saved.continueWorldId);
       if (saved.selectedCharacterId) setSelectedCharacterId(saved.selectedCharacterId);
+    }
+
+    if (userId) {
+      // Signed in: LP/wins/losses/shield are server-authoritative (see
+      // ranked_stats in supabase/schema.sql) — the client-synced blob is
+      // never trusted for these once there's a real account. Bootstrap
+      // carries over whatever this account's LP already was the first
+      // time this runs for it (a no-op every time after that — see
+      // claim_initial_ranked_stats()), then the real stored values
+      // always win over anything guessed from the old blob.
+      bootstrapRankedStats({
+        points: saved?.rankedPoints ?? 0,
+        peakPoints: Math.max(saved?.peakPoints ?? 0, saved?.rankedPoints ?? 0),
+        wins: saved?.rankedWins ?? 0,
+        losses: saved?.rankedLosses ?? 0,
+        shield: saved?.rankedShield ?? 0,
+      }).then((stats) => {
+        if (!stats) return;
+        setRankedPoints(stats.points);
+        setRankedWins(stats.wins);
+        setRankedLosses(stats.losses);
+        setRankedShield(stats.shield);
+        setPeakPoints(stats.peak_points);
+      });
     }
 
     const { streak: nextStreak, lastPlayedDate: today } = computeStreak(
@@ -181,6 +239,14 @@ function AppShell() {
         const newAvatars = newlyEarned.filter((m) => m.avatar).map((m) => m.avatar);
         setClaimedMilestones([...prevClaimed, ...newlyEarned.map((m) => m.day)]);
         setUnlockedAvatars([...new Set([...prevAvatars, ...newAvatars])]);
+        // For a signed-in account this is a local-only, single-session
+        // bump: ranked_stats (the real, server-side LP) is never written
+        // from here, so it self-corrects back to the true value on the
+        // next load. Streaks/claimed milestones aren't server-validated
+        // at all yet (a separate, pre-existing gap from ranked LP
+        // storage — matchmaking/settlement never read this number, so it
+        // can't be used to cheat a match), so this stays real for guests
+        // and cosmetic-only for accounts until that's addressed too.
         if (bonusLp > 0) setRankedPoints((p) => p + bonusLp);
         setNewlyEarnedRewards(newlyEarned);
         return;
@@ -210,6 +276,8 @@ function AppShell() {
     setUnlockedAvatars(BASE_AVATARS);
     setNewlyEarnedRewards([]);
     setSelectedCharacterId(CHARACTERS[0].id);
+    setOnboardingComplete(false);
+    setOnboardingAnswers(null);
   }
 
   function enterWorld(worldId) {
@@ -217,13 +285,24 @@ function AppShell() {
     setContinueWorldId(worldId);
   }
 
-  function backToModes() {
-    setMode(null);
+  // Switching to a different mode/tab (whether via the bottom nav or an
+  // in-screen "back" link) always resets whichever nested screen was open
+  // within the mode being left — which world/lesson/match was active — the
+  // same way its own back button already did. Real progress is saved
+  // separately (worldsState/sideQuestsState) and is never touched here.
+  function switchMode(nextMode) {
     setActiveWorldId(null);
     setActiveLevel(null);
     setActiveSideQuestId(null);
     setActiveSideQuestLesson(null);
     setRankedMode(null);
+    setRankedMatchId(null);
+    setRankedPracticing(false);
+    setMode(nextMode);
+  }
+
+  function backToModes() {
+    switchMode(null);
   }
 
   function completeLevel(level) {
@@ -274,15 +353,28 @@ function AppShell() {
     setActiveSideQuestLesson(null);
   }
 
-  function handleFinishRankedMode(pointsDelta, didWin) {
-    const result = applyRankedResult({ points: rankedPoints, shield: rankedShield }, pointsDelta);
-    setRankedPoints(result.points);
-    setRankedShield(result.shield);
-    setPeakPoints((peak) => Math.max(peak, result.points));
-    setRankChange(result.change);
-    if (didWin) setRankedWins((w) => w + 1);
-    else setRankedLosses((l) => l + 1);
+  // Ranked PvP always requires a signed-in account (see RankedHome's
+  // guest gate), so `user` is always real here. The real new LP/shield/
+  // wins/losses already exist server-side by the time this fires (the
+  // match settled before RankedMatchRunner ever calls onSettled) — this
+  // just fetches them and, for the celebration screen, compares the old
+  // total (still held in state) against the new one via describeRankChange,
+  // which only describes a movement already decided server-side rather
+  // than computing one.
+  async function handleFinishRankedMode(pointsDelta) {
+    const before = rankedPoints;
+    const hadShield = rankedShield > 0;
+    const stats = await fetchRankedStats(user?.id);
+    if (stats) {
+      setRankedPoints(stats.points);
+      setRankedWins(stats.wins);
+      setRankedLosses(stats.losses);
+      setRankedShield(stats.shield);
+      setPeakPoints(stats.peak_points);
+      setRankChange(describeRankChange(before, stats.points, pointsDelta, hadShield));
+    }
     setRankedMode(null);
+    setRankedMatchId(null);
   }
 
   const overallProgress = useMemo(() => {
@@ -327,8 +419,34 @@ function AppShell() {
   }
 
   let screen;
+  // The bottom nav is the app's persistent, primary way to switch modes,
+  // so it stays visible everywhere except a focused activity someone has
+  // actually committed to (playing a lesson, mid-shuffle, or mid-match) —
+  // same idea as a mobile app hiding its tab bar during full-screen
+  // gameplay. Defaults hidden; each branch below opts back in.
+  let hideBottomNav = true;
 
-  if (!mode) {
+  if (onboardingComplete === null) {
+    // Hydration hasn't resolved yet — stay quiet rather than flash the
+    // wizard at a returning user whose answer is already saved.
+    screen = <div className="app-loading" aria-label="Loading">🎮</div>;
+  } else if (!onboardingComplete) {
+    screen = (
+      <Onboarding
+        onComplete={(answers) => {
+          if (answers.language) setLanguage(answers.language);
+          setOnboardingAnswers(answers);
+          setOnboardingComplete(true);
+          // Someone who says they're not a total beginner starts further
+          // into the 100-world path instead of at World 1 — see
+          // data/onboarding.js for exactly which world per level.
+          setWorldsState((prev) => applyHeadStart(prev, answers.level));
+          setContinueWorldId(getHeadStartWorldId(answers.level));
+        }}
+      />
+    );
+  } else if (!mode) {
+    hideBottomNav = false;
     screen = (
       <ModeSelect
         profile={profile}
@@ -336,13 +454,12 @@ function AppShell() {
         overallProgress={overallProgress}
         continueWorld={continueWorld}
         onContinueLearning={handleContinueLearning}
-        onSelect={setMode}
-        onOpenSettings={() => setMode("settings")}
-        onOpenCalendar={() => setMode("calendar")}
-        onOpenCharacters={() => setMode("characters")}
+        onOpenSettings={() => switchMode("settings")}
+        onOpenCalendar={() => switchMode("calendar")}
       />
     );
   } else if (mode === "characters") {
+    hideBottomNav = false;
     screen = (
       <CharacterRoster
         unlockCtx={unlockCtx}
@@ -381,6 +498,7 @@ function AppShell() {
     const activeWorld = worldsState.find((w) => w.id === activeWorldId);
 
     if (!language) {
+      hideBottomNav = false;
       screen = (
         <LanguageSelect onSelect={setLanguage} onBack={backToModes} />
       );
@@ -394,6 +512,7 @@ function AppShell() {
         />
       );
     } else if (activeWorld) {
+      hideBottomNav = false;
       screen = (
         <LevelMap
           world={activeWorld}
@@ -402,6 +521,7 @@ function AppShell() {
         />
       );
     } else {
+      hideBottomNav = false;
       screen = (
         <WorldMap
           worlds={worldsState}
@@ -424,6 +544,7 @@ function AppShell() {
         />
       );
     } else if (activeQuest) {
+      hideBottomNav = false;
       screen = (
         <SideQuestPath
           quest={activeQuest}
@@ -432,6 +553,7 @@ function AppShell() {
         />
       );
     } else {
+      hideBottomNav = false;
       screen = (
         <SideQuestMap
           sidequests={sideQuestsState}
@@ -448,20 +570,52 @@ function AppShell() {
           onExit={() => setRankedMode(null)}
         />
       );
-    } else if (rankedMode) {
+    } else if (rankedMode && rankedPracticing) {
+      // Explicit opt-out offered after a while in queue: solo play, no
+      // rank change — see RankedPracticeRunner.jsx.
       screen = (
-        <RankedModeRunner
+        <RankedPracticeRunner
           modeId={rankedMode}
           character={selectedCharacter}
           language={toInstantLanguage(language ?? "javascript")}
           rankedPoints={rankedPoints}
+          onExit={() => {
+            setRankedMode(null);
+            setRankedPracticing(false);
+          }}
+        />
+      );
+    } else if (rankedMode && !rankedMatchId) {
+      // Real matchmaking: a mode's been picked, but no opponent yet.
+      screen = (
+        <RankedQueue
+          modeId={rankedMode}
+          displayName={profile.displayName}
+          onMatched={setRankedMatchId}
+          onPractice={() => setRankedPracticing(true)}
           onExit={() => setRankedMode(null)}
-          onFinish={handleFinishRankedMode}
+        />
+      );
+    } else if (rankedMode && rankedMatchId) {
+      screen = (
+        <RankedMatchRunner
+          matchId={rankedMatchId}
+          modeId={rankedMode}
+          myUserId={user?.id}
+          character={selectedCharacter}
+          language={toInstantLanguage(language ?? "javascript")}
+          onExit={() => {
+            setRankedMode(null);
+            setRankedMatchId(null);
+          }}
+          onSettled={handleFinishRankedMode}
         />
       );
     } else if (rankChange) {
+      hideBottomNav = false;
       screen = <RankChange change={rankChange} onContinue={() => setRankChange(null)} />;
     } else {
+      hideBottomNav = false;
       screen = (
         <RankedHome
           points={rankedPoints}
@@ -472,7 +626,7 @@ function AppShell() {
           losses={rankedLosses}
           selectedCharacter={selectedCharacter}
           onPlay={() => setRankedMode("shuffle")}
-          onOpenCharacters={() => setMode("characters")}
+          onOpenCharacters={() => switchMode("characters")}
           onBack={backToModes}
         />
       );
@@ -480,9 +634,12 @@ function AppShell() {
   }
 
   return (
-    <div className="app">
-      <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>{screen}</Suspense>
-    </div>
+    <>
+      <div className={`app${hideBottomNav ? "" : " app--with-nav"}`}>
+        <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>{screen}</Suspense>
+      </div>
+      {!hideBottomNav && <BottomNav active={mode} onSelect={switchMode} />}
+    </>
   );
 }
 

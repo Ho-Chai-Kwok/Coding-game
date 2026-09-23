@@ -5,6 +5,9 @@ import CodeEditor from "./CodeEditor";
 import { runPythonCode } from "../utils/pyRuntime";
 import { runJsCode } from "../utils/runCode";
 import { runCompiledCode } from "../utils/remoteRun";
+import { runSqlCode } from "../utils/sqlRuntime";
+import { runReactCode } from "../utils/reactRuntime";
+import { runHtmlCode } from "../utils/htmlRuntime";
 import { isCompiledLanguage } from "../data/languages";
 import { useI18n } from "../i18n/I18nContext";
 
@@ -16,7 +19,13 @@ function resolveContent(content, language) {
 // C, C++ and Java lessons live in their own lazy-loaded chunk; wait for it,
 // then hand the merged lesson to the challenge below.
 export default function CodeChallenge({ content, levelId, language = "javascript", onSolved }) {
-  const compiled = isCompiledLanguage(language);
+  // A lesson can pin its own language (SQL and NumPy/Pandas-style Python
+  // side quests), overriding whichever language the learner picked for the
+  // main path — that choice isn't relevant to a lesson that's specifically
+  // about SQL or a Python library. Computed before the hooks below (not
+  // returned early) so hook order stays unconditional.
+  const pinnedLanguage = content.language;
+  const compiled = !pinnedLanguage && isCompiledLanguage(language);
   const [loaded, setLoaded] = useState(null); // { key, lesson }
   const key = `${levelId}:${language}`;
 
@@ -30,6 +39,10 @@ export default function CodeChallenge({ content, levelId, language = "javascript
       cancelled = true;
     };
   }, [compiled, key, levelId, language]);
+
+  if (pinnedLanguage) {
+    return <CodeChallengeBody key={levelId} active={content} language={pinnedLanguage} onSolved={onSolved} />;
+  }
 
   if (compiled) {
     if (loaded?.key !== key) return <p className="code-challenge__loading">⏳</p>;
@@ -67,11 +80,17 @@ function CodeChallengeBody({ active, language, onSolved }) {
   async function handleRun() {
     setRunning(true);
     const { logs, error } =
-      language === "python"
-        ? await runPythonCode(code)
-        : compiled
-          ? await runCompiledCode(language, code)
-          : runJsCode(code);
+      language === "sql"
+        ? await runSqlCode(active.seedSql, code)
+        : language === "jsx"
+          ? await runReactCode(code)
+          : language === "html"
+            ? await runHtmlCode(code, active.checks)
+            : language === "python"
+              ? await runPythonCode(code, active.pyPackages)
+              : compiled
+                ? await runCompiledCode(language, code)
+                : await runJsCode(code);
     setRunning(false);
 
     if (error) {
@@ -111,6 +130,16 @@ function CodeChallengeBody({ active, language, onSolved }) {
       {compiled && (
         <p className="code-challenge__online-note">
           ☁️ {running ? t("codeChallenge.compiling") : t("codeChallenge.onlineNote")}
+        </p>
+      )}
+      {active.pyPackages?.length > 0 && (
+        <p className="code-challenge__online-note">
+          📦 {running ? t("codeChallenge.loadingPackage") : t("codeChallenge.packageNote").replace("{package}", active.pyPackages.join(", "))}
+        </p>
+      )}
+      {language === "html" && (
+        <p className="code-challenge__online-note">
+          🖥️ {running ? t("codeChallenge.rendering") : t("codeChallenge.htmlNote")}
         </p>
       )}
 

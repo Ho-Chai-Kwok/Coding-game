@@ -1,5 +1,6 @@
 import CodeChallenge from "./CodeChallenge";
 import QuizChallenge from "./QuizChallenge";
+import TerminalChallenge from "./TerminalChallenge";
 import { useI18n } from "../i18n/I18nContext";
 
 export default function LevelScreen({
@@ -32,6 +33,13 @@ export default function LevelScreen({
 
       {level.content?.type === "quiz" && (
         <QuizChallenge
+          content={level.content}
+          onSolved={() => onCompleteLevel(level)}
+        />
+      )}
+
+      {level.content?.type === "terminal" && (
+        <TerminalChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}
         />

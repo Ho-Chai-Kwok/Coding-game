@@ -10,15 +10,21 @@ import {
   debugDuelHasFreeMiss,
 } from "../../data/rankedModes";
 
-// A true 1v1 needs real-time opponent matchmaking, which this app doesn't
-// have yet. This is the solo approximation called for in the design brief:
-// race a fixed "ghost" target time instead of a live opponent.
+// Played against a real matched opponent (see RankedMatchRunner.jsx):
+// both players get the identical snippet (shared `seed`) and race the
+// same GHOST_SECONDS par time; the actual match winner is whoever's
+// elapsed time converts to the higher score, decided after both finish
+// — not just "did you personally beat the ghost."
 const GHOST_SECONDS = 18;
 const SAFETY_TIMEOUT = 60;
 
-export default function DebugDuel({ character, onFinish, onExit }) {
+export default function DebugDuel({ character, seed, onFinish, onExit }) {
   const { t } = useI18n();
-  const snippet = useMemo(() => shuffledSample(getBugHuntPool(), 1)[0], []);
+  const snippet = useMemo(
+    () => shuffledSample(getBugHuntPool(), 1, seed)[0],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   const [phase, setPhase] = useState("find");
   const [wrongLines, setWrongLines] = useState([]);
   const [livesLeft, setLivesLeft] = useState(debugDuelHasFreeMiss(character) ? 2 : 1);

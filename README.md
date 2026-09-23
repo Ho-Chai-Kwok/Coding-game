@@ -15,14 +15,19 @@ and unlocking characters along the way.
   are fast concept quizzes so every world works no matter which language you
   picked. Timed Ranked modes use JavaScript for C/C++/Java learners, since
   online compiling is too slow for them.
-- **28 Side Quests** — optional 10-lesson courses on real tools: Git,
-  Docker, SQL, React, AWS, Kubernetes, and AI/ML topics like Prompt
+- **31 Side Quests** — optional courses on real tools: Git, Docker, SQL,
+  React, HTML, CSS, PHP, AWS, Kubernetes, and AI/ML topics like Prompt
   Engineering, LangChain, LangGraph, Computer Vision, NLP, and RAG.
-- **Ranked Mode** — 8 real game modes (Code Race, Bug Hunt, Predict the
-  Output, Code Golf, Showdown, Debug Duel, Chaos Round, and a Relay mode
-  awaiting real matchmaking), picked via a daily-rotating slot-machine
-  shuffle. Questions scale across 7 difficulty tiers (Bronze →
-  Grandmaster) that track your rank.
+- **Ranked Mode** — real player-vs-player: 7 playable game modes (Code
+  Race, Bug Hunt, Predict the Output, Code Golf, Showdown, Debug Duel,
+  Chaos Round, plus a Relay mode awaiting real team matchmaking), picked
+  via a daily-rotating slot-machine shuffle, then matched against a real
+  opponent of similar rank (see `supabase/schema.sql`) — closest LP first,
+  widening the search over time. Both players get identical content, and
+  LP moves on a real, server-computed, zero-sum ELO-style swing based on
+  who you actually beat. Questions scale across 7 difficulty tiers
+  (Bronze → Grandmaster) that track your rank. Requires an account (not
+  guest) to be matched.
 - **10 unlockable characters** — a shared parametric SVG rig reskinned
   per character, each with a real mechanical bonus tied to their
   archetype (not just flavor text), unlocked through genuine progress.

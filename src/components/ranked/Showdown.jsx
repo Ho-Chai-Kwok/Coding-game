@@ -20,11 +20,11 @@ function roundSeconds(i) {
   return Math.max(ROUND_TIME_FLOOR, ROUND_TIME_START - i);
 }
 
-export default function Showdown({ character, rankedPoints, onFinish, onExit }) {
+export default function Showdown({ character, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
   const difficulty = getDifficultyLevel(rankedPoints);
   const questions = useMemo(
-    () => shuffledSample(getQuestionPool(difficulty), MAX_ROUNDS),
+    () => shuffledSample(getQuestionPool(difficulty), MAX_ROUNDS, seed),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
