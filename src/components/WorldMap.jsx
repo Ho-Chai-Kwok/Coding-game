@@ -14,6 +14,7 @@ export default function WorldMap({
   language,
   onChangeLanguage,
   onSelectWorld,
+  onOpenPractice,
   onBack,
 }) {
   const { t } = useI18n();
@@ -36,6 +37,9 @@ export default function WorldMap({
             {getLanguage(language).icon} {getLanguage(language).name} · {t("worldMap.change")}
           </button>
         )}
+        <button className="world-map__practice-link" onClick={onOpenPractice}>
+          🧩 {t("worldMap.practiceProblems")}
+        </button>
       </header>
 
       {chapters.map((chapterWorlds, chapterIndex) => (

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import QuizChallenge from "../QuizChallenge";
 import RankedTimerBar from "./RankedTimerBar";
 import RankedResult from "./RankedResult";
@@ -7,6 +7,7 @@ import { useI18n } from "../../i18n/I18nContext";
 import { shuffledSample, applyBonusMultiplier, predictOutputRevealsWrong } from "../../data/rankedModes";
 import { getQuestionPool } from "../../data/rankedQuestionBank";
 import { getDifficultyLevel } from "../../data/rank";
+import { generateMatchQuestions } from "../../utils/rankedQuestionGenerator";
 
 const ROUND_COUNT = 8;
 const TOTAL_SECONDS = 90;
@@ -19,19 +20,37 @@ function pickWrongOptionIndex(content) {
   return wrongIndexes[Math.floor(Math.random() * wrongIndexes.length)];
 }
 
-export default function PredictOutput({ character, rankedPoints, seed, onFinish, onExit }) {
+export default function PredictOutput({ character, rankedPoints, matchId, seed, onFinish, onExit }) {
   const { t } = useI18n();
   const difficulty = getDifficultyLevel(rankedPoints);
-  const questions = useMemo(
-    () => shuffledSample(getQuestionPool(difficulty), ROUND_COUNT, seed),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const [questions, setQuestions] = useState(null);
   const [roundIndex, setRoundIndex] = useState(0);
   const [finished, setFinished] = useState(null);
   const revealsWrong = predictOutputRevealsWrong(character);
 
   const timer = useCountdown(TOTAL_SECONDS, () => finish(roundIndex, 0));
+
+  // Try a fresh, AI-generated batch for this real match first (both
+  // matched players end up with the identical batch — see
+  // utils/rankedQuestionGenerator.js); fall back to the static bank on
+  // any failure or for solo/practice play (no matchId). The timer stays
+  // paused the whole time this is in flight so a slow generation never
+  // eats into the player's actual round time.
+  useEffect(() => {
+    timer.reset(TOTAL_SECONDS, false);
+    let cancelled = false;
+    (async () => {
+      const dynamic = matchId ? await generateMatchQuestions(matchId) : null;
+      if (cancelled) return;
+      const pool = dynamic ?? getQuestionPool(difficulty);
+      setQuestions(shuffledSample(pool, ROUND_COUNT, seed));
+      timer.reset(TOTAL_SECONDS, true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function finish(roundsCompleted, secondsLeft) {
     if (finished) return;
@@ -57,7 +76,7 @@ export default function PredictOutput({ character, rankedPoints, seed, onFinish,
     }
   }
 
-  const question = questions[roundIndex];
+  const question = questions?.[roundIndex];
   // Memoized per round so the timer ticking (which re-renders this
   // component every second) doesn't reroll which option gets revealed.
   const disabledOptionIndex = useMemo(
@@ -80,6 +99,18 @@ export default function PredictOutput({ character, rankedPoints, seed, onFinish,
         bonusNote={revealsWrong ? t("rankedModes.predictOutput.scopeBonus") : null}
         onContinue={() => onFinish(finished.pointsDelta, finished.didWin)}
       />
+    );
+  }
+
+  if (!questions) {
+    return (
+      <div className="ranked-mode-screen">
+        <div className="ranked-mode-screen__header">
+          <span className="ranked-mode-screen__icon">🔮</span>
+          <h2>{t("rankedModes.predictOutput.name")}</h2>
+        </div>
+        <p className="ranked-mode-screen__loading">{t("rankedModes.preparingQuestions")}</p>
+      </div>
     );
   }
 

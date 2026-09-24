@@ -9,15 +9,17 @@ import {
   shuffledSample,
   applyBonusMultiplier,
 } from "../../data/rankedModes";
+import { getDifficultyLevel } from "../../data/rank";
 
 const ROUND_COUNT = 6;
 const TOTAL_SECONDS = 240;
 const DASH_BONUS_SECONDS = 5;
 
-export default function CodeRace({ character, language, seed, onFinish, onExit }) {
+export default function CodeRace({ character, language, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
+  const difficulty = getDifficultyLevel(rankedPoints);
   const puzzles = useMemo(
-    () => shuffledSample(getCodePool(), ROUND_COUNT, seed),
+    () => shuffledSample(getCodePool(difficulty), ROUND_COUNT, seed),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

@@ -750,3 +750,98 @@ begin
     where id = p_match_id;
 end;
 $$;
+
+-- Code Helper: an AI tutor a learner can paste a question + their code
+-- into (see supabase/functions/code-help/ and src/components/CodeHelper.jsx).
+-- The actual AI call happens in that Edge Function, not here — this table
+-- and function exist purely as a server-side daily-request cap, since the
+-- Edge Function calls a paid API per request and "has an account" alone
+-- (free to create) isn't enough abuse protection on its own. The client
+-- never writes to this table directly — no policy grants it any access at
+-- all, so RLS's default-deny blocks it, same as ranked_stats above.
+create table if not exists public.code_help_usage (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  usage_date date not null default current_date,
+  request_count int not null default 0,
+  primary key (user_id, usage_date)
+);
+
+alter table public.code_help_usage enable row level security;
+revoke all on public.code_help_usage from public, anon, authenticated;
+
+-- Atomically increments today's count and reports whether the caller is
+-- still under the limit — called once per help request, from inside the
+-- Edge Function (using the caller's own JWT, so auth.uid() is trustworthy
+-- exactly like every other function in this file). `on conflict ... do
+-- update` makes the insert-or-increment a single atomic statement, so two
+-- near-simultaneous requests from the same user can't both slip through
+-- while reading a stale count.
+create or replace function public.check_and_log_code_help_usage(p_daily_limit int default 20)
+returns table(allowed boolean, used_today int, daily_limit int)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_count int;
+begin
+  if v_uid is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  insert into public.code_help_usage (user_id, usage_date, request_count)
+  values (v_uid, current_date, 1)
+  on conflict (user_id, usage_date)
+    do update set request_count = code_help_usage.request_count + 1
+  returning request_count into v_count;
+
+  return query select (v_count <= p_daily_limit), v_count, p_daily_limit;
+end;
+$$;
+
+revoke all on function public.check_and_log_code_help_usage(int) from public, anon;
+grant execute on function public.check_and_log_code_help_usage(int) to authenticated;
+
+-- Ranked Mode: dynamically-generated questions, cached per match. See
+-- supabase/functions/generate-ranked-questions/ and
+-- src/utils/rankedQuestionGenerator.js.
+--
+-- Both matched players must see IDENTICAL questions — the same fairness
+-- guarantee the seeded static pool already provides everywhere else in
+-- ranked mode. Generating independently per-client would let one player
+-- draw an easier or just different set than the other. Instead, whichever
+-- player's client asks first triggers generation, and the result is
+-- written ONCE to the match row itself; the other player's client (or a
+-- retry from the same one) just reads it back — same "shared seed, one
+-- source of truth" idea as everything else in ranked_matches.
+alter table public.ranked_matches add column if not exists generated_questions jsonb;
+
+-- Saves a match's generated questions exactly once. `where
+-- generated_questions is null` makes this a real compare-and-set: if both
+-- players' clients happen to call this within moments of each other
+-- (or one client retries), only the first write sticks and every later
+-- one is silently a no-op — the Edge Function always re-reads the row
+-- afterward and returns whatever actually ended up stored, so neither
+-- side can end up trusting its own losing generation over the real one.
+create or replace function public.save_match_questions(p_match_id uuid, p_questions jsonb)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  update public.ranked_matches
+  set generated_questions = p_questions
+  where id = p_match_id
+    and generated_questions is null
+    and (auth.uid() = player1_id or auth.uid() = player2_id);
+end;
+$$;
+
+revoke all on function public.save_match_questions(uuid, jsonb) from public, anon;
+grant execute on function public.save_match_questions(uuid, jsonb) to authenticated;

@@ -212,8 +212,19 @@ function allLevels() {
 // Code-type levels have hand-authored JS *and* Python starters (worlds
 // 1-12 only) — required for Code Race/Code Golf since players type real
 // code in their chosen language.
-export function getCodePool() {
-  return allLevels().filter((l) => l.content?.type === "code");
+//
+// With a `level` (1-7, a rank tier from getDifficultyLevel), biases toward
+// the world that tier roughly corresponds to — worlds are already ordered
+// easiest-to-hardest by design, so no separate difficulty tagging is
+// needed here, just mapping the 7 rank tiers onto the 1-12 world range
+// these code-type levels actually span.
+export function getCodePool(level) {
+  const pool = allLevels().filter((l) => l.content?.type === "code");
+  if (level == null) return pool;
+  const targetWorldId = Math.round((level / 7) * 12);
+  return [...pool].sort(
+    (a, b) => Math.abs(a.worldId - targetWorldId) - Math.abs(b.worldId - targetWorldId),
+  );
 }
 
 // Quiz-type levels exist for every world (1-100) and read fine regardless

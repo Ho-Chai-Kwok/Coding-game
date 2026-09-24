@@ -13,13 +13,15 @@ import {
   applyBonusMultiplier,
   codeGolfBonusPerLineUnderPar,
 } from "../../data/rankedModes";
+import { getDifficultyLevel } from "../../data/rank";
 
 const TOTAL_SECONDS = 180;
 
-export default function CodeGolf({ character, language, seed, onFinish, onExit }) {
+export default function CodeGolf({ character, language, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
+  const difficulty = getDifficultyLevel(rankedPoints);
   const puzzle = useMemo(
-    () => shuffledSample(getCodeGolfPool(), 1, seed)[0],
+    () => shuffledSample(getCodeGolfPool(difficulty), 1, seed)[0],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

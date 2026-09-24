@@ -1,25 +1,133 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useI18n } from "../i18n/I18nContext";
 import { LOCALES } from "../i18n/translations";
 import { useAuth } from "../auth/AuthContext";
 import { BASE_AVATARS, REWARD_AVATARS } from "../data/rewards";
 import { LANGUAGES } from "../data/languages";
+import { getSuggestions } from "../utils/insights";
+import { version as APP_VERSION } from "../../package.json";
 
 const ALL_AVATARS = [
   ...BASE_AVATARS.map((a) => ({ avatar: a, day: null })),
   ...REWARD_AVATARS,
 ];
 
+const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL;
+
+// One suggestion "kind" -> one translation-key pair. Numeric/name params
+// are substituted with .replaceAll so a key can safely use {n} more than
+// once (see the earlier {need}/{need} bug this same fix pattern covers).
+function InsightCard({ suggestion, t }) {
+  const { kind } = suggestion;
+  let text = t(`insights.${kind}Text`);
+  if (suggestion.n != null) text = text.replaceAll("{n}", suggestion.n);
+  if (suggestion.streak != null) text = text.replaceAll("{streak}", suggestion.streak);
+  if (suggestion.reward != null) text = text.replaceAll("{reward}", suggestion.reward);
+  if (suggestion.category != null) {
+    text = text.replaceAll("{category}", t(`sideQuestMap.tag_${suggestion.category}`));
+  }
+  return <p className="insights__card">{text}</p>;
+}
+
+// A logged-in user's own password, changed directly (their live session
+// already proves who they are — Supabase's updateUser() needs no old
+// password), separate from AuthGate's "forgot password" email-link flow
+// for someone who's locked out entirely.
+function ChangePasswordForm({ onClose }) {
+  const { t } = useI18n();
+  const { updatePassword } = useAuth();
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [done, setDone] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError(t("settings.passwordMismatch"));
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    const { error: updateError } = await updatePassword(newPassword);
+    setSubmitting(false);
+    if (updateError) {
+      setError(updateError);
+      return;
+    }
+    setDone(true);
+    setNewPassword("");
+    setConfirmPassword("");
+  }
+
+  if (done) {
+    return (
+      <p className="settings__password-success" role="status">
+        {t("settings.passwordUpdated")}
+      </p>
+    );
+  }
+
+  return (
+    <form className="settings__password-form" onSubmit={handleSubmit}>
+      <input
+        className="settings__text-input"
+        type="password"
+        placeholder={t("auth.newPassword")}
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+        required
+        minLength={6}
+        autoComplete="new-password"
+      />
+      <input
+        className="settings__text-input"
+        type="password"
+        placeholder={t("settings.confirmPassword")}
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        required
+        minLength={6}
+        autoComplete="new-password"
+      />
+      {error && <p className="settings__delete-error">{error}</p>}
+      <div className="settings__delete-actions">
+        <button className="settings__signout" type="submit" disabled={submitting}>
+          {submitting ? t("auth.loading") : t("auth.newPasswordSave")}
+        </button>
+        <button
+          className="settings__delete-cancel"
+          type="button"
+          onClick={onClose}
+          disabled={submitting}
+        >
+          {t("settings.passwordCancel")}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function Settings({
   profile,
   onChangeProfile,
   theme,
   onChangeTheme,
+  reducedMotion = "system",
+  onChangeReducedMotion,
   codingLanguage,
   onChangeCodingLanguage,
   unlockedAvatars = BASE_AVATARS,
+  mainLessonsCompleted = 0,
+  streak = 0,
+  sideQuestsState = [],
+  rankedWins = 0,
+  rankedLosses = 0,
+  rankedShield = 0,
   onBack,
   onResetProgress,
+  onExportData,
   syncStatus = "guest",
 }) {
   const { t, locale, setLocale } = useI18n();
@@ -27,6 +135,22 @@ export default function Settings({
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  const suggestions = useMemo(
+    () =>
+      getSuggestions({
+        mainLessonsCompleted,
+        streak,
+        sideQuestsState,
+        rankedWins,
+        rankedLosses,
+        rankedShield,
+        unlockedAvatarsCount: unlockedAvatars.length,
+        totalAvatarsCount: ALL_AVATARS.length,
+      }).slice(0, 4),
+    [mainLessonsCompleted, streak, sideQuestsState, rankedWins, rankedLosses, rankedShield, unlockedAvatars],
+  );
 
   async function handleDeleteAccount() {
     setDeleting(true);
@@ -45,6 +169,19 @@ export default function Settings({
     }
   }
 
+  function handleExportData() {
+    const data = onExportData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `code-quest-data-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="settings">
       <button className="back-link" onClick={onBack}>
@@ -52,6 +189,16 @@ export default function Settings({
       </button>
 
       <h1>{t("settings.title")}</h1>
+
+      {suggestions.length > 0 && (
+        <section className="settings__section insights">
+          <h2 className="settings__section-title">{t("insights.title")}</h2>
+          <p className="settings__hint">{t("insights.subtitle")}</p>
+          {suggestions.map((s) => (
+            <InsightCard key={s.kind} suggestion={s} t={t} />
+          ))}
+        </section>
+      )}
 
       <section className="settings__section">
         <h2 className="settings__section-title">{t("settings.profile")}</h2>
@@ -110,6 +257,27 @@ export default function Settings({
         </div>
       </section>
 
+      <section className="settings__section">
+        <h2 className="settings__section-title">{t("settings.accessibility")}</h2>
+        <p className="settings__label">{t("settings.reducedMotion")}</p>
+        <div className="settings__pill-row">
+          {[
+            { value: "system", label: t("settings.reducedMotionSystem"), icon: "🖥️" },
+            { value: "on", label: t("settings.reducedMotionOn"), icon: "🐢" },
+            { value: "off", label: t("settings.reducedMotionOff"), icon: "✨" },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              className={`settings__pill${reducedMotion === opt.value ? " settings__pill--active" : ""}`}
+              onClick={() => onChangeReducedMotion(opt.value)}
+            >
+              {opt.icon} {opt.label}
+            </button>
+          ))}
+        </div>
+        <p className="settings__hint">{t("settings.reducedMotionNote")}</p>
+      </section>
+
       {codingLanguage && (
         <section className="settings__section">
           <h2 className="settings__section-title">{t("settings.codingLanguage")}</h2>
@@ -158,6 +326,14 @@ export default function Settings({
               {t("auth.signOut")}
             </button>
 
+            {changingPassword ? (
+              <ChangePasswordForm onClose={() => setChangingPassword(false)} />
+            ) : (
+              <button className="settings__link-btn" onClick={() => setChangingPassword(true)}>
+                🔑 {t("settings.changePassword")}
+              </button>
+            )}
+
             {confirmingDelete ? (
               <div className="settings__delete-panel" role="alertdialog">
                 <p>{t("settings.deleteWarning")}</p>
@@ -205,6 +381,11 @@ export default function Settings({
       </section>
 
       <section className="settings__section">
+        <h2 className="settings__section-title">{t("settings.dataSection")}</h2>
+        <p className="settings__hint">{t("settings.exportDataDesc")}</p>
+        <button className="settings__export" onClick={handleExportData}>
+          ⬇️ {t("settings.exportData")}
+        </button>
         <button className="settings__reset" onClick={handleReset}>
           {t("settings.resetProgress")}
         </button>
@@ -214,9 +395,21 @@ export default function Settings({
         {t(`settings.sync${syncStatus[0].toUpperCase()}${syncStatus.slice(1)}`)}
       </p>
 
+      <section className="settings__section">
+        <h2 className="settings__section-title">{t("settings.support")}</h2>
+        <p className="settings__hint">{t("settings.supportDesc")}</p>
+        {CONTACT_EMAIL ? (
+          <a className="settings__signout settings__support-link" href={`mailto:${CONTACT_EMAIL}`}>
+            ✉️ {t("settings.supportEmail")}
+          </a>
+        ) : (
+          <p className="settings__hint">{t("settings.supportUnavailable")}</p>
+        )}
+      </section>
+
       <footer className="settings__about">
         <p className="settings__about-title">{t("settings.about")}</p>
-        <p className="settings__about-text">Code Quest · v1.0</p>
+        <p className="settings__about-text">Code Quest · v{APP_VERSION}</p>
         <p className="settings__about-text">{t("settings.madeWith")}</p>
         <p className="settings__about-privacy">🔒 {t("settings.privacyNote")}</p>
         <p className="settings__about-links">

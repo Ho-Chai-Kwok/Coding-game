@@ -1,7 +1,9 @@
 import { getRankInfo, TIERS } from "../data/rank";
+import { SKILL_GATE_LESSONS, meetsSkillGate } from "../data/skillGate";
 import { useI18n } from "../i18n/I18nContext";
 import { useAuth } from "../auth/AuthContext";
 import CharacterRig from "./CharacterRig";
+import SkillGateNotice from "./SkillGateNotice";
 
 export default function RankedHome({
   points,
@@ -11,8 +13,10 @@ export default function RankedHome({
   wins,
   losses,
   selectedCharacter,
+  mainLessonsCompleted = 0,
   onPlay,
   onOpenCharacters,
+  onGoToLearning,
   onBack,
 }) {
   const { t } = useI18n();
@@ -20,6 +24,22 @@ export default function RankedHome({
   const rank = getRankInfo(points);
   const peak = getRankInfo(peakPoints);
   const floorLabel = getRankInfo(TIERS[rank.tierIndex].min).label;
+  const unlocked = meetsSkillGate(mainLessonsCompleted);
+
+  if (!unlocked) {
+    return (
+      <div className="ranked-home">
+        <button className="back-link" onClick={onBack}>
+          ← {t("backToModes")}
+        </button>
+        <SkillGateNotice
+          lessonsCompleted={mainLessonsCompleted}
+          lessonsRequired={SKILL_GATE_LESSONS}
+          onGoToLearning={onGoToLearning}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="ranked-home">

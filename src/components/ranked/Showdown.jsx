@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import RankedTimerBar from "./RankedTimerBar";
 import RankedResult from "./RankedResult";
 import { useCountdown } from "../../hooks/useCountdown";
@@ -11,6 +11,7 @@ import {
 } from "../../data/rankedModes";
 import { getQuestionPool } from "../../data/rankedQuestionBank";
 import { getDifficultyLevel } from "../../data/rank";
+import { generateMatchQuestions } from "../../utils/rankedQuestionGenerator";
 
 const MAX_ROUNDS = 15;
 const ROUND_TIME_START = 14;
@@ -20,14 +21,10 @@ function roundSeconds(i) {
   return Math.max(ROUND_TIME_FLOOR, ROUND_TIME_START - i);
 }
 
-export default function Showdown({ character, rankedPoints, seed, onFinish, onExit }) {
+export default function Showdown({ character, rankedPoints, matchId, seed, onFinish, onExit }) {
   const { t } = useI18n();
   const difficulty = getDifficultyLevel(rankedPoints);
-  const questions = useMemo(
-    () => shuffledSample(getQuestionPool(difficulty), MAX_ROUNDS, seed),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const [questions, setQuestions] = useState(null);
   const [roundIndex, setRoundIndex] = useState(0);
   const [previewing, setPreviewing] = useState(false);
   const [forgivenessUsed, setForgivenessUsed] = useState(false);
@@ -38,9 +35,28 @@ export default function Showdown({ character, rankedPoints, seed, onFinish, onEx
   const canForgive = hasStreakForgiveness(character);
 
   const timer = useCountdown(roundSeconds(0), () => eliminate(roundIndex, 0));
-  const question = questions[roundIndex];
+  const question = questions?.[roundIndex];
+
+  // Same dynamic-questions-with-fallback approach as Predict Output — see
+  // its comments. The timer stays paused (see the round-timer effect
+  // below, which also waits on `questions`) until this resolves.
+  useEffect(() => {
+    timer.reset(roundSeconds(0), false);
+    let cancelled = false;
+    (async () => {
+      const dynamic = matchId ? await generateMatchQuestions(matchId) : null;
+      if (cancelled) return;
+      const pool = dynamic ?? getQuestionPool(difficulty);
+      setQuestions(shuffledSample(pool, MAX_ROUNDS, seed));
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
+    if (!questions) return undefined;
     if (seesEarly) {
       timer.stop();
       setPreviewing(true);
@@ -52,7 +68,7 @@ export default function Showdown({ character, rankedPoints, seed, onFinish, onEx
     }
     timer.reset(roundSeconds(roundIndex));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roundIndex]);
+  }, [roundIndex, questions]);
 
   function finish(roundsSurvived, secondsLeft, fullClear) {
     if (finished) return;
@@ -107,6 +123,18 @@ export default function Showdown({ character, rankedPoints, seed, onFinish, onEx
         bonusNote={savedNote ? t("rankedModes.showdown.nullPointerSave") : null}
         onContinue={() => onFinish(finished.pointsDelta, finished.didWin)}
       />
+    );
+  }
+
+  if (!questions) {
+    return (
+      <div className="ranked-mode-screen">
+        <div className="ranked-mode-screen__header">
+          <span className="ranked-mode-screen__icon">🥊</span>
+          <h2>{t("rankedModes.showdown.name")}</h2>
+        </div>
+        <p className="ranked-mode-screen__loading">{t("rankedModes.preparingQuestions")}</p>
+      </div>
     );
   }
 

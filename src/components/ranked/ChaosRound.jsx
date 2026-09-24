@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TutorialCard from "../TutorialCard";
 import Confetti from "../Confetti";
 import RankedTimerBar from "./RankedTimerBar";
@@ -8,6 +8,7 @@ import { useI18n } from "../../i18n/I18nContext";
 import { shuffledSample, applyBonusMultiplier, chaosRoundFavorable, seededRandom } from "../../data/rankedModes";
 import { getQuestionPool } from "../../data/rankedQuestionBank";
 import { getDifficultyLevel } from "../../data/rank";
+import { generateMatchQuestions } from "../../utils/rankedQuestionGenerator";
 
 // Same core puzzle type (Predict the Output), twisted by a random
 // modifier each match — the "Chaos Round" concept from the design brief.
@@ -20,14 +21,10 @@ const MODIFIERS = [
 
 const BASE_SECONDS = 20;
 
-export default function ChaosRound({ character, rankedPoints, seed, onFinish, onExit }) {
+export default function ChaosRound({ character, rankedPoints, matchId, seed, onFinish, onExit }) {
   const { t } = useI18n();
   const difficulty = getDifficultyLevel(rankedPoints);
-  const question = useMemo(
-    () => shuffledSample(getQuestionPool(difficulty), 1, seed)[0],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const [question, setQuestion] = useState(null);
   // Derived from the same seed as the question (offset so it isn't just a
   // copy of whatever index the question shuffle landed on) — in a PvP
   // match, both players get the identical modifier, not just the same
@@ -46,6 +43,26 @@ export default function ChaosRound({ character, rankedPoints, seed, onFinish, on
   const [finished, setFinished] = useState(null);
 
   const timer = useCountdown(totalSeconds, () => finish(false));
+
+  // Same dynamic-questions-with-fallback approach as Predict Output/
+  // Showdown — see PredictOutput.jsx's comments. Chaos Round only needs
+  // one question, so this just samples a single item from whichever pool
+  // (dynamic or static) resolves.
+  useEffect(() => {
+    timer.reset(totalSeconds, false);
+    let cancelled = false;
+    (async () => {
+      const dynamic = matchId ? await generateMatchQuestions(matchId) : null;
+      if (cancelled) return;
+      const pool = dynamic ?? getQuestionPool(difficulty);
+      setQuestion(shuffledSample(pool, 1, seed)[0]);
+      timer.reset(totalSeconds, true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function finish(won) {
     if (finished) return;
@@ -86,6 +103,18 @@ export default function ChaosRound({ character, rankedPoints, seed, onFinish, on
         bonusNote={savedByGlitch ? t("rankedModes.chaosRound.glitchBonus") : null}
         onContinue={() => onFinish(finished.pointsDelta, finished.didWin)}
       />
+    );
+  }
+
+  if (!question) {
+    return (
+      <div className="ranked-mode-screen">
+        <div className="ranked-mode-screen__header">
+          <span className="ranked-mode-screen__icon">🌀</span>
+          <h2>{t("rankedModes.chaosRound.name")}</h2>
+        </div>
+        <p className="ranked-mode-screen__loading">{t("rankedModes.preparingQuestions")}</p>
+      </div>
     );
   }
 

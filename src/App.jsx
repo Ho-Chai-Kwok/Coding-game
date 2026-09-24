@@ -16,6 +16,7 @@ import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import { CHARACTERS, buildUnlockContext } from "./data/characters";
 import { describeRankChange } from "./data/rank";
+import { SKILL_GATE_LESSONS } from "./data/skillGate";
 import { toInstantLanguage, isCompiledLanguage } from "./data/languages";
 import { applyHeadStart, getHeadStartWorldId } from "./data/onboarding";
 import "./App.css";
@@ -32,6 +33,8 @@ const RankedPracticeRunner = lazy(() => import("./components/RankedPracticeRunne
 const SideQuestMap = lazy(() => import("./components/SideQuestMap"));
 const SideQuestPath = lazy(() => import("./components/SideQuestPath"));
 const Settings = lazy(() => import("./components/Settings"));
+const CodeHelper = lazy(() => import("./components/CodeHelper"));
+const PracticeProblems = lazy(() => import("./components/PracticeProblems"));
 const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 const RankChange = lazy(() => import("./components/RankChange"));
@@ -84,6 +87,7 @@ function AppShell() {
   // Profile, appearance, and "real app" dashboard bits
   const [profile, setProfile] = useState(DEFAULT_PROFILE);
   const [theme, setTheme] = useState("system"); // "system" | "light" | "dark"
+  const [reducedMotion, setReducedMotion] = useState("system"); // "system" | "on" | "off"
   const [streak, setStreak] = useState(1);
   const [lastPlayedDate, setLastPlayedDate] = useState(null);
   const [continueWorldId, setContinueWorldId] = useState(null);
@@ -111,6 +115,23 @@ function AppShell() {
     }
   }, [theme]);
 
+  // "system" respects the OS-level prefers-reduced-motion setting (checked
+  // live, not just at mount, so it still reacts if someone flips it while
+  // the app is open); "on"/"off" override it explicitly. The actual
+  // animation-killing lives in CSS (see index.css), gated on this one data
+  // attribute — same pattern as theme above.
+  useEffect(() => {
+    const query = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    function apply() {
+      const effective = reducedMotion === "system" ? Boolean(query?.matches) : reducedMotion === "on";
+      document.documentElement.dataset.reducedMotion = effective ? "true" : "false";
+    }
+    apply();
+    if (reducedMotion !== "system" || !query) return undefined;
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, [reducedMotion]);
+
   // Persist progress: Supabase when logged in, localStorage as a guest.
   const progressSnapshot = useMemo(
     () => ({
@@ -124,6 +145,7 @@ function AppShell() {
       peakPoints,
       profile,
       theme,
+      reducedMotion,
       streak,
       lastPlayedDate,
       continueWorldId,
@@ -145,6 +167,7 @@ function AppShell() {
       peakPoints,
       profile,
       theme,
+      reducedMotion,
       streak,
       lastPlayedDate,
       continueWorldId,
@@ -188,6 +211,7 @@ function AppShell() {
       }
       if (saved.profile) setProfile(saved.profile);
       if (saved.theme) setTheme(saved.theme);
+      if (saved.reducedMotion) setReducedMotion(saved.reducedMotion);
       if (saved.continueWorldId) setContinueWorldId(saved.continueWorldId);
       if (saved.selectedCharacterId) setSelectedCharacterId(saved.selectedCharacterId);
     }
@@ -283,6 +307,30 @@ function AppShell() {
   function enterWorld(worldId) {
     setActiveWorldId(worldId);
     setContinueWorldId(worldId);
+  }
+
+  // A plain, human-readable snapshot for Settings' "Export My Data" button
+  // (data portability) — deliberately NOT the compact packed format used
+  // for actual cloud sync (packWorlds/packSideQuests), since this is meant
+  // to be opened and read by the person who downloaded it, not re-imported.
+  function exportData() {
+    return {
+      exportedAt: new Date().toISOString(),
+      account: user ? { email: user.email } : { guest: true },
+      profile,
+      streak,
+      ranked: { points: rankedPoints, peakPoints, wins: rankedWins, losses: rankedLosses },
+      learningProgress: worldsState.map((w) => ({
+        world: w.name,
+        completedLevels: w.levels.filter((l) => l.status === "completed").length,
+        totalLevels: w.levels.length,
+      })),
+      sideQuestProgress: sideQuestsState.map((q) => ({
+        quest: q.name,
+        completedLessons: q.lessons.filter((l) => l.status === "completed").length,
+        totalLessons: q.lessons.length,
+      })),
+    };
   }
 
   // Switching to a different mode/tab (whether via the bottom nav or an
@@ -387,6 +435,15 @@ function AppShell() {
     };
   }, [worldsState, sideQuestsState]);
 
+  // Side Quests and Ranked Mode's skill gate (see data/skillGate.js) is
+  // deliberately measured only against Learning Mode — never side-quest
+  // lessons themselves — so it can't be circularly unlocked by the very
+  // thing it's gating.
+  const mainLessonsCompleted = useMemo(
+    () => worldsState.flatMap((w) => w.levels).filter((l) => l.status === "completed").length,
+    [worldsState],
+  );
+
   const unlockCtx = useMemo(
     () =>
       buildUnlockContext({
@@ -416,6 +473,16 @@ function AppShell() {
     if (!continueWorld) return;
     setMode("learning");
     enterWorld(continueWorld.id);
+  }
+
+  // From Practice Problems' "review this skill" button — jumps straight
+  // into that World's level map, same pattern as handleContinueLearning.
+  // Only ever called for an already-unlocked world (PracticeProblems only
+  // renders the button in that case), so this never bypasses the normal
+  // strictly-in-order world progression.
+  function reviewWorld(worldId) {
+    setMode("learning");
+    enterWorld(worldId);
   }
 
   let screen;
@@ -456,7 +523,12 @@ function AppShell() {
         onContinueLearning={handleContinueLearning}
         onOpenSettings={() => switchMode("settings")}
         onOpenCalendar={() => switchMode("calendar")}
+        onOpenHelper={() => switchMode("helper")}
       />
+    );
+  } else if (mode === "helper") {
+    screen = (
+      <CodeHelper defaultLanguage={language ?? "javascript"} onBack={backToModes} />
     );
   } else if (mode === "characters") {
     hideBottomNav = false;
@@ -486,11 +558,20 @@ function AppShell() {
         onChangeProfile={setProfile}
         theme={theme}
         onChangeTheme={setTheme}
+        reducedMotion={reducedMotion}
+        onChangeReducedMotion={setReducedMotion}
         codingLanguage={language}
         onChangeCodingLanguage={setLanguage}
         unlockedAvatars={unlockedAvatars}
+        mainLessonsCompleted={mainLessonsCompleted}
+        streak={streak}
+        sideQuestsState={sideQuestsState}
+        rankedWins={rankedWins}
+        rankedLosses={rankedLosses}
+        rankedShield={rankedShield}
         onBack={backToModes}
         onResetProgress={resetProgress}
+        onExportData={exportData}
         syncStatus={syncStatus}
       />
     );
@@ -528,10 +609,21 @@ function AppShell() {
           language={language}
           onChangeLanguage={() => setLanguage(null)}
           onSelectWorld={enterWorld}
+          onOpenPractice={() => switchMode("practice")}
           onBack={backToModes}
         />
       );
     }
+  } else if (mode === "practice") {
+    screen = (
+      <PracticeProblems
+        worldsState={worldsState}
+        mainLessonsCompleted={mainLessonsCompleted}
+        onReviewWorld={reviewWorld}
+        onGoToLearning={() => switchMode("learning")}
+        onBack={backToModes}
+      />
+    );
   } else if (mode === "sidequest") {
     const activeQuest = sideQuestsState.find((q) => q.id === activeSideQuestId);
 
@@ -557,6 +649,8 @@ function AppShell() {
       screen = (
         <SideQuestMap
           sidequests={sideQuestsState}
+          mainLessonsCompleted={mainLessonsCompleted}
+          onGoToLearning={() => switchMode("learning")}
           onSelectQuest={(q) => setActiveSideQuestId(q.id)}
           onBack={backToModes}
         />
@@ -625,8 +719,10 @@ function AppShell() {
           wins={rankedWins}
           losses={rankedLosses}
           selectedCharacter={selectedCharacter}
+          mainLessonsCompleted={mainLessonsCompleted}
           onPlay={() => setRankedMode("shuffle")}
           onOpenCharacters={() => switchMode("characters")}
+          onGoToLearning={() => switchMode("learning")}
           onBack={backToModes}
         />
       );
@@ -638,7 +734,13 @@ function AppShell() {
       <div className={`app${hideBottomNav ? "" : " app--with-nav"}`}>
         <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>{screen}</Suspense>
       </div>
-      {!hideBottomNav && <BottomNav active={mode} onSelect={switchMode} />}
+      {!hideBottomNav && (
+        <BottomNav
+          active={mode}
+          onSelect={switchMode}
+          lockedTabs={mainLessonsCompleted >= SKILL_GATE_LESSONS ? [] : ["sidequest", "ranked"]}
+        />
+      )}
     </>
   );
 }

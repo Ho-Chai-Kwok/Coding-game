@@ -1,11 +1,15 @@
 // Code Golf puzzles: everyone solves the same problem, ranked on how few
 // lines it takes rather than how fast. "Par" is the line count of a clean
 // idiomatic solution in each language — beating it earns a bonus.
+//
+// `difficulty` (1-5), same honest-range reasoning as bugHuntSnippets.js —
+// see getCodeGolfPool(level) below.
 
 export const CODE_GOLF_PUZZLES = [
   {
     id: "golf-sum",
     title: "Sum 1 to 10",
+    difficulty: 2,
     instructions: "Print the sum of every number from 1 to 10 (the answer is 55).",
     expectedOutput: "55",
     par: { javascript: 3, python: 1 },
@@ -21,6 +25,7 @@ export const CODE_GOLF_PUZZLES = [
   {
     id: "golf-reverse",
     title: "Reverse a Word",
+    difficulty: 2,
     instructions: 'Print the word "code" reversed.',
     expectedOutput: "edoc",
     par: { javascript: 1, python: 1 },
@@ -36,6 +41,7 @@ export const CODE_GOLF_PUZZLES = [
   {
     id: "golf-vowels",
     title: "Count the Vowels",
+    difficulty: 3,
     instructions: 'Print how many vowels (a, e, i, o, u) are in "banana" (the answer is 3).',
     expectedOutput: "3",
     par: { javascript: 2, python: 1 },
@@ -51,6 +57,7 @@ export const CODE_GOLF_PUZZLES = [
   {
     id: "golf-even",
     title: "Even or Odd",
+    difficulty: 1,
     instructions: "Print Even or Odd for the number 42.",
     expectedOutput: "Even",
     par: { javascript: 1, python: 1 },
@@ -66,6 +73,7 @@ export const CODE_GOLF_PUZZLES = [
   {
     id: "golf-max",
     title: "Find the Largest",
+    difficulty: 2,
     instructions: "Print the largest number in [4, 9, 2, 7] (the answer is 9).",
     expectedOutput: "9",
     par: { javascript: 1, python: 1 },
@@ -89,6 +97,9 @@ export function countCodeLines(code, language) {
     .filter((l) => l.length > 0 && !l.startsWith(commentPrefix)).length;
 }
 
-export function getCodeGolfPool() {
-  return CODE_GOLF_PUZZLES;
+export function getCodeGolfPool(level) {
+  if (level == null) return CODE_GOLF_PUZZLES;
+  return [...CODE_GOLF_PUZZLES].sort(
+    (a, b) => Math.abs(a.difficulty - level) - Math.abs(b.difficulty - level),
+  );
 }

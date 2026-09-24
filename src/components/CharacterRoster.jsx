@@ -34,7 +34,7 @@ export default function CharacterRoster({
 
       <header className="character-roster__header">
         <h1>{t("characters.title")} 🎭</h1>
-        <p>{t("characters.subtitle")}</p>
+        <p className="character-roster__subtitle">{t("characters.subtitle")}</p>
         <p className="character-roster__count">
           {unlockedCount}/{CHARACTERS.length} {t("characters.unlockedCount")}
         </p>

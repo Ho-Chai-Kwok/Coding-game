@@ -12,6 +12,7 @@ export default function ModeSelect({
   onContinueLearning,
   onOpenSettings,
   onOpenCalendar,
+  onOpenHelper,
 }) {
   const { t } = useI18n();
   const { isLoggedIn } = useAuth();
@@ -21,6 +22,9 @@ export default function ModeSelect({
   return (
     <div className="mode-select">
       <header className="mode-select__header">
+        <button className="mode-select__helper" onClick={onOpenHelper} aria-label={t("codeHelper.title")}>
+          🆘
+        </button>
         <button className="mode-select__settings" onClick={onOpenSettings} aria-label="Settings">
           ⚙️
         </button>
