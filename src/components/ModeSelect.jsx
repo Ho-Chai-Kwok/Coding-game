@@ -28,6 +28,7 @@ export default function ModeSelect({
   onOpenSettings,
   onOpenCalendar,
   onOpenHelper,
+  onOpenKernelDash,
 }) {
   const { t } = useI18n();
   const { isLoggedIn } = useAuth();
@@ -102,6 +103,17 @@ export default function ModeSelect({
           <p className="mode-select__nudge-desc">{t("modeSelect.nudgeDesc")}</p>
         </div>
       )}
+
+      {/* A break from the curriculum, not part of it — a leisure mode,
+          clearly set apart from the "continue learning" card above. */}
+      <button className="kernel-dash-card" onClick={onOpenKernelDash}>
+        <span className="kernel-dash-card__icon">🏃</span>
+        <div className="kernel-dash-card__text">
+          <span className="kernel-dash-card__label">{t("modeSelect.leisureLabel")}</span>
+          <span className="kernel-dash-card__name">{t("kernelDash.title")}</span>
+        </div>
+        <span className="kernel-dash-card__cta">{t("modeSelect.continueButton")}</span>
+      </button>
     </div>
   );
 }

@@ -28,6 +28,7 @@ export const translations = {
       continueButton: "Continue →",
       nudgeTitle: "Ready for your first lesson?",
       nudgeDesc: "Tap Learn below to pick a language and get started!",
+      leisureLabel: "Need a break?",
       learningTitle: "Learning Mode",
       learningDesc: "100 worlds, one topic at a time — go slow, go steady!",
       sidequestTitle: "Side Quests",
@@ -403,6 +404,22 @@ export const translations = {
       tag_career: "Career",
     },
 
+    kernelDash: {
+      title: "Kernel Dash",
+      subtitle: "Dash through the Kernel — jump bugs, duck errors, dodge walls!",
+      controlsHint: "↑ / swipe up: jump · ↓ / swipe down: duck · ← →: switch lanes",
+      start: "Start Run",
+      playAgain: "Run Again",
+      score: "Score",
+      best: "Best",
+      gameOver: "Crashed!",
+      newBest: "New Best! 🎉",
+      jump: "Jump",
+      duck: "Duck",
+      left: "Left lane",
+      right: "Right lane",
+    },
+
     skillGate: {
       title: "Not unlocked yet",
       body: "Finish {need} lessons in Learning Mode to unlock this — you're at {done}/{need}.",
@@ -590,6 +607,7 @@ export const translations = {
       continueButton: "Continuar →",
       nudgeTitle: "¿Listo para tu primera lección?",
       nudgeDesc: "Toca Aprender abajo para elegir un lenguaje y comenzar!",
+      leisureLabel: "¿Necesitas un descanso?",
       learningTitle: "Modo Aprendizaje",
       learningDesc: "100 mundos, un tema a la vez — ¡con calma, paso a paso!",
       sidequestTitle: "Misiones Secundarias",
@@ -946,6 +964,22 @@ export const translations = {
       },
     },
 
+    kernelDash: {
+      title: "Carrera por el Kernel",
+      subtitle: "¡Corre por el Kernel — salta bugs, agáchate ante errores, esquiva muros!",
+      controlsHint: "↑ / deslizar arriba: saltar · ↓ / deslizar abajo: agacharse · ← →: cambiar de carril",
+      start: "Comenzar Carrera",
+      playAgain: "Correr de Nuevo",
+      score: "Puntos",
+      best: "Mejor",
+      gameOver: "¡Chocaste!",
+      newBest: "¡Nuevo Récord! 🎉",
+      jump: "Saltar",
+      duck: "Agacharse",
+      left: "Carril izquierdo",
+      right: "Carril derecho",
+    },
+
     sideQuestMap: {
       title: "Misiones Secundarias 🧭",
       subtitle: "35 cursos cortos sobre herramientas reales —",
@@ -1147,6 +1181,7 @@ export const translations = {
       continueButton: "繼續 →",
       nudgeTitle: "準備好上第一堂課了嗎？",
       nudgeDesc: "點選下方的「學習」選擇語言，開始學習吧！",
+      leisureLabel: "需要休息一下嗎？",
       learningTitle: "學習模式",
       learningDesc: "100 個世界，一次專注一個主題——慢慢來，穩紮穩打！",
       sidequestTitle: "支線任務",
@@ -1503,6 +1538,22 @@ export const translations = {
       },
     },
 
+    kernelDash: {
+      title: "核心狂奔",
+      subtitle: "在核心城中狂奔——跳過蟲蟲、躲過錯誤、閃避牆壁！",
+      controlsHint: "↑／上滑：跳躍．↓／下滑：下蹲．←→：切換車道",
+      start: "開始奔跑",
+      playAgain: "再跑一次",
+      score: "分數",
+      best: "最佳紀錄",
+      gameOver: "撞到了！",
+      newBest: "新紀錄！🎉",
+      jump: "跳躍",
+      duck: "下蹲",
+      left: "左車道",
+      right: "右車道",
+    },
+
     sideQuestMap: {
       title: "支線任務 🧭",
       subtitle: "35 個關於真實工具的短課程 —",
@@ -1703,6 +1754,7 @@ export const translations = {
       continueButton: "계속하기 →",
       nudgeTitle: "첫 레슨을 시작할 준비가 됐나요?",
       nudgeDesc: "아래의 학습 탭을 눌러 언어를 선택하고 시작해보세요!",
+      leisureLabel: "잠깐 쉬고 싶나요?",
       learningTitle: "학습 모드",
       learningDesc: "100개의 월드, 한 번에 한 주제씩 — 천천히, 꾸준하게!",
       sidequestTitle: "사이드 퀘스트",
@@ -2057,6 +2109,22 @@ export const translations = {
         reshuffle: "다시 셔플",
         go: "시작하기! →",
       },
+    },
+
+    kernelDash: {
+      title: "커널 대시",
+      subtitle: "커널을 가로질러 달려요 — 버그는 점프, 에러는 숙이고, 벽은 피해요!",
+      controlsHint: "↑ / 위로 스와이프: 점프 · ↓ / 아래로 스와이프: 숙이기 · ← →: 차선 변경",
+      start: "달리기 시작",
+      playAgain: "다시 달리기",
+      score: "점수",
+      best: "최고 기록",
+      gameOver: "충돌했어요!",
+      newBest: "신기록! 🎉",
+      jump: "점프",
+      duck: "숙이기",
+      left: "왼쪽 차선",
+      right: "오른쪽 차선",
     },
 
     sideQuestMap: {

@@ -38,6 +38,7 @@ const PracticeProblems = lazy(() => import("./components/PracticeProblems"));
 const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 const RankChange = lazy(() => import("./components/RankChange"));
+const KernelDash = lazy(() => import("./components/kernelDash/KernelDash"));
 const LegalPage = lazy(() => import("./components/LegalPage"));
 const Onboarding = lazy(() => import("./components/Onboarding"));
 
@@ -543,11 +544,16 @@ function AppShell() {
         onOpenSettings={() => switchMode("settings")}
         onOpenCalendar={() => switchMode("calendar")}
         onOpenHelper={() => switchMode("helper")}
+        onOpenKernelDash={() => switchMode("kernelDash")}
       />
     );
   } else if (mode === "helper") {
     screen = (
       <CodeHelper defaultLanguage={language ?? "javascript"} onBack={backToModes} />
+    );
+  } else if (mode === "kernelDash") {
+    screen = (
+      <KernelDash character={selectedCharacter} onBack={backToModes} />
     );
   } else if (mode === "characters") {
     hideBottomNav = false;
