@@ -3,7 +3,7 @@ import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
 import { useI18n } from "../i18n/I18nContext";
 
-export default function QuizChallenge({ content, onSolved, disabledOptionIndex = null }) {
+export default function QuizChallenge({ content, onSolved, onFeedback, disabledOptionIndex = null }) {
   const { t } = useI18n();
   const [selected, setSelected] = useState(null);
   const [status, setStatus] = useState(null); // null | "correct" | "incorrect"
@@ -11,12 +11,15 @@ export default function QuizChallenge({ content, onSolved, disabledOptionIndex =
   function handleSelect(index) {
     if (status === "correct") return;
     setSelected(index);
-    setStatus(index === content.correctIndex ? "correct" : "incorrect");
+    const isCorrect = index === content.correctIndex;
+    setStatus(isCorrect ? "correct" : "incorrect");
+    onFeedback?.(isCorrect ? "correct" : "wrong");
   }
 
   function handleRetry() {
     setSelected(null);
     setStatus(null);
+    onFeedback?.("thinking");
   }
 
   return (

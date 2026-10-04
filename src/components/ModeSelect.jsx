@@ -1,5 +1,19 @@
 import { useI18n } from "../i18n/I18nContext";
 import { useAuth } from "../auth/AuthContext";
+import CharacterBadge from "./CharacterBadge";
+
+// What the player's Byteborn is doing on the Home dashboard, picked from
+// real signals already on this screen rather than anything random — a hot
+// streak gets a confident pump, finishing every available lesson gets the
+// big "perfect" celebration, and a brand-new/just-cleared account (no
+// world in progress, so the nudge below is showing) gets a wave hello.
+// Otherwise it's just keeping you company.
+function homeCharacterState({ streak, overallProgress, continueWorld }) {
+  if (streak >= 5) return "streak";
+  if (overallProgress.total > 0 && overallProgress.completed === overallProgress.total) return "perfect";
+  if (!continueWorld) return "greet";
+  return "idle";
+}
 
 // Home: a dashboard, not a navigation menu — switching to Learning Mode,
 // Side Quests, Ranked Mode, or Characters now happens via the persistent
@@ -9,9 +23,11 @@ export default function ModeSelect({
   streak,
   overallProgress,
   continueWorld,
+  selectedCharacter,
   onContinueLearning,
   onOpenSettings,
   onOpenCalendar,
+  onOpenHelper,
 }) {
   const { t } = useI18n();
   const { isLoggedIn } = useAuth();
@@ -21,12 +37,24 @@ export default function ModeSelect({
   return (
     <div className="mode-select">
       <header className="mode-select__header">
+        <button className="mode-select__helper" onClick={onOpenHelper} aria-label={t("codeHelper.title")}>
+          🆘
+        </button>
         <button className="mode-select__settings" onClick={onOpenSettings} aria-label="Settings">
           ⚙️
         </button>
         <h1>{t("appName")} 🎮</h1>
         <p>{t("modeSelect.greeting")}</p>
       </header>
+
+      {selectedCharacter && (
+        <div className="mode-select__character">
+          <CharacterBadge
+            character={selectedCharacter}
+            state={homeCharacterState({ streak, overallProgress, continueWorld })}
+          />
+        </div>
+      )}
 
       <div className="mode-select__profile-row">
         <span className="mode-select__avatar">{profile.avatar}</span>

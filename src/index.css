@@ -74,6 +74,21 @@
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 }
 
+/* Reduce Motion (Settings → Accessibility): "system" mirrors the OS-level
+   prefers-reduced-motion setting, "on"/"off" override it — see the effect
+   in App.jsx that sets this attribute. Near-zero durations rather than
+   `none` so nothing relying on an animation actually finishing (none does
+   today, but this is the standard safe recipe) silently breaks. */
+:root[data-reduced-motion="true"] *,
+:root[data-reduced-motion="true"] *::before,
+:root[data-reduced-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -96,6 +111,20 @@ h2 {
 
 h1 {
   font-size: 52px;
+  /* Without its own line-height, h1 inherited :root's `line-height: 145%`
+     — a PERCENTAGE, which computes to a fixed px value against :root's
+     own small font-size (not h1's much larger one) and is inherited as
+     that tiny px number. The result was a line box far shorter than the
+     glyphs actually need. Usually just cramped, but combined with the
+     gradient-text technique (background-clip: text; color: transparent)
+     used on some headings, the gradient paint is confined to that too-short
+     box — anything a glyph draws outside it has no paint and renders fully
+     transparent, i.e. invisible. That's what cut the tops/bottoms off
+     world and quest names, leaving only the middle visible. Setting it
+     here, in em (relative to h1's OWN font-size), fixes it at the root
+     for every h1 rather than patching each affected heading individually.
+  */
+  line-height: 1.2em;
   letter-spacing: -0.5px;
   margin: 32px 0;
   @media (max-width: 1024px) {

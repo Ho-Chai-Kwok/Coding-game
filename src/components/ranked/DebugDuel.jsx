@@ -9,6 +9,7 @@ import {
   applyBonusMultiplier,
   debugDuelHasFreeMiss,
 } from "../../data/rankedModes";
+import { getDifficultyLevel } from "../../data/rank";
 
 // Played against a real matched opponent (see RankedMatchRunner.jsx):
 // both players get the identical snippet (shared `seed`) and race the
@@ -18,10 +19,11 @@ import {
 const GHOST_SECONDS = 18;
 const SAFETY_TIMEOUT = 60;
 
-export default function DebugDuel({ character, seed, onFinish, onExit }) {
+export default function DebugDuel({ character, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
+  const difficulty = getDifficultyLevel(rankedPoints);
   const snippet = useMemo(
-    () => shuffledSample(getBugHuntPool(), 1, seed)[0],
+    () => shuffledSample(getBugHuntPool(difficulty), 1, seed)[0],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -76,6 +78,7 @@ export default function DebugDuel({ character, seed, onFinish, onExit }) {
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "⚔️" : "💀"}
         title={finished.didWin ? t("rankedModes.debugDuel.winTitle") : t("rankedModes.debugDuel.loseTitle")}
         statLines={

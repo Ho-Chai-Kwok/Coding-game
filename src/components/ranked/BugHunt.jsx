@@ -11,14 +11,16 @@ import {
   bugHuntMultiplier,
   bugHuntHighlightsFirst,
 } from "../../data/rankedModes";
+import { getDifficultyLevel } from "../../data/rank";
 
 const ROUND_COUNT = 5;
 const TOTAL_SECONDS = 100;
 
-export default function BugHunt({ character, seed, onFinish, onExit }) {
+export default function BugHunt({ character, rankedPoints, seed, onFinish, onExit }) {
   const { t } = useI18n();
+  const difficulty = getDifficultyLevel(rankedPoints);
   const snippets = useMemo(
-    () => shuffledSample(getBugHuntPool(), ROUND_COUNT, seed),
+    () => shuffledSample(getBugHuntPool(difficulty), ROUND_COUNT, seed),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
@@ -84,6 +86,7 @@ export default function BugHunt({ character, seed, onFinish, onExit }) {
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "🐞" : "🔍"}
         title={finished.didWin ? t("rankedModes.bugHunt.winTitle") : t("rankedModes.bugHunt.loseTitle")}
         statLines={[

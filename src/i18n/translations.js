@@ -78,6 +78,7 @@ export const translations = {
       ],
       chapterLabel: "Chapter {n}",
       moreAdventures: "More Adventures",
+      practiceProblems: "Practice Problems",
     },
 
     levelMap: {
@@ -86,6 +87,20 @@ export const translations = {
       encourageDone: "World complete! You're amazing! 🏆",
       encourageHalf: "Halfway there — keep it up! 🌟",
       encourageProgress: "Great progress — keep going! 💪",
+    },
+
+    practiceProblems: {
+      title: "Practice Problems",
+      intro: "Classic algorithm problems used across many coding platforms — tap one to see what it's about and which of your lessons you'll want fresh in mind. We link out to the real problem instead of copying it here.",
+      allDifficulties: "All",
+      allTopics: "All Topics",
+      openOnLeetcode: "Open on LeetCode",
+      skillsTitle: "Skills You'll Need",
+      topicHintLabel: "Strategy tip:",
+      review: "Review this lesson",
+      reviewDone: "Revisit this lesson",
+      lockedHint: "🔒 Keep progressing to reach this world",
+      noneMatch: "No problems match these filters yet.",
     },
 
     levelScreen: {
@@ -244,6 +259,7 @@ export const translations = {
       waitingTitle: "Waiting for your opponent…",
       waitingFor: "{name} is still finishing up.",
       claimForfeit: "Claim win — opponent seems to have left",
+      autoResolveIn: "This match resolves automatically in about {n} more min if they don't finish.",
       draw: "It's a draw!",
       youWon: "You beat {name}!",
       youLost: "{name} won this one",
@@ -279,6 +295,7 @@ export const translations = {
       roundsCompleted: "Rounds Completed",
       timeLeft: "Time Left",
       score: "Score",
+      preparingQuestions: "Preparing your questions…",
       nextRound: "Next Round →",
       finish: "Finish →",
       continue: "Continue →",
@@ -289,7 +306,7 @@ export const translations = {
         desc: "Solve coding puzzles back to back before the clock runs out.",
         winTitle: "🏁 You Finished the Race!",
         loseTitle: "⏱️ Time Ran Out",
-        dashBonus: "Dash's speed bonus added extra seconds to your clock!",
+        dashBonus: "Vex's speed bonus added extra seconds to your clock!",
       },
 
       bugHunt: {
@@ -307,7 +324,7 @@ export const translations = {
         desc: "Read the code, guess what it prints — fast rounds, no mercy.",
         winTitle: "🔮 Nailed It!",
         loseTitle: "💭 So Close!",
-        scopeBonus: "Scope revealed a wrong answer before you chose!",
+        scopeBonus: "Ifra revealed a wrong answer before you chose!",
       },
 
       codeGolf: {
@@ -318,7 +335,7 @@ export const translations = {
         yourLines: "Your Lines",
         par: "Par",
         lines: "lines",
-        trimBonus: "Trim's refactoring bonus shaved extra points onto your score!",
+        trimBonus: "Lambda's refactoring bonus shaved extra points onto your score!",
       },
 
       showdown: {
@@ -327,7 +344,7 @@ export const translations = {
         winTitle: "🥇 Showdown Champion!",
         loseTitle: "💥 Eliminated",
         roundsSurvived: "Rounds Survived",
-        nullPointerSave: "Null Pointer's streak protection saved your run!",
+        nullPointerSave: "Firewall's streak protection saved your run!",
         getReady: "Get ready...",
       },
 
@@ -339,7 +356,7 @@ export const translations = {
         yourTime: "Your Time",
         ghostTime: "Ghost Time",
         beatGhost: "You beat the ghost's time!",
-        tankBonus: "Bastion's toughness gave you an extra life!",
+        tankBonus: "Stack's toughness gave you an extra life!",
       },
 
       chaosRound: {
@@ -374,13 +391,23 @@ export const translations = {
 
     sideQuestMap: {
       title: "Side Quests 🧭",
-      subtitle: "31 short courses on real tools —",
+      subtitle: "35 short courses on real tools —",
       lessonsComplete: "lessons complete!",
       lessons: "lessons",
       completed: "Completed",
       notStarted: "Not started",
       allQuests: "All",
-      tag_frontend: "Frontend",
+      tag_computerScience: "Computer Science",
+      tag_dataScience: "Data Science",
+      tag_ai: "Artificial Intelligence",
+      tag_career: "Career",
+    },
+
+    skillGate: {
+      title: "Not unlocked yet",
+      body: "Finish {need} lessons in Learning Mode to unlock this — you're at {done}/{need}.",
+      lessonsLabel: "lessons",
+      cta: "Go to Learning Mode →",
     },
 
     sideQuestPath: {
@@ -449,9 +476,23 @@ export const translations = {
       themeDark: "Dark",
       codingLanguage: "Coding Language",
       language: "App Language",
+      accessibility: "Accessibility",
+      reducedMotion: "Reduce Motion",
+      reducedMotionNote: "Turns off confetti and animated effects.",
+      reducedMotionSystem: "System",
+      reducedMotionOn: "On",
+      reducedMotionOff: "Off",
       account: "Account",
+      changePassword: "Change Password",
+      confirmPassword: "Confirm new password",
+      passwordMismatch: "Those passwords don't match.",
+      passwordUpdated: "Password updated! ✅",
+      passwordCancel: "Cancel",
       resetProgress: "Reset All Progress",
       resetConfirm: "This will erase all your progress on this device. Are you sure?",
+      dataSection: "Your Data",
+      exportData: "Export My Data",
+      exportDataDesc: "Download a readable copy of your profile and progress.",
       about: "About",
       madeWith: "Made with 💜 for young coders everywhere.",
       privacyNote: "Guest mode keeps everything on this device. Making an account stores your email and progress securely — no ads, no data selling. Under 13? Ask a parent first!",
@@ -464,6 +505,22 @@ export const translations = {
       deleteConfirm: "Yes, delete everything",
       deleteCancel: "Cancel",
       deleteError: "Couldn't delete your account. Please try again.",
+      support: "Help & Support",
+      supportDesc: "Questions, feedback, or found a bug? We'd love to hear from you.",
+      supportEmail: "Email Us",
+      supportUnavailable: "Support contact isn't set up yet — check back soon.",
+    },
+
+    buddy: {
+      greet: ["Hi! I'm {name}. Let's crack this one together!", "Ready when you are!", "Read the task, then give it a go — I'll watch your back."],
+      idle: ["Take your time. I'm right here.", "Try something — every run teaches you something.", "You've got this!"],
+      thinking: ["Ooh, I see where you're going…", "Hmm, interesting…", "Keep typing, keep thinking!"],
+      running: ["Running it… fingers crossed!", "Let's see what happens…", "Compiling hope…"],
+      correct: ["YES! That's it! 🎉", "Nailed it! You're a natural.", "Perfect! The Kernel is proud of you!", "Boom — bug-free!"],
+      wrong: ["Ouch! Not quite.", "Whoa, close one!", "Hmm, that's not it…"],
+      retry: ["Mistakes are just data. Check the hint and try again!", "Read the output carefully — it's a clue.", "Even the best coders debug. One more go!"],
+      step: ["Nice! Next step!", "That's one down!", "Great — keep going!"],
+      close: "Close",
     },
 
     characters: {
@@ -478,6 +535,41 @@ export const translations = {
       unlockRankedPoints: "Reach {n} ranked points to unlock",
       unlockStreak: "Reach a {n}-day streak to unlock",
       unlockDefault: "Keep playing to unlock",
+    },
+
+    codeHelper: {
+      title: "Code Helper",
+      subtitle: "Stuck? Type your question and/or paste your code below, and get real help from an AI tutor.",
+      guestGate: "Code Helper needs an account so we can keep it fair for everyone — guest progress carries over when you sign in.",
+      questionLabel: "Your question (optional)",
+      questionPlaceholder: "e.g. Why does my loop only print 4 times?",
+      questionNoPaste: "Type your question in your own words — pasting is turned off here.",
+      codeLabel: "Your code (optional)",
+      ask: "Ask for Help",
+      send: "Send",
+      asking: "Thinking…",
+      notConfigured: "This feature isn't set up yet — check back soon!",
+      rateLimited: "You've used all your messages for today — come back tomorrow!",
+      emptyRequest: "Add a question or paste some code first.",
+      conversationTooLong: "This chat's gotten too long — start a new one to keep going.",
+      genericError: "Something went wrong. Please try again in a moment.",
+      turnsUsed: "messages today",
+      newChat: "New Chat",
+    },
+
+    insights: {
+      title: "For You",
+      subtitle: "A few notes based on how you've been doing.",
+      learningNotStartedText: "Ready to start? Try your first lesson in Learn.",
+      skillGateLockedText: "Finish {n} more lessons to unlock Side Quests and Ranked Mode.",
+      streakMilestoneText: "{streak}-day streak! Just {n} more days until you unlock {reward}.",
+      rankedShieldActiveText: "You have a promotion shield ({n} left) — a great time to take a risk in Ranked.",
+      rankedToughStretchText: "Ranked's been a bit tough lately — maybe try a Side Quest or two before your next match.",
+      rankedGoodWinRateText: "Nice! Your Ranked win rate is {n}% — keep it up.",
+      rankedNotTriedText: "Ready for a challenge? Try Ranked Mode and test your skills against real players.",
+      categoryUnexploredText: "You haven't tried any {category} quests yet — give one a shot.",
+      categoryStrongText: "You've completed {n} lessons in {category} — that's your strongest area so far.",
+      charactersToUnlockText: "{n} more characters to unlock — keep playing to collect them all.",
     },
   },
 
@@ -548,6 +640,21 @@ export const translations = {
       ],
       chapterLabel: "Capítulo {n}",
       moreAdventures: "Más Aventuras",
+      practiceProblems: "Problemas de Práctica",
+    },
+
+    practiceProblems: {
+      title: "Problemas de Práctica",
+      intro: "Problemas clásicos de algoritmos usados en muchas plataformas de programación — toca uno para ver de qué trata y qué lecciones conviene repasar. Enlazamos al problema real en vez de copiarlo aquí.",
+      allDifficulties: "Todos",
+      allTopics: "Todos los Temas",
+      openOnLeetcode: "Abrir en LeetCode",
+      skillsTitle: "Habilidades que Necesitarás",
+      topicHintLabel: "Consejo estratégico:",
+      review: "Repasar esta lección",
+      reviewDone: "Volver a ver esta lección",
+      lockedHint: "🔒 Sigue avanzando para llegar a este mundo",
+      noneMatch: "Ningún problema coincide con estos filtros todavía.",
     },
 
     levelMap: {
@@ -709,6 +816,7 @@ export const translations = {
       waitingTitle: "Esperando a tu oponente…",
       waitingFor: "{name} todavía está terminando.",
       claimForfeit: "Reclamar victoria — el oponente parece haberse ido",
+      autoResolveIn: "Esta partida se resolverá automáticamente en unos {n} min más si no termina.",
       draw: "¡Es un empate!",
       youWon: "¡Venciste a {name}!",
       youLost: "{name} ganó esta vez",
@@ -744,6 +852,7 @@ export const translations = {
       roundsCompleted: "Rondas Completadas",
       timeLeft: "Tiempo Restante",
       score: "Puntuación",
+      preparingQuestions: "Preparando tus preguntas…",
       nextRound: "Siguiente Ronda →",
       finish: "Terminar →",
       continue: "Continuar →",
@@ -754,7 +863,7 @@ export const translations = {
         desc: "Resuelve acertijos de código uno tras otro antes de que se acabe el tiempo.",
         winTitle: "🏁 ¡Terminaste la Carrera!",
         loseTitle: "⏱️ Se Acabó el Tiempo",
-        dashBonus: "¡El bono de velocidad de Dash añadió segundos extra a tu reloj!",
+        dashBonus: "¡El bono de velocidad de Vex añadió segundos extra a tu reloj!",
       },
 
       bugHunt: {
@@ -772,7 +881,7 @@ export const translations = {
         desc: "Lee el código, adivina qué imprime — rondas rápidas, sin piedad.",
         winTitle: "🔮 ¡Lo Lograste!",
         loseTitle: "💭 ¡Tan Cerca!",
-        scopeBonus: "¡Scope reveló una respuesta incorrecta antes de elegir!",
+        scopeBonus: "¡Ifra reveló una respuesta incorrecta antes de elegir!",
       },
 
       codeGolf: {
@@ -783,7 +892,7 @@ export const translations = {
         yourLines: "Tus Líneas",
         par: "Par",
         lines: "líneas",
-        trimBonus: "¡El bono de refactorización de Trim añadió puntos extra a tu puntuación!",
+        trimBonus: "¡El bono de refactorización de Lambda añadió puntos extra a tu puntuación!",
       },
 
       showdown: {
@@ -792,7 +901,7 @@ export const translations = {
         winTitle: "🥇 ¡Campeón del Enfrentamiento!",
         loseTitle: "💥 Eliminado",
         roundsSurvived: "Rondas Sobrevividas",
-        nullPointerSave: "¡La protección de racha de Null Pointer salvó tu partida!",
+        nullPointerSave: "¡La protección de racha de Firewall salvó tu partida!",
         getReady: "Prepárate...",
       },
 
@@ -804,7 +913,7 @@ export const translations = {
         yourTime: "Tu Tiempo",
         ghostTime: "Tiempo Fantasma",
         beatGhost: "¡Venciste el tiempo del fantasma!",
-        tankBonus: "¡La resistencia de Bastion te dio una vida extra!",
+        tankBonus: "¡La resistencia de Stack te dio una vida extra!",
       },
 
       chaosRound: {
@@ -839,13 +948,23 @@ export const translations = {
 
     sideQuestMap: {
       title: "Misiones Secundarias 🧭",
-      subtitle: "31 cursos cortos sobre herramientas reales —",
+      subtitle: "35 cursos cortos sobre herramientas reales —",
       lessonsComplete: "lecciones completadas!",
       lessons: "lecciones",
       completed: "Completado",
       notStarted: "Sin empezar",
       allQuests: "Todas",
-      tag_frontend: "Frontend",
+      tag_computerScience: "Ciencias de la Computación",
+      tag_dataScience: "Ciencia de Datos",
+      tag_ai: "Inteligencia Artificial",
+      tag_career: "Carrera Profesional",
+    },
+
+    skillGate: {
+      title: "Todavía no desbloqueado",
+      body: "Termina {need} lecciones en el Modo Aprendizaje para desbloquear esto — vas {done}/{need}.",
+      lessonsLabel: "lecciones",
+      cta: "Ir al Modo Aprendizaje →",
     },
 
     sideQuestPath: {
@@ -914,9 +1033,23 @@ export const translations = {
       themeDark: "Oscuro",
       codingLanguage: "Lenguaje de Programación",
       language: "Idioma de la App",
+      accessibility: "Accesibilidad",
+      reducedMotion: "Reducir Movimiento",
+      reducedMotionNote: "Desactiva el confeti y los efectos animados.",
+      reducedMotionSystem: "Sistema",
+      reducedMotionOn: "Activado",
+      reducedMotionOff: "Desactivado",
       account: "Cuenta",
+      changePassword: "Cambiar Contraseña",
+      confirmPassword: "Confirma la nueva contraseña",
+      passwordMismatch: "Esas contraseñas no coinciden.",
+      passwordUpdated: "¡Contraseña actualizada! ✅",
+      passwordCancel: "Cancelar",
       resetProgress: "Reiniciar Todo el Progreso",
       resetConfirm: "Esto borrará todo tu progreso en este dispositivo. ¿Estás seguro?",
+      dataSection: "Tus Datos",
+      exportData: "Exportar Mis Datos",
+      exportDataDesc: "Descarga una copia legible de tu perfil y progreso.",
       about: "Acerca de",
       madeWith: "Hecho con 💜 para jóvenes programadores de todo el mundo.",
       privacyNote: "El modo invitado guarda todo solo en este dispositivo. Crear una cuenta guarda tu correo y progreso de forma segura — sin anuncios ni venta de datos. ¿Tienes menos de 13 años? ¡Pregúntale primero a un adulto!",
@@ -929,6 +1062,22 @@ export const translations = {
       deleteConfirm: "Sí, eliminar todo",
       deleteCancel: "Cancelar",
       deleteError: "No se pudo eliminar tu cuenta. Inténtalo de nuevo.",
+      support: "Ayuda y Soporte",
+      supportDesc: "¿Preguntas, comentarios o encontraste un error? Nos encantaría saber de ti.",
+      supportEmail: "Escríbenos",
+      supportUnavailable: "El contacto de soporte aún no está configurado — vuelve pronto.",
+    },
+
+    buddy: {
+      greet: ["¡Hola! Soy {name}. ¡Resolvamos esto juntos!", "¡Listo cuando tú lo estés!", "Lee la tarea y ¡a por ello! Yo te cubro."],
+      idle: ["Tómate tu tiempo. Estoy aquí.", "Prueba algo: cada ejecución te enseña algo.", "¡Tú puedes!"],
+      thinking: ["Uy, ya veo por dónde vas…", "Mmm, interesante…", "¡Sigue escribiendo, sigue pensando!"],
+      running: ["Ejecutando… ¡crucemos los dedos!", "A ver qué pasa…", "Compilando esperanza…"],
+      correct: ["¡SÍ! ¡Eso es! 🎉", "¡Lo clavaste! Tienes talento.", "¡Perfecto! ¡El Kernel está orgulloso de ti!", "¡Boom! ¡Sin bugs!"],
+      wrong: ["¡Uy! Casi.", "¡Ufff, por poco!", "Mmm, no es eso…"],
+      retry: ["Los errores son solo datos. ¡Mira la pista e inténtalo otra vez!", "Lee la salida con cuidado: es una pista.", "Hasta los mejores depuran. ¡Otra vez!"],
+      step: ["¡Bien! ¡Siguiente paso!", "¡Uno menos!", "¡Genial, sigue así!"],
+      close: "Cerrar",
     },
 
     characters: {
@@ -943,6 +1092,41 @@ export const translations = {
       unlockRankedPoints: "Alcanza {n} puntos clasificados para desbloquear",
       unlockStreak: "Alcanza una racha de {n} días para desbloquear",
       unlockDefault: "Sigue jugando para desbloquear",
+    },
+
+    codeHelper: {
+      title: "Ayudante de Código",
+      subtitle: "¿Atascado? Escribe tu pregunta y/o pega tu código abajo, y recibe ayuda real de un tutor con IA.",
+      guestGate: "El Ayudante de Código necesita una cuenta para que sea justo para todos — tu progreso como invitado se conserva al iniciar sesión.",
+      questionLabel: "Tu pregunta (opcional)",
+      questionPlaceholder: "ej. ¿Por qué mi bucle solo imprime 4 veces?",
+      questionNoPaste: "Escribe tu pregunta con tus propias palabras — pegar texto está desactivado aquí.",
+      codeLabel: "Tu código (opcional)",
+      ask: "Pedir Ayuda",
+      send: "Enviar",
+      asking: "Pensando…",
+      notConfigured: "Esta función aún no está configurada — vuelve pronto!",
+      rateLimited: "Ya usaste todos tus mensajes de hoy — vuelve mañana!",
+      emptyRequest: "Agrega una pregunta o pega algo de código primero.",
+      conversationTooLong: "Esta conversación ya es muy larga — inicia una nueva para seguir.",
+      genericError: "Algo salió mal. Inténtalo de nuevo en un momento.",
+      turnsUsed: "mensajes hoy",
+      newChat: "Nueva Conversación",
+    },
+
+    insights: {
+      title: "Para Ti",
+      subtitle: "Algunas notas según cómo te ha ido.",
+      learningNotStartedText: "¿Listo para empezar? Prueba tu primera lección en Aprender.",
+      skillGateLockedText: "Termina {n} lecciones más para desbloquear Misiones Secundarias y el Modo Clasificado.",
+      streakMilestoneText: "¡Racha de {streak} días! Solo {n} días más para desbloquear {reward}.",
+      rankedShieldActiveText: "Tienes un escudo de ascenso ({n} restantes) — buen momento para arriesgarte en Clasificado.",
+      rankedToughStretchText: "El Modo Clasificado ha estado difícil últimamente — prueba una Misión Secundaria antes de tu próxima partida.",
+      rankedGoodWinRateText: "¡Bien! Tu tasa de victorias en Clasificado es del {n}% — sigue así.",
+      rankedNotTriedText: "¿Listo para un reto? Prueba el Modo Clasificado y enfréntate a oponentes reales.",
+      categoryUnexploredText: "Aún no has probado ninguna misión de {category} — inténtalo.",
+      categoryStrongText: "Has completado {n} lecciones en {category} — tu área más fuerte hasta ahora.",
+      charactersToUnlockText: "{n} personajes más por desbloquear — sigue jugando para coleccionarlos todos.",
     },
   },
 
@@ -1013,6 +1197,21 @@ export const translations = {
       ],
       chapterLabel: "第 {n} 章",
       moreAdventures: "更多冒險",
+      practiceProblems: "練習題庫",
+    },
+
+    practiceProblems: {
+      title: "練習題庫",
+      intro: "許多程式平台都會用到的經典演算法題目——點一題看看它在考什麼，以及你該複習哪些課程。我們會連結到真正的題目頁面，而不是在這裡複製內容。",
+      allDifficulties: "全部",
+      allTopics: "全部主題",
+      openOnLeetcode: "在 LeetCode 開啟",
+      skillsTitle: "你需要的技能",
+      topicHintLabel: "策略小提示：",
+      review: "複習這堂課",
+      reviewDone: "再次複習這堂課",
+      lockedHint: "🔒 繼續闖關才能抵達這個世界",
+      noneMatch: "目前沒有符合篩選條件的題目。",
     },
 
     levelMap: {
@@ -1174,6 +1373,7 @@ export const translations = {
       waitingTitle: "正在等待對手…",
       waitingFor: "{name} 還在進行中。",
       claimForfeit: "宣告勝利——對手似乎已離開",
+      autoResolveIn: "如果對手還沒完成，這場對戰大約 {n} 分鐘後會自動結算。",
       draw: "平手！",
       youWon: "你擊敗了 {name}！",
       youLost: "{name} 贏得了這一局",
@@ -1209,6 +1409,7 @@ export const translations = {
       roundsCompleted: "完成回合數",
       timeLeft: "剩餘時間",
       score: "分數",
+      preparingQuestions: "正在準備題目…",
       nextRound: "下一回合 →",
       finish: "完成 →",
       continue: "繼續 →",
@@ -1219,7 +1420,7 @@ export const translations = {
         desc: "在時間耗盡前連續解出程式謎題。",
         winTitle: "🏁 完成競速！",
         loseTitle: "⏱️ 時間到",
-        dashBonus: "Dash 的速度加成為你的時鐘增加了額外的秒數！",
+        dashBonus: "Vex 的速度加成為你的時鐘增加了額外的秒數！",
       },
 
       bugHunt: {
@@ -1237,7 +1438,7 @@ export const translations = {
         desc: "閱讀程式碼，猜猜它會印出什麼 — 快節奏回合，毫不留情。",
         winTitle: "🔮 猜中了！",
         loseTitle: "💭 就差一點！",
-        scopeBonus: "Scope 在你作答前揭露了一個錯誤選項！",
+        scopeBonus: "Ifra 在你作答前揭露了一個錯誤選項！",
       },
 
       codeGolf: {
@@ -1248,7 +1449,7 @@ export const translations = {
         yourLines: "你的行數",
         par: "標準桿",
         lines: "行",
-        trimBonus: "Trim 的重構加成幫你的分數多加了一些！",
+        trimBonus: "Lambda 的重構加成幫你的分數多加了一些！",
       },
 
       showdown: {
@@ -1257,7 +1458,7 @@ export const translations = {
         winTitle: "🥇 對決冠軍！",
         loseTitle: "💥 已淘汰",
         roundsSurvived: "存活回合數",
-        nullPointerSave: "Null Pointer 的連續保護拯救了你的紀錄！",
+        nullPointerSave: "Firewall 的連續保護拯救了你的紀錄！",
         getReady: "準備好...",
       },
 
@@ -1269,7 +1470,7 @@ export const translations = {
         yourTime: "你的時間",
         ghostTime: "幽靈時間",
         beatGhost: "你打敗了幽靈的時間！",
-        tankBonus: "Bastion 的堅韌給了你一條額外的生命！",
+        tankBonus: "Stack 的堅韌給了你一條額外的生命！",
       },
 
       chaosRound: {
@@ -1304,13 +1505,23 @@ export const translations = {
 
     sideQuestMap: {
       title: "支線任務 🧭",
-      subtitle: "31 個關於真實工具的短課程 —",
+      subtitle: "35 個關於真實工具的短課程 —",
       lessonsComplete: "堂課已完成！",
       lessons: "堂課",
       completed: "已完成",
       notStarted: "尚未開始",
       allQuests: "全部",
-      tag_frontend: "前端",
+      tag_computerScience: "電腦科學",
+      tag_dataScience: "資料科學",
+      tag_ai: "人工智慧",
+      tag_career: "職涯發展",
+    },
+
+    skillGate: {
+      title: "尚未解鎖",
+      body: "在學習模式中完成 {need} 堂課即可解鎖——你目前是 {done}/{need}。",
+      lessonsLabel: "堂課",
+      cta: "前往學習模式 →",
     },
 
     sideQuestPath: {
@@ -1378,9 +1589,23 @@ export const translations = {
       themeDark: "深色",
       codingLanguage: "程式語言",
       language: "應用程式語言",
+      accessibility: "無障礙設定",
+      reducedMotion: "減少動態效果",
+      reducedMotionNote: "關閉彩帶特效與動畫效果。",
+      reducedMotionSystem: "系統預設",
+      reducedMotionOn: "開啟",
+      reducedMotionOff: "關閉",
       account: "帳號",
+      changePassword: "變更密碼",
+      confirmPassword: "確認新密碼",
+      passwordMismatch: "兩次輸入的密碼不一致。",
+      passwordUpdated: "密碼已更新！✅",
+      passwordCancel: "取消",
       resetProgress: "重置所有進度",
       resetConfirm: "這將清除你在此裝置上的所有進度，確定要繼續嗎？",
+      dataSection: "你的資料",
+      exportData: "匯出我的資料",
+      exportDataDesc: "下載一份易讀的個人檔案與進度副本。",
       about: "關於",
       madeWith: "用 💜 為全世界的小小程式設計師打造。",
       privacyNote: "訪客模式的所有資料只會留在這台裝置上。建立帳號會安全地儲存你的電子郵件與進度——沒有廣告，也不會販售資料。未滿 13 歲嗎？請先問問家長！",
@@ -1393,6 +1618,22 @@ export const translations = {
       deleteConfirm: "是的，全部刪除",
       deleteCancel: "取消",
       deleteError: "無法刪除你的帳號，請再試一次。",
+      support: "說明與支援",
+      supportDesc: "有問題、意見，或發現錯誤嗎？歡迎與我們聯絡。",
+      supportEmail: "寄信給我們",
+      supportUnavailable: "支援聯絡方式尚未設定，請稍後再回來查看。",
+    },
+
+    buddy: {
+      greet: ["嗨！我是 {name}。我們一起破解這題吧！", "準備好就開始吧！", "先讀題目，再試試看——我幫你看著！"],
+      idle: ["慢慢來，我就在這裡。", "試試看吧——每次執行都會學到東西。", "你一定可以的！"],
+      thinking: ["喔，我知道你的想法了……", "嗯，很有趣……", "繼續打字，繼續思考！"],
+      running: ["執行中……祝好運！", "看看會發生什麼……", "正在編譯希望……"],
+      correct: ["耶！就是這樣！🎉", "完美命中！你真有天分。", "太棒了！Kernel 為你驕傲！", "砰——零錯誤！"],
+      wrong: ["哎呀！差一點。", "哇，好險！", "嗯，不是這樣……"],
+      retry: ["錯誤只是資料。看看提示再試一次！", "仔細看輸出——那是線索。", "最厲害的程式設計師也要除錯。再來一次！"],
+      step: ["很好！下一步！", "完成一步了！", "太棒了——繼續！"],
+      close: "關閉",
     },
 
     characters: {
@@ -1407,6 +1648,41 @@ export const translations = {
       unlockRankedPoints: "達到 {n} 排名點數即可解鎖",
       unlockStreak: "達到連續 {n} 天登入即可解鎖",
       unlockDefault: "繼續遊玩即可解鎖",
+    },
+
+    codeHelper: {
+      title: "程式小幫手",
+      subtitle: "卡關了嗎？在下面輸入你的問題和／或貼上你的程式碼，讓 AI 家教真正幫你一把。",
+      guestGate: "程式小幫手需要帳號才能對每個人公平——登入後訪客進度會自動保留。",
+      questionLabel: "你的問題（選填）",
+      questionPlaceholder: "例如：為什麼我的迴圈只印出 4 次？",
+      questionNoPaste: "請用你自己的話輸入問題——這裡無法貼上文字。",
+      codeLabel: "你的程式碼（選填）",
+      ask: "尋求協助",
+      send: "傳送",
+      asking: "思考中…",
+      notConfigured: "這個功能還沒設定好，請稍後再回來看看！",
+      rateLimited: "你今天的訊息次數已經用完了——明天再來吧！",
+      emptyRequest: "請先輸入問題或貼上一些程式碼。",
+      conversationTooLong: "這段對話已經太長了——開始新對話繼續吧。",
+      genericError: "發生錯誤，請稍後再試一次。",
+      turnsUsed: "個今日訊息",
+      newChat: "開始新對話",
+    },
+
+    insights: {
+      title: "給你的建議",
+      subtitle: "根據你目前的表現整理的幾點提醒。",
+      learningNotStartedText: "準備好開始了嗎？到「學習」試試你的第一堂課。",
+      skillGateLockedText: "再完成 {n} 堂課就能解鎖支線任務和排名模式。",
+      streakMilestoneText: "連續 {streak} 天了！再過 {n} 天就能解鎖 {reward}。",
+      rankedShieldActiveText: "你有一個晉級護盾（剩 {n} 場）——現在是在排名模式放手一搏的好時機。",
+      rankedToughStretchText: "最近排名模式打得比較辛苦——下一場對戰前，不妨先玩個支線任務。",
+      rankedGoodWinRateText: "太棒了！你的排名勝率是 {n}%——繼續保持。",
+      rankedNotTriedText: "準備好接受挑戰了嗎？試試排名模式，和真實對手一較高下。",
+      categoryUnexploredText: "你還沒試過任何{category}的任務——去試試看吧。",
+      categoryStrongText: "你已經完成了 {n} 堂{category}的課程——這是你目前最強的領域。",
+      charactersToUnlockText: "還有 {n} 個角色可以解鎖——繼續遊玩把他們全部收集起來。",
     },
   },
 
@@ -1477,6 +1753,21 @@ export const translations = {
       ],
       chapterLabel: "챕터 {n}",
       moreAdventures: "더 많은 모험",
+      practiceProblems: "연습 문제",
+    },
+
+    practiceProblems: {
+      title: "연습 문제",
+      intro: "여러 코딩 플랫폼에서 널리 쓰이는 고전 알고리즘 문제예요 — 하나를 눌러 어떤 문제인지, 어떤 레슨을 복습하면 좋을지 확인해 보세요. 문제 내용을 여기에 그대로 옮기는 대신 실제 문제 페이지로 연결해 드려요.",
+      allDifficulties: "전체",
+      allTopics: "전체 주제",
+      openOnLeetcode: "LeetCode에서 열기",
+      skillsTitle: "필요한 스킬",
+      topicHintLabel: "전략 팁:",
+      review: "이 레슨 복습하기",
+      reviewDone: "이 레슨 다시 보기",
+      lockedHint: "🔒 계속 진행하면 이 월드에 도달해요",
+      noneMatch: "이 필터에 맞는 문제가 아직 없어요.",
     },
 
     levelMap: {
@@ -1638,6 +1929,7 @@ export const translations = {
       waitingTitle: "상대를 기다리는 중…",
       waitingFor: "{name}님이 아직 진행 중이에요.",
       claimForfeit: "승리 인정 — 상대가 나간 것 같아요",
+      autoResolveIn: "상대가 끝내지 않으면 약 {n}분 후 이 경기는 자동으로 처리돼요.",
       draw: "무승부예요!",
       youWon: "{name}님을 이겼어요!",
       youLost: "{name}님이 이겼어요",
@@ -1673,6 +1965,7 @@ export const translations = {
       roundsCompleted: "완료한 라운드",
       timeLeft: "남은 시간",
       score: "점수",
+      preparingQuestions: "문제를 준비하는 중…",
       nextRound: "다음 라운드 →",
       finish: "완료 →",
       continue: "계속하기 →",
@@ -1683,7 +1976,7 @@ export const translations = {
         desc: "시간이 다 되기 전에 코딩 퍼즐을 연달아 풀어보세요.",
         winTitle: "🏁 레이스 완주!",
         loseTitle: "⏱️ 시간 종료",
-        dashBonus: "Dash의 속도 보너스로 시계에 시간이 추가됐어요!",
+        dashBonus: "Vex의 속도 보너스로 시계에 시간이 추가됐어요!",
       },
 
       bugHunt: {
@@ -1701,7 +1994,7 @@ export const translations = {
         desc: "코드를 읽고 무엇이 출력될지 맞혀보세요 — 빠른 라운드, 봐주기 없음.",
         winTitle: "🔮 정확해요!",
         loseTitle: "💭 아깝네요!",
-        scopeBonus: "Scope가 답을 고르기 전에 오답 하나를 보여줬어요!",
+        scopeBonus: "Ifra가 답을 고르기 전에 오답 하나를 보여줬어요!",
       },
 
       codeGolf: {
@@ -1712,7 +2005,7 @@ export const translations = {
         yourLines: "내 코드 줄 수",
         par: "기준 줄 수",
         lines: "줄",
-        trimBonus: "Trim의 리팩토링 보너스로 점수가 더 올라갔어요!",
+        trimBonus: "Lambda의 리팩토링 보너스로 점수가 더 올라갔어요!",
       },
 
       showdown: {
@@ -1721,7 +2014,7 @@ export const translations = {
         winTitle: "🥇 서바이벌 챔피언!",
         loseTitle: "💥 탈락",
         roundsSurvived: "생존한 라운드",
-        nullPointerSave: "Null Pointer의 연속 보호로 살아남았어요!",
+        nullPointerSave: "Firewall의 연속 보호로 살아남았어요!",
         getReady: "준비하세요...",
       },
 
@@ -1733,7 +2026,7 @@ export const translations = {
         yourTime: "내 기록",
         ghostTime: "고스트 기록",
         beatGhost: "고스트의 기록을 이겼어요!",
-        tankBonus: "Bastion의 강인함 덕분에 생명이 하나 더 생겼어요!",
+        tankBonus: "Stack의 강인함 덕분에 생명이 하나 더 생겼어요!",
       },
 
       chaosRound: {
@@ -1768,13 +2061,23 @@ export const translations = {
 
     sideQuestMap: {
       title: "사이드 퀘스트 🧭",
-      subtitle: "실전 도구를 다루는 31개의 짧은 코스 —",
+      subtitle: "실전 도구를 다루는 35개의 짧은 코스 —",
       lessonsComplete: "레슨 완료!",
       lessons: "레슨",
       completed: "완료됨",
       notStarted: "시작 전",
       allQuests: "전체",
-      tag_frontend: "프론트엔드",
+      tag_computerScience: "컴퓨터 과학",
+      tag_dataScience: "데이터 과학",
+      tag_ai: "인공지능",
+      tag_career: "커리어",
+    },
+
+    skillGate: {
+      title: "아직 잠겨 있어요",
+      body: "학습 모드에서 {need}개 레슨을 완료하면 잠금이 풀려요 — 현재 {done}/{need}.",
+      lessonsLabel: "레슨",
+      cta: "학습 모드로 이동 →",
     },
 
     sideQuestPath: {
@@ -1842,9 +2145,23 @@ export const translations = {
       themeDark: "다크 모드",
       codingLanguage: "프로그래밍 언어",
       language: "앱 언어",
+      accessibility: "접근성",
+      reducedMotion: "움직임 줄이기",
+      reducedMotionNote: "색종이 효과와 애니메이션 효과를 꺼요.",
+      reducedMotionSystem: "시스템 설정",
+      reducedMotionOn: "켜기",
+      reducedMotionOff: "끄기",
       account: "계정",
+      changePassword: "비밀번호 변경",
+      confirmPassword: "새 비밀번호 확인",
+      passwordMismatch: "비밀번호가 일치하지 않아요.",
+      passwordUpdated: "비밀번호가 변경되었어요! ✅",
+      passwordCancel: "취소",
       resetProgress: "모든 진행 상황 초기화",
       resetConfirm: "이 기기의 모든 진행 상황이 삭제돼요. 계속할까요?",
+      dataSection: "내 데이터",
+      exportData: "내 데이터 내보내기",
+      exportDataDesc: "프로필과 진행 상황을 읽기 쉬운 파일로 다운로드해요.",
       about: "앱 정보",
       madeWith: "전 세계 어린이 코더들을 위해 💜 를 담아 만들었어요.",
       privacyNote: "게스트 모드에서는 모든 데이터가 이 기기에만 저장돼요. 계정을 만들면 이메일과 진행 상황이 안전하게 저장돼요 — 광고도 없고 데이터를 팔지도 않아요. 13세 미만이라면 먼저 부모님께 여쭤보세요!",
@@ -1857,6 +2174,22 @@ export const translations = {
       deleteConfirm: "네, 모두 삭제할게요",
       deleteCancel: "취소",
       deleteError: "계정을 삭제하지 못했어요. 다시 시도해 주세요.",
+      support: "도움말 및 지원",
+      supportDesc: "질문이나 의견이 있거나 버그를 발견했나요? 언제든 연락해 주세요.",
+      supportEmail: "이메일 보내기",
+      supportUnavailable: "지원 연락처가 아직 설정되지 않았어요 — 곧 다시 확인해 주세요.",
+    },
+
+    buddy: {
+      greet: ["안녕! 나는 {name}야. 같이 풀어 보자!", "준비되면 시작해!", "문제를 읽고 도전해 봐 — 내가 지켜볼게!"],
+      idle: ["천천히 해. 나 여기 있어.", "일단 해 봐 — 실행할 때마다 배우는 게 있어.", "넌 할 수 있어!"],
+      thinking: ["오, 무슨 생각인지 알겠어…", "음, 흥미로운데…", "계속 쓰고, 계속 생각해!"],
+      running: ["실행 중… 행운을 빌어!", "어떻게 될까…", "희망을 컴파일하는 중…"],
+      correct: ["좋아! 바로 그거야! 🎉", "완벽해! 타고났구나.", "최고야! Kernel이 자랑스러워해!", "펑 — 버그 제로!"],
+      wrong: ["앗! 아깝다.", "와, 거의 맞았어!", "음, 그게 아니야…"],
+      retry: ["실수는 그냥 데이터야. 힌트를 보고 다시 해 봐!", "출력을 잘 읽어 봐 — 그게 단서야.", "최고의 코더도 디버깅해. 한 번 더!"],
+      step: ["좋아! 다음 단계!", "하나 끝!", "잘했어 — 계속 가자!"],
+      close: "닫기",
     },
 
     characters: {
@@ -1871,6 +2204,41 @@ export const translations = {
       unlockRankedPoints: "랭크 포인트 {n}점에 도달하면 잠금 해제",
       unlockStreak: "{n}일 연속 학습을 달성하면 잠금 해제",
       unlockDefault: "계속 플레이하면 잠금 해제돼요",
+    },
+
+    codeHelper: {
+      title: "코드 도우미",
+      subtitle: "막혔나요? 아래에 질문을 입력하고 코드를 붙여넣으면 AI 튜터가 진짜로 도와줘요.",
+      guestGate: "코드 도우미는 모두에게 공평하도록 계정이 필요해요 — 로그인하면 게스트 진행 상황이 그대로 이어져요.",
+      questionLabel: "질문 (선택 사항)",
+      questionPlaceholder: "예: 왜 반복문이 4번만 출력되나요?",
+      questionNoPaste: "질문은 직접 입력해 주세요 — 여기서는 붙여넣기를 사용할 수 없어요.",
+      codeLabel: "코드 (선택 사항)",
+      ask: "도움 요청하기",
+      send: "보내기",
+      asking: "생각 중…",
+      notConfigured: "이 기능은 아직 준비 중이에요 — 곧 다시 확인해 주세요!",
+      rateLimited: "오늘의 메시지를 모두 사용했어요 — 내일 다시 와주세요!",
+      emptyRequest: "먼저 질문을 입력하거나 코드를 붙여넣어 주세요.",
+      conversationTooLong: "이 대화가 너무 길어졌어요 — 새 대화를 시작해 주세요.",
+      genericError: "문제가 발생했어요. 잠시 후 다시 시도해 주세요.",
+      turnsUsed: "오늘의 메시지",
+      newChat: "새 대화",
+    },
+
+    insights: {
+      title: "맞춤 제안",
+      subtitle: "지금까지의 활동을 바탕으로 한 몇 가지 알림이에요.",
+      learningNotStartedText: "시작할 준비 됐나요? 학습 탭에서 첫 레슨을 해보세요.",
+      skillGateLockedText: "{n}개 레슨만 더 끝내면 사이드 퀘스트와 랭크 모드가 열려요.",
+      streakMilestoneText: "{streak}일 연속 학습 중! {n}일만 더 지나면 {reward}을(를) 얻을 수 있어요.",
+      rankedShieldActiveText: "승급 방패가 있어요 ({n}경기 남음) — 랭크에서 과감하게 도전해볼 좋은 기회예요.",
+      rankedToughStretchText: "요즘 랭크 경기가 좀 힘드셨죠 — 다음 경기 전에 사이드 퀘스트를 한두 개 해보는 건 어때요?",
+      rankedGoodWinRateText: "좋아요! 랭크 승률이 {n}%예요 — 계속 이 기세를 유지해요.",
+      rankedNotTriedText: "도전할 준비 됐나요? 랭크 모드에서 실제 상대와 실력을 겨뤄보세요.",
+      categoryUnexploredText: "아직 {category} 퀘스트를 해본 적이 없네요 — 한번 도전해 보세요.",
+      categoryStrongText: "{category}에서 {n}개 레슨을 완료했어요 — 지금까지 가장 강한 분야예요.",
+      charactersToUnlockText: "아직 잠금 해제할 캐릭터가 {n}개 더 있어요 — 계속 플레이해서 모두 모아보세요.",
     },
   },
 };

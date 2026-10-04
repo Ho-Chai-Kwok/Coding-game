@@ -1,7 +1,21 @@
 import { getRankInfo, TIERS } from "../data/rank";
+import { SKILL_GATE_LESSONS, meetsSkillGate } from "../data/skillGate";
 import { useI18n } from "../i18n/I18nContext";
 import { useAuth } from "../auth/AuthContext";
 import CharacterRig from "./CharacterRig";
+import SkillGateNotice from "./SkillGateNotice";
+
+// Was always "idle" regardless of how things actually stood — now reacts
+// to the same numbers already on this screen: an active shield gets the
+// protective guard pose, being close to the next rank gets an eager
+// hype, and an unbeaten record (at least one match played) gets the
+// confident streak pump. Falls back to idle otherwise, same as before.
+function rankedHomeCharacterState({ shield, rank, wins, losses }) {
+  if (shield > 0) return "shielded";
+  if (!rank.isMaxTier && rank.progressPercent >= 85) return "hype";
+  if (wins > 0 && losses === 0) return "streak";
+  return "idle";
+}
 
 export default function RankedHome({
   points,
@@ -11,8 +25,10 @@ export default function RankedHome({
   wins,
   losses,
   selectedCharacter,
+  mainLessonsCompleted = 0,
   onPlay,
   onOpenCharacters,
+  onGoToLearning,
   onBack,
 }) {
   const { t } = useI18n();
@@ -20,6 +36,22 @@ export default function RankedHome({
   const rank = getRankInfo(points);
   const peak = getRankInfo(peakPoints);
   const floorLabel = getRankInfo(TIERS[rank.tierIndex].min).label;
+  const unlocked = meetsSkillGate(mainLessonsCompleted);
+
+  if (!unlocked) {
+    return (
+      <div className="ranked-home">
+        <button className="back-link" onClick={onBack}>
+          ← {t("backToModes")}
+        </button>
+        <SkillGateNotice
+          lessonsCompleted={mainLessonsCompleted}
+          lessonsRequired={SKILL_GATE_LESSONS}
+          onGoToLearning={onGoToLearning}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="ranked-home">
@@ -51,7 +83,11 @@ export default function RankedHome({
       {selectedCharacter && (
         <button className="ranked-home__character" onClick={onOpenCharacters}>
           <span className="ranked-home__character-rig">
-            <CharacterRig character={selectedCharacter} state="idle" showSparkles={false} />
+            <CharacterRig
+              character={selectedCharacter}
+              state={rankedHomeCharacterState({ shield, rank, wins, losses })}
+              showSparkles={false}
+            />
           </span>
           <span className="ranked-home__character-text">
             <span className="ranked-home__character-label">{t("rankedHome.playingAs")}</span>

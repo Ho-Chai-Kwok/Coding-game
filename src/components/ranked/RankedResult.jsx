@@ -1,5 +1,8 @@
 import Confetti from "../Confetti";
+import ByteBornSprite from "../byteborn/ByteBornSprite";
 import { useI18n } from "../../i18n/I18nContext";
+import { CHARACTERS } from "../../data/characters";
+import "../byteborn/byteborn.css";
 
 // Shared win/loss summary screen every ranked mode ends on. Used two ways:
 // each mode's own internal screen (didWin/pointsDelta = its own solo
@@ -9,6 +12,11 @@ import { useI18n } from "../../i18n/I18nContext";
 // and the outer post-match screen (RankedMatchRunner.jsx), which passes
 // pointsLabel="LP" because at that point the number really is the final,
 // server-settled rank change.
+//
+// The player's own Byteborn headlines the screen now (in the big "win"/
+// "lose" states — see byteborn.css), Duolingo-style: the mode's emoji
+// becomes a small accent next to the title instead of the whole visual,
+// since the character reacting is the more personal, more legible signal.
 export default function RankedResult({
   didWin,
   emoji,
@@ -17,6 +25,7 @@ export default function RankedResult({
   pointsDelta,
   pointsLabel,
   bonusNote,
+  character = CHARACTERS[0],
   onContinue,
 }) {
   const { t } = useI18n();
@@ -24,8 +33,12 @@ export default function RankedResult({
   return (
     <div className={`ranked-result ranked-result--${didWin ? "win" : "loss"}`}>
       {didWin && <Confetti />}
-      <div className="ranked-result__emoji">{emoji}</div>
-      <h3 className="ranked-result__title">{title}</h3>
+      <div className="ranked-result__sprite">
+        <ByteBornSprite id={character.id} state={didWin ? "win" : "lose"} label={character.name} />
+      </div>
+      <h3 className="ranked-result__title">
+        <span className="ranked-result__title-emoji">{emoji}</span> {title}
+      </h3>
 
       {statLines.length > 0 && (
         <div className="ranked-result__stats">

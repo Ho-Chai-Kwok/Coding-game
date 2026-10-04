@@ -16,6 +16,7 @@ import { worlds } from "./data/levels";
 import { sidequests } from "./data/sidequests";
 import { CHARACTERS, buildUnlockContext } from "./data/characters";
 import { describeRankChange } from "./data/rank";
+import { SKILL_GATE_LESSONS } from "./data/skillGate";
 import { toInstantLanguage, isCompiledLanguage } from "./data/languages";
 import { applyHeadStart, getHeadStartWorldId } from "./data/onboarding";
 import "./App.css";
@@ -32,6 +33,8 @@ const RankedPracticeRunner = lazy(() => import("./components/RankedPracticeRunne
 const SideQuestMap = lazy(() => import("./components/SideQuestMap"));
 const SideQuestPath = lazy(() => import("./components/SideQuestPath"));
 const Settings = lazy(() => import("./components/Settings"));
+const CodeHelper = lazy(() => import("./components/CodeHelper"));
+const PracticeProblems = lazy(() => import("./components/PracticeProblems"));
 const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 const RankChange = lazy(() => import("./components/RankChange"));
@@ -84,6 +87,7 @@ function AppShell() {
   // Profile, appearance, and "real app" dashboard bits
   const [profile, setProfile] = useState(DEFAULT_PROFILE);
   const [theme, setTheme] = useState("system"); // "system" | "light" | "dark"
+  const [reducedMotion, setReducedMotion] = useState("system"); // "system" | "on" | "off"
   const [streak, setStreak] = useState(1);
   const [lastPlayedDate, setLastPlayedDate] = useState(null);
   const [continueWorldId, setContinueWorldId] = useState(null);
@@ -111,6 +115,23 @@ function AppShell() {
     }
   }, [theme]);
 
+  // "system" respects the OS-level prefers-reduced-motion setting (checked
+  // live, not just at mount, so it still reacts if someone flips it while
+  // the app is open); "on"/"off" override it explicitly. The actual
+  // animation-killing lives in CSS (see index.css), gated on this one data
+  // attribute — same pattern as theme above.
+  useEffect(() => {
+    const query = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    function apply() {
+      const effective = reducedMotion === "system" ? Boolean(query?.matches) : reducedMotion === "on";
+      document.documentElement.dataset.reducedMotion = effective ? "true" : "false";
+    }
+    apply();
+    if (reducedMotion !== "system" || !query) return undefined;
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, [reducedMotion]);
+
   // Persist progress: Supabase when logged in, localStorage as a guest.
   const progressSnapshot = useMemo(
     () => ({
@@ -124,6 +145,7 @@ function AppShell() {
       peakPoints,
       profile,
       theme,
+      reducedMotion,
       streak,
       lastPlayedDate,
       continueWorldId,
@@ -145,6 +167,7 @@ function AppShell() {
       peakPoints,
       profile,
       theme,
+      reducedMotion,
       streak,
       lastPlayedDate,
       continueWorldId,
@@ -188,6 +211,7 @@ function AppShell() {
       }
       if (saved.profile) setProfile(saved.profile);
       if (saved.theme) setTheme(saved.theme);
+      if (saved.reducedMotion) setReducedMotion(saved.reducedMotion);
       if (saved.continueWorldId) setContinueWorldId(saved.continueWorldId);
       if (saved.selectedCharacterId) setSelectedCharacterId(saved.selectedCharacterId);
     }
@@ -285,6 +309,30 @@ function AppShell() {
     setContinueWorldId(worldId);
   }
 
+  // A plain, human-readable snapshot for Settings' "Export My Data" button
+  // (data portability) — deliberately NOT the compact packed format used
+  // for actual cloud sync (packWorlds/packSideQuests), since this is meant
+  // to be opened and read by the person who downloaded it, not re-imported.
+  function exportData() {
+    return {
+      exportedAt: new Date().toISOString(),
+      account: user ? { email: user.email } : { guest: true },
+      profile,
+      streak,
+      ranked: { points: rankedPoints, peakPoints, wins: rankedWins, losses: rankedLosses },
+      learningProgress: worldsState.map((w) => ({
+        world: w.name,
+        completedLevels: w.levels.filter((l) => l.status === "completed").length,
+        totalLevels: w.levels.length,
+      })),
+      sideQuestProgress: sideQuestsState.map((q) => ({
+        quest: q.name,
+        completedLessons: q.lessons.filter((l) => l.status === "completed").length,
+        totalLessons: q.lessons.length,
+      })),
+    };
+  }
+
   // Switching to a different mode/tab (whether via the bottom nav or an
   // in-screen "back" link) always resets whichever nested screen was open
   // within the mode being left — which world/lesson/match was active — the
@@ -306,19 +354,25 @@ function AppShell() {
   }
 
   function completeLevel(level) {
+    // Found from the current (pre-update) world rather than reached-into
+    // from inside the setWorldsState updater below: a level's identity at
+    // a given stageNumber doesn't change just because this completion is
+    // about to unlock it, so there's no need to depend on setState's
+    // updater-timing to know what "next" is.
+    const world = worldsState.find((w) => w.id === level.worldId);
+    const nextLevel = world?.levels.find((l) => l.stageNumber === level.stageNumber + 1) ?? null;
+
     setWorldsState((prev) => {
       const next = structuredClone(prev);
-      const world = next.find((w) => w.id === level.worldId);
-      const lvl = world.levels.find((l) => l.id === level.id);
+      const w = next.find((w2) => w2.id === level.worldId);
+      const lvl = w.levels.find((l) => l.id === level.id);
       lvl.status = "completed";
 
-      const nextLevel = world.levels.find(
-        (l) => l.stageNumber === level.stageNumber + 1,
-      );
-      if (nextLevel && nextLevel.status === "locked") {
-        nextLevel.status = "unlocked";
-      } else if (!nextLevel) {
-        const nextWorld = next.find((w) => w.id === world.id + 1);
+      if (nextLevel) {
+        const nl = w.levels.find((l) => l.id === nextLevel.id);
+        if (nl.status === "locked") nl.status = "unlocked";
+      } else {
+        const nextWorld = next.find((w2) => w2.id === w.id + 1);
         if (nextWorld && nextWorld.status === "locked") {
           nextWorld.status = "unlocked";
           // A world being unlocked must also unlock its own first level,
@@ -331,26 +385,38 @@ function AppShell() {
 
       return next;
     });
-    setActiveLevel(null);
+
+    // Duolingo-style: go straight into the next lesson instead of
+    // dropping back to the map after every single level. Only when a
+    // level finishes the whole world (no next stage within it) does this
+    // fall back to the map — jumping straight into a brand-new world's
+    // first level with no "world complete" moment of its own would be a
+    // jarring surprise, not a convenience, so that's still a deliberate
+    // stop, not an oversight.
+    setActiveLevel(nextLevel ? { ...nextLevel, status: "unlocked" } : null);
   }
 
   function completeSideQuestLesson(lesson) {
+    const quest = sideQuestsState.find((q) => q.id === lesson.questId);
+    const nextLesson = quest?.lessons.find((x) => x.lessonNumber === lesson.lessonNumber + 1) ?? null;
+
     setSideQuestsState((prev) => {
       const next = structuredClone(prev);
-      const quest = next.find((q) => q.id === lesson.questId);
-      const l = quest.lessons.find((x) => x.id === lesson.id);
+      const q = next.find((q2) => q2.id === lesson.questId);
+      const l = q.lessons.find((x) => x.id === lesson.id);
       l.status = "completed";
 
-      const nextLesson = quest.lessons.find(
-        (x) => x.lessonNumber === lesson.lessonNumber + 1,
-      );
-      if (nextLesson && nextLesson.status === "locked") {
-        nextLesson.status = "unlocked";
+      if (nextLesson) {
+        const nl = q.lessons.find((x) => x.id === nextLesson.id);
+        if (nl.status === "locked") nl.status = "unlocked";
       }
 
       return next;
     });
-    setActiveSideQuestLesson(null);
+
+    // Same "continue straight into the next lesson" behavior as
+    // completeLevel above — see its comment.
+    setActiveSideQuestLesson(nextLesson ? { ...nextLesson, status: "unlocked" } : null);
   }
 
   // Ranked PvP always requires a signed-in account (see RankedHome's
@@ -387,6 +453,15 @@ function AppShell() {
     };
   }, [worldsState, sideQuestsState]);
 
+  // Side Quests and Ranked Mode's skill gate (see data/skillGate.js) is
+  // deliberately measured only against Learning Mode — never side-quest
+  // lessons themselves — so it can't be circularly unlocked by the very
+  // thing it's gating.
+  const mainLessonsCompleted = useMemo(
+    () => worldsState.flatMap((w) => w.levels).filter((l) => l.status === "completed").length,
+    [worldsState],
+  );
+
   const unlockCtx = useMemo(
     () =>
       buildUnlockContext({
@@ -416,6 +491,16 @@ function AppShell() {
     if (!continueWorld) return;
     setMode("learning");
     enterWorld(continueWorld.id);
+  }
+
+  // From Practice Problems' "review this skill" button — jumps straight
+  // into that World's level map, same pattern as handleContinueLearning.
+  // Only ever called for an already-unlocked world (PracticeProblems only
+  // renders the button in that case), so this never bypasses the normal
+  // strictly-in-order world progression.
+  function reviewWorld(worldId) {
+    setMode("learning");
+    enterWorld(worldId);
   }
 
   let screen;
@@ -453,10 +538,16 @@ function AppShell() {
         streak={streak}
         overallProgress={overallProgress}
         continueWorld={continueWorld}
+        selectedCharacter={selectedCharacter}
         onContinueLearning={handleContinueLearning}
         onOpenSettings={() => switchMode("settings")}
         onOpenCalendar={() => switchMode("calendar")}
+        onOpenHelper={() => switchMode("helper")}
       />
+    );
+  } else if (mode === "helper") {
+    screen = (
+      <CodeHelper defaultLanguage={language ?? "javascript"} onBack={backToModes} />
     );
   } else if (mode === "characters") {
     hideBottomNav = false;
@@ -486,11 +577,20 @@ function AppShell() {
         onChangeProfile={setProfile}
         theme={theme}
         onChangeTheme={setTheme}
+        reducedMotion={reducedMotion}
+        onChangeReducedMotion={setReducedMotion}
         codingLanguage={language}
         onChangeCodingLanguage={setLanguage}
         unlockedAvatars={unlockedAvatars}
+        mainLessonsCompleted={mainLessonsCompleted}
+        streak={streak}
+        sideQuestsState={sideQuestsState}
+        rankedWins={rankedWins}
+        rankedLosses={rankedLosses}
+        rankedShield={rankedShield}
         onBack={backToModes}
         onResetProgress={resetProgress}
+        onExportData={exportData}
         syncStatus={syncStatus}
       />
     );
@@ -505,10 +605,12 @@ function AppShell() {
     } else if (activeLevel) {
       screen = (
         <LevelScreen
+          key={activeLevel.id}
           level={activeLevel}
           language={language}
           onBack={() => setActiveLevel(null)}
           onCompleteLevel={completeLevel}
+          character={selectedCharacter}
         />
       );
     } else if (activeWorld) {
@@ -526,21 +628,35 @@ function AppShell() {
         <WorldMap
           worlds={worldsState}
           language={language}
+          selectedCharacter={selectedCharacter}
           onChangeLanguage={() => setLanguage(null)}
           onSelectWorld={enterWorld}
+          onOpenPractice={() => switchMode("practice")}
           onBack={backToModes}
         />
       );
     }
+  } else if (mode === "practice") {
+    screen = (
+      <PracticeProblems
+        worldsState={worldsState}
+        mainLessonsCompleted={mainLessonsCompleted}
+        onReviewWorld={reviewWorld}
+        onGoToLearning={() => switchMode("learning")}
+        onBack={backToModes}
+      />
+    );
   } else if (mode === "sidequest") {
     const activeQuest = sideQuestsState.find((q) => q.id === activeSideQuestId);
 
     if (activeSideQuestLesson) {
       screen = (
         <LevelScreen
+          key={activeSideQuestLesson.id}
           level={activeSideQuestLesson}
           onBack={() => setActiveSideQuestLesson(null)}
           onCompleteLevel={completeSideQuestLesson}
+          character={selectedCharacter}
         />
       );
     } else if (activeQuest) {
@@ -557,6 +673,9 @@ function AppShell() {
       screen = (
         <SideQuestMap
           sidequests={sideQuestsState}
+          mainLessonsCompleted={mainLessonsCompleted}
+          selectedCharacter={selectedCharacter}
+          onGoToLearning={() => switchMode("learning")}
           onSelectQuest={(q) => setActiveSideQuestId(q.id)}
           onBack={backToModes}
         />
@@ -613,7 +732,13 @@ function AppShell() {
       );
     } else if (rankChange) {
       hideBottomNav = false;
-      screen = <RankChange change={rankChange} onContinue={() => setRankChange(null)} />;
+      screen = (
+        <RankChange
+          change={rankChange}
+          character={selectedCharacter}
+          onContinue={() => setRankChange(null)}
+        />
+      );
     } else {
       hideBottomNav = false;
       screen = (
@@ -625,8 +750,10 @@ function AppShell() {
           wins={rankedWins}
           losses={rankedLosses}
           selectedCharacter={selectedCharacter}
+          mainLessonsCompleted={mainLessonsCompleted}
           onPlay={() => setRankedMode("shuffle")}
           onOpenCharacters={() => switchMode("characters")}
+          onGoToLearning={() => switchMode("learning")}
           onBack={backToModes}
         />
       );
@@ -638,7 +765,13 @@ function AppShell() {
       <div className={`app${hideBottomNav ? "" : " app--with-nav"}`}>
         <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>{screen}</Suspense>
       </div>
-      {!hideBottomNav && <BottomNav active={mode} onSelect={switchMode} />}
+      {!hideBottomNav && (
+        <BottomNav
+          active={mode}
+          onSelect={switchMode}
+          lockedTabs={mainLessonsCompleted >= SKILL_GATE_LESSONS ? [] : ["sidequest", "ranked"]}
+        />
+      )}
     </>
   );
 }

@@ -28,7 +28,7 @@ export default function LevelMap({ world, onSelectLevel, onBack }) {
         </button>
         <span className="level-map__world-icon">{world.icon}</span>
         <h1>{world.name}</h1>
-        <p>
+        <p className="level-map__stages">
           World {world.id} · {completedCount}/{world.totalStages}{" "}
           {t("levelMap.stagesComplete")}
         </p>

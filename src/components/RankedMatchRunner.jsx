@@ -6,6 +6,17 @@ import { getRankInfo } from "../data/rank";
 import { useI18n } from "../i18n/I18nContext";
 
 const FORFEIT_WAIT_SECONDS = 45;
+// Every mode's own internal countdown (100s-240s, see each mode file)
+// already forces that mode to submit a result well before this — the real
+// risk of a match running long isn't active play, it's one player
+// finishing and then waiting indefinitely for a slow/AFK/disconnected
+// opponent, since claiming a forfeit win is otherwise a manual, optional
+// click. This is the hard backstop: measured from `match.created_at`
+// (set server-side the instant the two players are actually paired, not
+// from whenever either of them happened to open the app), once a match
+// has been live this long, the waiting side's forfeit gets claimed
+// automatically instead of sitting there indefinitely.
+const MATCH_TIME_LIMIT_SECONDS = 12 * 60;
 
 // Orchestrates one real PvP match end to end: both matched players play
 // the same mode with the same seeded content (see RankedModeRunner.jsx),
@@ -18,6 +29,7 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
   const { match, submitResult, claimForfeitWin } = useRankedMatch(matchId);
   const [mySubmittedScore, setMySubmittedScore] = useState(null);
   const [waitedSeconds, setWaitedSeconds] = useState(0);
+  const [matchElapsedSeconds, setMatchElapsedSeconds] = useState(0);
   const submittedAtRef = useRef(null);
 
   useEffect(() => {
@@ -28,6 +40,35 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
     }, 1000);
     return () => clearInterval(id);
   }, [mySubmittedScore, match?.status]);
+
+  // The overall match clock — ticks the whole time the match is live,
+  // independent of which phase (playing vs. waiting) either player is in.
+  useEffect(() => {
+    if (!match?.created_at || match.status === "settled") return undefined;
+    const startedAt = new Date(match.created_at).getTime();
+    const tick = () => setMatchElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [match?.created_at, match?.status]);
+
+  // The actual backstop: once the 12-minute mark passes while I'm the one
+  // still waiting on my opponent, claim the forfeit automatically. Keeps
+  // retrying every few seconds (rather than firing once) because the
+  // server itself also requires 45s to have passed since *my own*
+  // submission (claim_forfeit_win() in supabase/schema.sql) — if I
+  // happened to submit within the last 45s of the 12-minute mark, a
+  // single early attempt would be rejected and, without a retry, the
+  // match could hang past the deadline instead of resolving the moment
+  // it's genuinely eligible.
+  const pastMatchTimeLimit = matchElapsedSeconds >= MATCH_TIME_LIMIT_SECONDS;
+  useEffect(() => {
+    if (mySubmittedScore === null || match?.status === "settled") return undefined;
+    if (!pastMatchTimeLimit) return undefined;
+    claimForfeitWin();
+    const id = setInterval(claimForfeitWin, 5000);
+    return () => clearInterval(id);
+  }, [mySubmittedScore, match?.status, pastMatchTimeLimit, claimForfeitWin]);
 
   if (!match) {
     return <p className="app-loading" aria-label="Loading">🏆</p>;
@@ -48,6 +89,7 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
     return (
       <RankedResult
         didWin={isDraw ? false : didWin}
+        character={character}
         emoji={isDraw ? "🤝" : didWin ? "🏆" : "😤"}
         title={
           isDraw
@@ -70,6 +112,8 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
 
   if (mySubmittedScore !== null) {
     const canForfeit = waitedSeconds >= FORFEIT_WAIT_SECONDS;
+    const secondsLeft = Math.max(0, MATCH_TIME_LIMIT_SECONDS - matchElapsedSeconds);
+    const minutesLeft = Math.ceil(secondsLeft / 60);
     return (
       <div className="ranked-mode-screen ranked-queue">
         <div className="ranked-mode-screen__header">
@@ -85,6 +129,9 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
             {t("rankedMatch.claimForfeit")}
           </button>
         )}
+        <p className="ranked-match-runner__match-limit">
+          {t("rankedMatch.autoResolveIn").replace("{n}", minutesLeft)}
+        </p>
       </div>
     );
   }
@@ -113,6 +160,7 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
         character={character}
         language={language}
         rankedPoints={avgPoints}
+        matchId={matchId}
         seed={match.seed}
         onExit={onExit}
         onFinish={(pointsDelta) => {

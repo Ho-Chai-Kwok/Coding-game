@@ -32,7 +32,7 @@ const TOOLS = {
 // its `accept` patterns, at which point the terminal advances. Wrong
 // commands still run through the real interpreter, so mistakes get real,
 // useful error messages instead of "incorrect."
-export default function TerminalChallenge({ content, onSolved }) {
+export default function TerminalChallenge({ content, onSolved, onFeedback }) {
   const { t } = useI18n();
   const { tool = "git", repoName, steps } = content;
   const { run: runner, initialState } = TOOLS[tool];
@@ -81,11 +81,14 @@ export default function TerminalChallenge({ content, onSolved }) {
       setWrongCount(0);
       if (stepIndex + 1 >= steps.length) {
         setDone(true);
+        onFeedback?.("correct");
       } else {
         setStepIndex((i) => i + 1);
+        onFeedback?.("step");
       }
     } else {
       setWrongCount((c) => c + 1);
+      onFeedback?.("wrong");
     }
   }
 
@@ -117,7 +120,10 @@ export default function TerminalChallenge({ content, onSolved }) {
                 ref={inputRef}
                 className="terminal__input"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  onFeedback?.("thinking");
+                }}
                 autoFocus
                 autoComplete="off"
                 autoCapitalize="off"

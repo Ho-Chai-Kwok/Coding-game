@@ -11,6 +11,7 @@ const RAW_QUESTS = [
     icon: "🔀",
     from: "#f97316",
     to: "#c2410c",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Git?",
@@ -328,6 +329,7 @@ const RAW_QUESTS = [
     icon: "🐳",
     from: "#38bdf8",
     to: "#0369a1",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Docker?",
@@ -484,6 +486,7 @@ const RAW_QUESTS = [
     icon: "🔢",
     from: "#60a5fa",
     to: "#1d4ed8",
+    tags: ["dataScience"],
     lessons: [
       {
         title: "What is NumPy?",
@@ -627,6 +630,7 @@ const RAW_QUESTS = [
     icon: "🐼",
     from: "#94a3b8",
     to: "#334155",
+    tags: ["dataScience"],
     lessons: [
       {
         title: "What is Pandas?",
@@ -779,6 +783,7 @@ const RAW_QUESTS = [
     icon: "🔥",
     from: "#fb923c",
     to: "#c2410c",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is PyTorch?",
@@ -920,6 +925,7 @@ const RAW_QUESTS = [
     icon: "🧠",
     from: "#fbbf24",
     to: "#b45309",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is TensorFlow?",
@@ -1052,6 +1058,7 @@ const RAW_QUESTS = [
     icon: "☁️",
     from: "#7dd3fc",
     to: "#0284c7",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Cloud Computing?",
@@ -1206,6 +1213,7 @@ const RAW_QUESTS = [
     icon: "🗄️",
     from: "#a78bfa",
     to: "#6d28d9",
+    tags: ["dataScience"],
     lessons: [
       {
         title: "What is a Database?",
@@ -1368,6 +1376,7 @@ const RAW_QUESTS = [
     icon: "⚛️",
     from: "#67e8f9",
     to: "#0e7490",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is React?",
@@ -1496,6 +1505,7 @@ const RAW_QUESTS = [
     icon: "🟢",
     from: "#4ade80",
     to: "#15803d",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Node.js?",
@@ -1662,6 +1672,7 @@ const RAW_QUESTS = [
     icon: "🌐",
     from: "#f472b6",
     to: "#be185d",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is an API?",
@@ -1787,6 +1798,7 @@ const RAW_QUESTS = [
     icon: "🐧",
     from: "#fdba74",
     to: "#c2410c",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Linux?",
@@ -1969,6 +1981,7 @@ const RAW_QUESTS = [
     icon: "⎈",
     from: "#93c5fd",
     to: "#1e40af",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Kubernetes?",
@@ -2124,6 +2137,7 @@ const RAW_QUESTS = [
     icon: "🔄",
     from: "#d8b4fe",
     to: "#7e22ce",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is CI/CD?",
@@ -2270,6 +2284,7 @@ const RAW_QUESTS = [
     icon: "🍃",
     from: "#6ee7b7",
     to: "#047857",
+    tags: ["dataScience"],
     lessons: [
       {
         title: "What is MongoDB?",
@@ -2412,6 +2427,7 @@ const RAW_QUESTS = [
     icon: "🔷",
     from: "#f9a8d4",
     to: "#9d174d",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is GraphQL?",
@@ -2596,6 +2612,7 @@ console.log(data.data.country.currency);`,
     icon: "🌶️",
     from: "#86efac",
     to: "#166534",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is Flask?",
@@ -2725,6 +2742,7 @@ console.log(data.data.country.currency);`,
     icon: "📈",
     from: "#fca5a5",
     to: "#b91c1c",
+    tags: ["dataScience"],
     lessons: [
       {
         title: "What is Matplotlib?",
@@ -2867,6 +2885,7 @@ console.log(data.data.country.currency);`,
     icon: "📓",
     from: "#fdba74",
     to: "#9a3412",
+    tags: ["dataScience"],
     lessons: [
       {
         title: "What is Jupyter?",
@@ -2982,6 +3001,7 @@ console.log(data.data.country.currency);`,
     icon: "🤖",
     from: "#c4b5fd",
     to: "#5b21b6",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is Machine Learning?",
@@ -3096,6 +3116,7 @@ console.log(data.data.country.currency);`,
     icon: "💬",
     from: "#fda4af",
     to: "#be123c",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is a Prompt?",
@@ -3216,6 +3237,7 @@ console.log(data.data.country.currency);`,
     icon: "🦜",
     from: "#a3e635",
     to: "#3f6212",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is LangChain?",
@@ -3327,6 +3349,7 @@ console.log(data.data.country.currency);`,
     icon: "🕸️",
     from: "#a5b4fc",
     to: "#4338ca",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is LangGraph?",
@@ -3436,6 +3459,7 @@ console.log(data.data.country.currency);`,
     icon: "👁️",
     from: "#f0abfc",
     to: "#86198f",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is Computer Vision?",
@@ -3563,6 +3587,7 @@ console.log(data.data.country.currency);`,
     icon: "🗣️",
     from: "#fde047",
     to: "#854d0e",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is NLP?",
@@ -3673,6 +3698,7 @@ console.log(data.data.country.currency);`,
     icon: "🔎",
     from: "#2dd4bf",
     to: "#115e59",
+    tags: ["ai"],
     lessons: [
       {
         title: "What is a Vector Database?",
@@ -3783,6 +3809,7 @@ console.log(data.data.country.currency);`,
     icon: "🧩",
     from: "#fb7185",
     to: "#9f1239",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is a Regex?",
@@ -3904,6 +3931,7 @@ console.log(data.data.country.currency);`,
     icon: "✅",
     from: "#38bdf8",
     to: "#0c4a6e",
+    tags: ["computerScience"],
     lessons: [
       {
         title: "Why Test Code?",
@@ -4016,7 +4044,7 @@ console.log(data.data.country.currency);`,
     icon: "📄",
     from: "#f16529",
     to: "#e34c26",
-    tags: ["frontend"],
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is HTML?",
@@ -4189,7 +4217,7 @@ console.log(data.data.country.currency);`,
     icon: "🎨",
     from: "#42a5f5",
     to: "#1565c0",
-    tags: ["frontend"],
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is CSS?",
@@ -4348,7 +4376,7 @@ console.log(data.data.country.currency);`,
     icon: "🐘",
     from: "#8892bf",
     to: "#4f5b93",
-    tags: ["frontend"],
+    tags: ["computerScience"],
     lessons: [
       {
         title: "What is PHP?",
@@ -4474,6 +4502,299 @@ console.log(data.data.country.currency);`,
         options: ["Nothing, it works fine", "name is used without the required $ sign, so PHP treats it as an undefined constant instead of a variable", "echo can't use concatenation", "Strings can't be assigned to variables"],
         correctIndex: 1,
         explanation: "Without the $, PHP has no way to know \"name\" is meant to be a variable.",
+      },
+    ],
+  },
+  {
+    name: "Tech Interview Prep",
+    icon: "🧑‍💻",
+    from: "#fbbf24",
+    to: "#b45309",
+    tags: ["career"],
+    lessons: [
+      {
+        title: "What Interviewers Actually Test",
+        tutorial: "A coding interview isn't just \"get the right answer\" — interviewers watch HOW you think: do you ask clarifying questions, talk through your plan, and handle being stuck?",
+        question: "Besides a correct final answer, what do coding interviewers pay close attention to?",
+        options: ["Typing speed", "How you communicate your thinking and approach the problem", "Whether you memorized the exact question", "How fancy your code editor looks"],
+        correctIndex: 1,
+        explanation: "Interviewers can't see inside your head — narrating your reasoning is how they know you actually understand the problem.",
+      },
+      {
+        title: "Clarify Before You Code",
+        tutorial: "Real interview problems are often vague on purpose. \"Reverse a string\" — does that mean words, or characters? Always ask before writing code.",
+        question: "You're asked to \"find the largest number in a list.\" What should you do first?",
+        options: ["Start typing code immediately", "Ask what should happen for an empty list, and confirm the input is really a list of numbers", "Assume the list always has exactly 10 items", "Refuse the question as too vague"],
+        correctIndex: 1,
+        explanation: "Clarifying edge cases (like an empty list) up front avoids building the wrong solution and shows careful thinking.",
+      },
+      {
+        title: "Big O: Why Speed Matters",
+        tutorial: "Big O describes how an algorithm slows down as input grows. A loop inside a loop over the same list (checking every pair) is O(n²) — for 1,000 items, that's up to 1,000,000 checks.",
+        example: "// O(n): one pass\nfor (const x of list) { /* ... */ }\n\n// O(n²): a pass inside a pass\nfor (const x of list) {\n  for (const y of list) { /* ... */ }\n}",
+        question: "Why do interviewers care if your solution is O(n²) instead of O(n)?",
+        options: ["O(n²) code looks less neat", "It scales badly — on a huge real input it could be far too slow to be usable", "O(n²) is always a syntax error", "There's no real difference in practice"],
+        correctIndex: 1,
+        explanation: "The same logic that feels instant on 10 items can take unusably long on 10 million — Big O is how you reason about that ahead of time.",
+      },
+      {
+        title: "Think Out Loud",
+        tutorial: "\"Talking through it\" means narrating your plan before and while you code: \"I'll first check the edge case of an empty array, then loop through comparing each pair...\"",
+        question: "Why do interviewers ask you to talk through your approach out loud?",
+        options: ["It's just a formality with no real purpose", "It lets them follow your reasoning and help you course-correct before you've written the wrong thing", "Silent coding is against the rules everywhere", "It has nothing to do with the evaluation"],
+        correctIndex: 1,
+        explanation: "Thinking out loud turns a black box into something the interviewer can actually evaluate and nudge if you're heading the wrong way.",
+      },
+      {
+        title: "Stuck Isn't Failure",
+        tutorial: "Almost everyone gets stuck at some point in an interview. What matters is what you do next: break the problem into smaller pieces, try a simple example by hand, or ask for a hint.",
+        question: "You're stuck mid-interview and can't see the next step. What's the best move?",
+        options: ["Go completely silent and hope it resolves itself", "Say what you've tried, what's confusing you, and try a small concrete example by hand", "Immediately give up and ask for a different question", "Pretend you know and guess randomly"],
+        correctIndex: 1,
+        explanation: "Narrating where you're stuck (and trying a small example) shows resilience and problem-solving — exactly what the interview is measuring.",
+      },
+      {
+        title: "The STAR Method",
+        tutorial: "Behavioral questions (\"Tell me about a time you disagreed with a teammate\") go well with the STAR structure: Situation, Task, Action, Result.",
+        question: "In the STAR method for answering behavioral interview questions, what does the \"R\" stand for?",
+        options: ["Requirements", "Result — what actually happened because of your actions", "Resources", "Review"],
+        correctIndex: 1,
+        explanation: "Ending with the concrete Result (what changed, what you learned) is what makes a STAR answer land instead of trailing off.",
+      },
+      {
+        title: "Questions to Ask Them",
+        tutorial: "Interviews go both ways. Asking a thoughtful question at the end (\"What does a typical first project look like for someone in this role?\") shows genuine interest, not just \"any job will do.\"",
+        question: "Why is it worth preparing a question or two to ask your interviewer?",
+        options: ["It's a meaningless tradition", "It shows genuine interest and helps you learn if the role is actually right for you", "It's required by law", "It replaces the technical portion of the interview"],
+        correctIndex: 1,
+        explanation: "A good question at the end signals you're evaluating the fit too, not just hoping to be picked.",
+      },
+      {
+        title: "🏆 Challenge: Plan Before You Code",
+        tutorial: "Put it together: for a new problem, the right first moves are clarify → think through examples → outline a plan → then code, narrating as you go.",
+        question: "You're handed a brand-new coding problem in an interview. What's the very first thing you should do?",
+        options: ["Start typing a solution right away to save time", "Ask clarifying questions about the input and edge cases before writing any code", "Ask to skip the question", "Write the code, then ask questions if it's wrong"],
+        correctIndex: 1,
+        explanation: "Every technique in this quest points the same way: understand the problem for real before committing to code.",
+      },
+    ],
+  },
+  {
+    name: "Resumes & Portfolios",
+    icon: "📄",
+    from: "#38bdf8",
+    to: "#0369a1",
+    tags: ["career"],
+    lessons: [
+      {
+        title: "What a Tech Resume Is For",
+        tutorial: "A resume's only job is to get you an interview — it doesn't need to prove everything about you, just convince someone you're worth a conversation.",
+        question: "What is the main goal of a resume?",
+        options: ["To list every single thing you've ever done", "To convince someone to give you an interview", "To replace the interview entirely", "To look as long as possible"],
+        correctIndex: 1,
+        explanation: "A resume is a door-opener, not the whole story — it just needs to earn you that next conversation.",
+      },
+      {
+        title: "Show Impact, Not Just Duties",
+        tutorial: "\"Worked on a website\" says little. \"Built a website that let 200 classroom volunteers sign up for shifts\" shows real, specific impact.",
+        question: "Which resume line better shows real impact?",
+        options: ["\"Used JavaScript\"", "\"Built a scheduling app used by 200 volunteers, cutting sign-up time from a paper form to under a minute\"", "\"Did some coding\"", "\"Interested in computers\""],
+        correctIndex: 1,
+        explanation: "Specific numbers and outcomes are far more convincing than a vague list of tools or tasks.",
+      },
+      {
+        title: "A GitHub Profile Is a Portfolio",
+        tutorial: "For a beginner without a job history, a few real, working, well-explained projects on GitHub (with a clear README explaining what each one does) can matter more than the resume itself.",
+        question: "Why does a GitHub profile with a few real projects help, especially early on?",
+        options: ["It doesn't help at all", "It's concrete proof you can actually build things, which matters when you don't have job history yet", "GitHub profiles are only for professional developers", "It replaces the need to ever apply for jobs"],
+        correctIndex: 1,
+        explanation: "Real, working code you can point to is proof of skill that a resume's words alone can't give.",
+      },
+      {
+        title: "A README People Actually Read",
+        tutorial: "A good project README answers 3 things fast: what does this do, how do I run it, and what did I learn or find hard building it.",
+        question: "What should a project's README answer first?",
+        options: ["The entire commit history", "What the project does and how to run it", "Your favorite programming quote", "Nothing — code should speak for itself"],
+        correctIndex: 1,
+        explanation: "Someone skimming your project decides whether to keep reading within seconds — lead with what it is and how to try it.",
+      },
+      {
+        title: "Tailoring, Not Duplicating",
+        tutorial: "You don't need a different resume for every job, but highlighting the 2-3 most relevant projects/skills for THIS role (instead of everything, in random order) makes a real difference.",
+        question: "What does \"tailoring\" a resume to a job posting mean?",
+        options: ["Writing a completely different resume from scratch every time", "Emphasizing the experience most relevant to that specific role first", "Making the font fancier", "Lying about your skills to match the posting"],
+        correctIndex: 1,
+        explanation: "Tailoring is about emphasis and ordering, not fabrication — put your most relevant, real experience where it'll be seen first.",
+      },
+      {
+        title: "Keep It Skimmable",
+        tutorial: "Recruiters often spend well under a minute on a first pass. Short bullet points with the most important word first beat long paragraphs.",
+        question: "Why should resume bullet points be short and start with the key detail?",
+        options: ["Because recruiters often skim quickly, and the important part needs to be seen immediately", "Long paragraphs are against the rules", "It makes the resume look empty", "Bullet points are only for cooking recipes"],
+        correctIndex: 0,
+        explanation: "If a reader only reads the first few words of each line, those words need to carry the point.",
+      },
+      {
+        title: "Honesty Matters",
+        tutorial: "Never claim a skill or project you don't actually have — a follow-up interview question will expose the gap fast, and it damages trust badly.",
+        question: "Why is it a bad idea to list a skill on your resume you don't actually have?",
+        options: ["It's fine as long as no one notices", "An interviewer will likely ask a follow-up question that reveals the gap, damaging trust", "Resumes aren't checked for accuracy", "It's only a problem for senior roles"],
+        correctIndex: 1,
+        explanation: "A resume claim that can't survive one follow-up question does more harm than leaving it off entirely.",
+      },
+      {
+        title: "🏆 Challenge: Pick the Stronger Line",
+        tutorial: "Put it together: strong resume lines are specific, show real impact, and are easy to skim in seconds.",
+        question: "Which line would stand out most to someone skimming a beginner's resume?",
+        options: ["\"Familiar with programming\"", "\"Built and deployed a 5-page quiz app in JavaScript, used by 30 classmates to study for finals\"", "\"Took a coding class once\"", "\"Good with computers\""],
+        correctIndex: 1,
+        explanation: "It's specific (5-page quiz app), names a real technology, and shows real use (30 classmates) — exactly what a skimmer remembers.",
+      },
+    ],
+  },
+  {
+    name: "Open Source & Collaboration",
+    icon: "🤝",
+    from: "#34d399",
+    to: "#047857",
+    tags: ["career"],
+    lessons: [
+      {
+        title: "What Is Open Source?",
+        tutorial: "Open-source projects publish their code for anyone to read, use, and even help improve — from tiny personal tools to huge projects like Linux or React.",
+        question: "What makes a software project \"open source\"?",
+        options: ["It's free to download but the code is hidden", "Its source code is publicly available for anyone to read and contribute to", "It was made by a big company", "It has no license at all"],
+        correctIndex: 1,
+        explanation: "\"Open source\" specifically means the code itself is public, not just that the finished app is free.",
+      },
+      {
+        title: "Issues: Where Work Starts",
+        tutorial: "An \"issue\" is a tracked report of a bug or a wanted feature. Contributors often start by reading open issues to find something they can help with.",
+        question: "What is a GitHub \"issue\" used for?",
+        options: ["Deleting a repository", "Tracking a bug report or a requested feature, often as a starting point for contributors", "Only for reporting security problems", "Storing the project's source code"],
+        correctIndex: 1,
+        explanation: "Issues are a project's public to-do list and discussion thread — a natural place to find a first contribution.",
+      },
+      {
+        title: "\"Good First Issue\"",
+        tutorial: "Many projects label a few small, well-scoped issues as \"good first issue\" specifically to help newcomers make their first real contribution without getting lost.",
+        question: "Why do projects label some issues \"good first issue\"?",
+        options: ["To hide the hardest problems from beginners", "To point newcomers toward small, approachable tasks so they can make a first real contribution", "It's a random label with no meaning", "Those issues are not important enough to fix"],
+        correctIndex: 1,
+        explanation: "It's a deliberate signal: \"start here if you're new\" — a low-risk way in for a first-time contributor.",
+      },
+      {
+        title: "Forking a Project",
+        tutorial: "To contribute to a repo you don't own, you first \"fork\" it — making your own copy on GitHub — then make changes there before proposing them back.",
+        question: "What does \"forking\" a repository on GitHub do?",
+        options: ["Deletes the original project", "Creates your own copy of the repository under your account, so you can make changes safely", "Merges two projects together instantly", "Downloads the project without any copy being made"],
+        correctIndex: 1,
+        explanation: "A fork gives you a safe sandbox copy — you can experiment freely without touching the original project directly.",
+      },
+      {
+        title: "Pull Requests Are a Conversation",
+        tutorial: "A pull request isn't just \"here's my code\" — maintainers often leave review comments, and back-and-forth revision before merging is completely normal, not a failure.",
+        question: "You open a pull request and a maintainer leaves comments asking for changes. What does that usually mean?",
+        options: ["Your contribution was rejected entirely", "Normal review — revise based on the feedback and update the same pull request", "You should delete the pull request and never contribute again", "The maintainer is being unfair"],
+        correctIndex: 1,
+        explanation: "Review-and-revise is the standard open-source workflow, for beginners and experienced maintainers alike.",
+      },
+      {
+        title: "Writing a Clear Pull Request",
+        tutorial: "A good pull request description explains WHAT changed and WHY — \"Fixes #42: the login button was unreadable in dark mode; this updates its text color\" is far more useful than \"fix stuff\".",
+        question: "What makes a pull request description genuinely useful to a reviewer?",
+        options: ["As few words as possible", "Explaining clearly what changed and why, ideally linking the issue it addresses", "Listing every file changed with no explanation", "Leaving the description blank to save time"],
+        correctIndex: 1,
+        explanation: "A reviewer wasn't in your head while you worked — a clear \"what and why\" saves everyone time.",
+      },
+      {
+        title: "Licenses Matter",
+        tutorial: "A project's license (like MIT or Apache 2.0) spells out what you're legally allowed to do with its code — use, modify, sell, etc. Always check before reusing someone else's code.",
+        question: "Why should you check a project's license before reusing its code in your own project?",
+        options: ["Licenses are just decoration with no real effect", "The license defines what you're legally allowed to do with that code", "Only companies need to worry about licenses", "All code on the internet is automatically free to use however you want"],
+        correctIndex: 1,
+        explanation: "Skipping the license check risks using code in a way its author never actually permitted.",
+      },
+      {
+        title: "🏆 Challenge: Your First Contribution",
+        tutorial: "Put it together: a realistic first-contribution path is find a good-first-issue → fork → make a small, clear change → open a pull request explaining what and why.",
+        question: "What's a realistic path to making your very first open-source contribution?",
+        options: ["Rewrite the entire project by yourself first", "Find a \"good first issue\", fork the repo, make a small focused change, and open a clear pull request", "Email the maintainer asking them to add you as an owner", "Only large, sweeping changes are accepted from newcomers"],
+        correctIndex: 1,
+        explanation: "Small, well-explained first contributions are exactly how most contributors — including many now-maintainers — got started.",
+      },
+    ],
+  },
+  {
+    name: "Tech Career Paths",
+    icon: "🧭",
+    from: "#c084fc",
+    to: "#7c3aed",
+    tags: ["career"],
+    lessons: [
+      {
+        title: "Frontend vs. Backend",
+        tutorial: "Frontend developers build what users see and click (buttons, layouts, animations). Backend developers build the server, database, and logic behind the scenes that the frontend talks to.",
+        question: "What does a frontend developer mainly work on?",
+        options: ["The database that stores user data", "The parts of an app users actually see and interact with", "Server security only", "Physical computer hardware"],
+        correctIndex: 1,
+        explanation: "Frontend = what's on screen and how it responds to clicks and taps; backend = the server-side logic making that possible.",
+      },
+      {
+        title: "Full-Stack",
+        tutorial: "A \"full-stack\" developer works across both the frontend and the backend — not necessarily an expert in every part of each, but comfortable moving between them.",
+        question: "What does it mean to be a \"full-stack\" developer?",
+        options: ["Only working on hardware", "Working on both the frontend and backend of an app", "Knowing every programming language ever created", "A developer who only writes tests"],
+        correctIndex: 1,
+        explanation: "Full-stack is about range across the whole app, not mastery of literally everything in existence.",
+      },
+      {
+        title: "Data Scientist vs. ML Engineer",
+        tutorial: "A data scientist mostly explores data to find insights and build models. An ML engineer focuses more on taking those models and reliably running them in a real product at scale.",
+        question: "What's the main difference between a typical data scientist role and a typical ML engineer role?",
+        options: ["There is no real difference", "Data scientists focus more on finding insights/building models; ML engineers focus more on deploying and running them reliably", "ML engineers never write code", "Data scientists only work with spreadsheets"],
+        correctIndex: 1,
+        explanation: "The lines blur at many companies, but the core focus differs: discovery/modeling vs. reliable production deployment.",
+      },
+      {
+        title: "DevOps",
+        tutorial: "DevOps engineers focus on how code gets from a developer's laptop to running safely in production — deployment pipelines, monitoring, and infrastructure (tools like Docker and Kubernetes live here).",
+        question: "What does a DevOps engineer mainly focus on?",
+        options: ["Designing app logos", "Getting code deployed reliably and keeping running systems healthy", "Writing marketing copy", "Answering customer support tickets"],
+        correctIndex: 1,
+        explanation: "DevOps sits between \"code is written\" and \"code is safely running for real users\", keeping that pipeline smooth.",
+      },
+      {
+        title: "Internships Are for Learning",
+        tutorial: "An internship's real value isn't just resume text — it's working alongside experienced developers, seeing how a real codebase works, and getting feedback on your code.",
+        question: "What's the most valuable part of a good internship, beyond the resume line?",
+        options: ["Free snacks", "Real mentorship, feedback, and exposure to how an actual codebase and team work", "It guarantees a job offer no matter what", "Avoiding writing any real code"],
+        correctIndex: 1,
+        explanation: "The mentorship and real-world exposure often teach more in a few months than solo projects can alone.",
+      },
+      {
+        title: "You Don't Need to Know Everything",
+        tutorial: "No developer knows every language, framework, and tool — professionals constantly look things up. What matters is knowing how to learn a new tool quickly, not memorizing all of them upfront.",
+        question: "Why don't professional developers worry about not knowing every tool or language?",
+        options: ["Because no one actually writes code professionally", "Because the real skill is being able to learn new tools quickly, not memorizing everything in advance", "Because only using one language is required forever", "Because looking things up is considered cheating"],
+        correctIndex: 1,
+        explanation: "Tools change constantly — the durable skill is knowing how to read docs and pick up something new, not having it all memorized.",
+      },
+      {
+        title: "Soft Skills Count",
+        tutorial: "Being able to explain a tricky bug clearly, ask for help without embarrassment, and give kind, useful feedback on a teammate's code matters just as much as raw coding ability.",
+        question: "Why do communication skills matter for a software developer's career?",
+        options: ["They don't — only raw coding speed matters", "Most real work involves explaining problems, asking for help, and reviewing others' code — not coding alone in silence", "Communication is only needed for management roles", "Soft skills replace the need to learn to code"],
+        correctIndex: 1,
+        explanation: "Software is almost always built by teams — how clearly you communicate directly affects how effective you are.",
+      },
+      {
+        title: "🏆 Challenge: Match the Role",
+        tutorial: "Put it together: match what someone actually spends their day doing to the right title.",
+        question: "Someone spends their day setting up automated deployment pipelines and keeping production servers healthy. What's their likely role?",
+        options: ["Frontend developer", "DevOps engineer", "Data scientist", "Graphic designer"],
+        correctIndex: 1,
+        explanation: "Deployment pipelines and production system health are the core of a DevOps role.",
       },
     ],
   },

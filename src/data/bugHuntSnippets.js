@@ -5,11 +5,20 @@
 //
 // Flow: the player first taps the line they think is buggy, then picks
 // the correct fix from four options.
+//
+// `difficulty` (1-5) is a genuine complexity rating, not padded to match
+// the 7-tier rank scale — with only 10 snippets, forcing 7 artificial
+// buckets would leave some nearly empty. getBugHuntPool(level) (below)
+// biases toward the closest available difficulty instead of requiring an
+// exact tier match, so Bronze/Silver players reliably see the easiest
+// ones and Master/Grandmaster players see the hardest available ones,
+// honestly reflecting that this pool's range tops out around mid-pack.
 
 export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-off-by-one",
     title: "Off-by-One Loop",
+    difficulty: 2,
     lines: [
       "let total = 0;",
       "for (let i = 0; i <= 5; i++) {",
@@ -30,6 +39,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-assignment",
     title: "Assignment vs. Equality",
+    difficulty: 2,
     lines: [
       "let score = 10;",
       "if (score = 20) {",
@@ -49,6 +59,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-typo-var",
     title: "Misspelled Variable",
+    difficulty: 1,
     lines: [
       "let userName = 'Alex';",
       "console.log(userNmae);",
@@ -66,6 +77,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-missing-return",
     title: "Missing Return",
+    difficulty: 2,
     lines: [
       "function double(n) {",
       "  n * 2;",
@@ -85,6 +97,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-wrong-index",
     title: "Off-by-One Index",
+    difficulty: 1,
     lines: [
       "let colors = ['red', 'green', 'blue'];",
       "console.log(colors[3]);",
@@ -102,6 +115,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-infinite-loop",
     title: "Infinite Loop",
+    difficulty: 2,
     lines: [
       "let i = 0;",
       "while (i < 5) {",
@@ -121,6 +135,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-string-concat",
     title: "Number Looks Like Concatenation",
+    difficulty: 4,
     lines: [
       "let price = 5;",
       "let tax = 2;",
@@ -139,6 +154,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-array-method",
     title: "Wrong Array Method",
+    difficulty: 4,
     lines: [
       "let nums = [1, 2, 3, 4];",
       "let doubled = nums.forEach(n => n * 2);",
@@ -157,6 +173,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-wrong-comparison",
     title: "Wrong Comparison Direction",
+    difficulty: 3,
     lines: [
       "function isAdult(age) {",
       "  return age < 18;",
@@ -176,6 +193,7 @@ export const BUG_HUNT_SNIPPETS = [
   {
     id: "bh-uninitialized",
     title: "Forgot to Initialize",
+    difficulty: 4,
     lines: [
       "let total;",
       "for (let i = 1; i <= 3; i++) {",
@@ -195,6 +213,13 @@ export const BUG_HUNT_SNIPPETS = [
   },
 ];
 
-export function getBugHuntPool() {
-  return BUG_HUNT_SNIPPETS;
+// With no `level`, returns everything (unchanged default). With one,
+// returns the snippets sorted closest-difficulty-first (see the file
+// header for why this biases toward the player's rank rather than
+// requiring an exact 7-way tier match on only 10 items).
+export function getBugHuntPool(level) {
+  if (level == null) return BUG_HUNT_SNIPPETS;
+  return [...BUG_HUNT_SNIPPETS].sort(
+    (a, b) => Math.abs(a.difficulty - level) - Math.abs(b.difficulty - level),
+  );
 }

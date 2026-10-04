@@ -12,13 +12,14 @@ const TABS = [
   { id: "characters", icon: "🎭", labelKey: "characters" },
 ];
 
-export default function BottomNav({ active, onSelect }) {
+export default function BottomNav({ active, onSelect, lockedTabs = [] }) {
   const { t } = useI18n();
 
   return (
     <nav className="bottom-nav" aria-label={t("bottomNav.label")}>
       {TABS.map((tab) => {
         const isActive = active === tab.id;
+        const isLocked = lockedTabs.includes(tab.id);
         return (
           <button
             key={tab.id ?? "home"}
@@ -26,7 +27,10 @@ export default function BottomNav({ active, onSelect }) {
             onClick={() => onSelect(tab.id)}
             aria-current={isActive ? "page" : undefined}
           >
-            <span className="bottom-nav__icon">{tab.icon}</span>
+            <span className="bottom-nav__icon">
+              {tab.icon}
+              {isLocked && <span className="bottom-nav__lock" aria-hidden="true">🔒</span>}
+            </span>
             <span className="bottom-nav__label">{t(`bottomNav.${tab.labelKey}`)}</span>
           </button>
         );

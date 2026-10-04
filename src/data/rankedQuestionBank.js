@@ -51,9 +51,9 @@ const LEVEL_1_BRONZE = [
   {
     topic: "Comparisons",
     question: "What does 5 > 3 evaluate to?",
-    options: ["5", "3", "true", "false"],
-    correctIndex: 2,
-    explanation: "Comparison operators like > always produce a Boolean result.",
+    options: ["true", "false", "1", "undefined"],
+    correctIndex: 0,
+    explanation: "Comparison operators like > always produce a Boolean result — 5 really is greater than 3.",
   },
   {
     topic: "Conditionals",
@@ -108,7 +108,7 @@ const LEVEL_2_SILVER = [
   {
     topic: "Equality",
     question: 'What does 5 === "5" evaluate to?',
-    options: ["true", "false", "5", "NaN"],
+    options: ["true", "false", "It throws a TypeError", "undefined"],
     correctIndex: 1,
     explanation: "=== checks both value AND type, and a number is never strictly equal to a string.",
   },
@@ -209,7 +209,7 @@ const LEVEL_3_GOLD = [
   {
     topic: "Ternary Operator",
     question: 'What does age >= 18 ? "Adult" : "Minor" evaluate to if age is 15?',
-    options: ["Adult", "Minor", "true", "15"],
+    options: ["Adult", "Minor", "Nothing — this needs an if statement instead", "An error, since 15 isn't in quotes"],
     correctIndex: 1,
     explanation: "15 is not >= 18, so the ternary picks the second (false) branch: \"Minor\".",
   },
