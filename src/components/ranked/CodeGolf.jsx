@@ -77,6 +77,7 @@ export default function CodeGolf({ character, language, rankedPoints, seed, onFi
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "⛳" : "⏱️"}
         title={finished.didWin ? t("rankedModes.codeGolf.winTitle") : t("rankedModes.codeGolf.loseTitle")}
         statLines={

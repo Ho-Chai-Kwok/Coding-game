@@ -96,6 +96,7 @@ export default function ChaosRound({ character, rankedPoints, matchId, seed, onF
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "🌀" : "💫"}
         title={finished.didWin ? t("rankedModes.chaosRound.winTitle") : t("rankedModes.chaosRound.loseTitle")}
         statLines={[{ label: t("rankedModes.chaosRound.modifier"), value: t(`rankedModes.chaosRound.modifiers.${modifier.id}.name`) }]}

@@ -47,7 +47,7 @@ export default function CodeRace({ character, language, rankedPoints, seed, onFi
   function handleRoundSolved() {
     const nextRound = roundIndex + 1;
     setRoundIndex(nextRound);
-    if (character?.id === "dash" && nextRound % 3 === 0) {
+    if (character?.id === "vex" && nextRound % 3 === 0) {
       timer.addSeconds(DASH_BONUS_SECONDS);
       setDashBonusFired(true);
     }
@@ -60,6 +60,7 @@ export default function CodeRace({ character, language, rankedPoints, seed, onFi
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "🏁" : "⏱️"}
         title={finished.didWin ? t("rankedModes.codeRace.winTitle") : t("rankedModes.codeRace.loseTitle")}
         statLines={[

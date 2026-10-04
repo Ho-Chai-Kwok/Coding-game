@@ -1,5 +1,6 @@
 import { getLanguage } from "../data/languages";
 import { useI18n } from "../i18n/I18nContext";
+import CharacterBadge from "./CharacterBadge";
 
 function chunk(array, size) {
   const chunks = [];
@@ -9,9 +10,38 @@ function chunk(array, size) {
   return chunks;
 }
 
+// Reacts to the world the player is actually mid-way through, same spirit
+// as Home's continue-card: the one nearest to completion, not just the
+// first one in the list, since that's the one tugging at them right now.
+function worldMapCharacterState(worlds) {
+  const unlocked = worlds.filter((w) => w.status !== "locked");
+  if (unlocked.length === 0) return "idle";
+  const allDone = unlocked.every((w) =>
+    w.levels.every((l) => l.status === "completed"),
+  );
+  if (allDone) return "perfect";
+
+  const inProgress = unlocked
+    .map((w) => ({
+      world: w,
+      completed: w.levels.filter((l) => l.status === "completed").length,
+    }))
+    .filter((w) => w.completed < w.world.totalStages);
+
+  if (inProgress.length === 0) return "idle";
+  const nearest = inProgress.reduce((best, cur) =>
+    cur.completed / cur.world.totalStages > best.completed / best.world.totalStages ? cur : best,
+  );
+  const ratio = nearest.completed / nearest.world.totalStages;
+  if (ratio === 0) return "greet";
+  if (ratio >= 0.7) return "hype";
+  return "idle";
+}
+
 export default function WorldMap({
   worlds,
   language,
+  selectedCharacter,
   onChangeLanguage,
   onSelectWorld,
   onOpenPractice,
@@ -40,6 +70,11 @@ export default function WorldMap({
         <button className="world-map__practice-link" onClick={onOpenPractice}>
           🧩 {t("worldMap.practiceProblems")}
         </button>
+        {selectedCharacter && (
+          <div className="world-map__character">
+            <CharacterBadge character={selectedCharacter} state={worldMapCharacterState(worlds)} />
+          </div>
+        )}
       </header>
 
       {chapters.map((chapterWorlds, chapterIndex) => (

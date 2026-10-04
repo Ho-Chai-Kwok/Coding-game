@@ -194,6 +194,12 @@ button:not(:disabled):active {
 
 /* --- Dashboard: profile, streak, progress, continue card --- */
 
+.mode-select__character {
+  display: flex;
+  justify-content: center;
+  margin: 2px 0 4px;
+}
+
 .mode-select__profile-row {
   display: flex;
   align-items: center;
@@ -470,6 +476,12 @@ button:not(:disabled):active {
 .world-map__practice-link:hover {
   transform: translateY(-1px);
   border-color: var(--accent);
+}
+
+.world-map__character {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
 }
 
 .mode-card__icon {
@@ -817,12 +829,6 @@ button:not(:disabled):active {
   cursor: pointer;
   padding: 4px 0;
   margin-bottom: 16px;
-}
-
-.level-screen__character {
-  font-size: 76px;
-  line-height: 1;
-  animation: float-bob 3s ease-in-out infinite;
 }
 
 .level-screen__message {
@@ -1522,6 +1528,34 @@ button:not(:disabled):active {
   font-size: 12.5px;
   font-weight: 700;
   color: var(--accent);
+}
+
+/* --- CharacterBadge: the player's Byteborn, reacting to context, on
+   dashboard/menu screens (Home, World Map, Side Quest Map). --- */
+
+.character-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.character-badge__rig {
+  flex-shrink: 0;
+  width: 52px;
+  height: 64px;
+  display: block;
+}
+
+.character-badge__rig .char-rig,
+.character-badge__rig .char-rig__svg {
+  width: 100%;
+  height: 100%;
+}
+
+.character-badge__label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-h);
 }
 
 /* --- Side quest course path (clean, tidy lesson list) --- */
@@ -2556,7 +2590,7 @@ button:not(:disabled):active {
 .character-card__stage {
   position: relative;
   width: 100%;
-  height: 128px;
+  height: 150px;
   border: none;
   background: none;
   padding: 0;
@@ -2565,6 +2599,39 @@ button:not(:disabled):active {
 
 .character-card__stage:disabled {
   cursor: not-allowed;
+}
+
+.character-card__emoji-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  margin: 2px 0 6px;
+  max-height: 58px;
+  overflow-y: auto;
+}
+
+.character-card__emoji {
+  border: none;
+  background: none;
+  padding: 2px;
+  font-size: 15px;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s, transform 0.15s, background 0.15s;
+}
+
+.character-card__emoji:hover,
+.character-card__emoji:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--accent, #f97316) 14%, transparent);
+  transform: scale(1.18);
+}
+
+.character-card__emoji--active {
+  opacity: 1;
 }
 
 .character-card__lock {
@@ -2993,16 +3060,27 @@ button:not(:disabled):active {
   border: 2px solid rgba(234, 88, 12, 0.4);
 }
 
-.ranked-result__emoji {
-  font-size: 52px;
-  line-height: 1;
-  animation: float-bob 2.5s ease-in-out infinite;
+.ranked-result__sprite {
+  width: 148px;
+  height: 168px;
+  margin-top: -8px;
 }
 
 .ranked-result__title {
   font-family: var(--heading);
   color: var(--text-h);
   margin: 0;
+}
+
+.ranked-result__title-emoji {
+  display: inline-block;
+}
+
+@media (max-width: 480px) {
+  .ranked-result__sprite {
+    width: 120px;
+    height: 136px;
+  }
 }
 
 .ranked-result__stats {
@@ -3426,8 +3504,13 @@ button:not(:disabled):active {
 .rank-change--up { background: linear-gradient(160deg, color-mix(in srgb, var(--rank-color) 22%, var(--bg)), var(--bg)); }
 .rank-change--down { border-color: #ef4444; }
 .rank-change--shield { border-color: #22d3ee; }
-.rank-change__emoji { font-size: 56px; line-height: 1; }
+.rank-change__sprite { width: 156px; height: 178px; margin-top: -8px; }
 .rank-change__title { margin: 0; font-family: var(--heading); font-size: 26px; color: var(--text-h); }
+.rank-change__title-emoji { display: inline-block; }
+
+@media (max-width: 480px) {
+  .rank-change__sprite { width: 126px; height: 144px; }
+}
 .rank-change__badge {
   display: flex;
   align-items: center;
@@ -3837,6 +3920,14 @@ button:not(:disabled):active {
   margin: 4px 0 0;
   text-align: right;
   font-size: 11px;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.code-helper__no-paste-hint {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-style: italic;
   color: var(--text);
   opacity: 0.6;
 }

@@ -306,7 +306,7 @@ export const translations = {
         desc: "Solve coding puzzles back to back before the clock runs out.",
         winTitle: "🏁 You Finished the Race!",
         loseTitle: "⏱️ Time Ran Out",
-        dashBonus: "Dash's speed bonus added extra seconds to your clock!",
+        dashBonus: "Vex's speed bonus added extra seconds to your clock!",
       },
 
       bugHunt: {
@@ -324,7 +324,7 @@ export const translations = {
         desc: "Read the code, guess what it prints — fast rounds, no mercy.",
         winTitle: "🔮 Nailed It!",
         loseTitle: "💭 So Close!",
-        scopeBonus: "Scope revealed a wrong answer before you chose!",
+        scopeBonus: "Ifra revealed a wrong answer before you chose!",
       },
 
       codeGolf: {
@@ -335,7 +335,7 @@ export const translations = {
         yourLines: "Your Lines",
         par: "Par",
         lines: "lines",
-        trimBonus: "Trim's refactoring bonus shaved extra points onto your score!",
+        trimBonus: "Lambda's refactoring bonus shaved extra points onto your score!",
       },
 
       showdown: {
@@ -344,7 +344,7 @@ export const translations = {
         winTitle: "🥇 Showdown Champion!",
         loseTitle: "💥 Eliminated",
         roundsSurvived: "Rounds Survived",
-        nullPointerSave: "Null Pointer's streak protection saved your run!",
+        nullPointerSave: "Firewall's streak protection saved your run!",
         getReady: "Get ready...",
       },
 
@@ -356,7 +356,7 @@ export const translations = {
         yourTime: "Your Time",
         ghostTime: "Ghost Time",
         beatGhost: "You beat the ghost's time!",
-        tankBonus: "Bastion's toughness gave you an extra life!",
+        tankBonus: "Stack's toughness gave you an extra life!",
       },
 
       chaosRound: {
@@ -511,6 +511,18 @@ export const translations = {
       supportUnavailable: "Support contact isn't set up yet — check back soon.",
     },
 
+    buddy: {
+      greet: ["Hi! I'm {name}. Let's crack this one together!", "Ready when you are!", "Read the task, then give it a go — I'll watch your back."],
+      idle: ["Take your time. I'm right here.", "Try something — every run teaches you something.", "You've got this!"],
+      thinking: ["Ooh, I see where you're going…", "Hmm, interesting…", "Keep typing, keep thinking!"],
+      running: ["Running it… fingers crossed!", "Let's see what happens…", "Compiling hope…"],
+      correct: ["YES! That's it! 🎉", "Nailed it! You're a natural.", "Perfect! The Kernel is proud of you!", "Boom — bug-free!"],
+      wrong: ["Ouch! Not quite.", "Whoa, close one!", "Hmm, that's not it…"],
+      retry: ["Mistakes are just data. Check the hint and try again!", "Read the output carefully — it's a clue.", "Even the best coders debug. One more go!"],
+      step: ["Nice! Next step!", "That's one down!", "Great — keep going!"],
+      close: "Close",
+    },
+
     characters: {
       title: "Characters",
       subtitle: "Unlock characters by playing, and pick one to represent you in Ranked Mode!",
@@ -527,10 +539,11 @@ export const translations = {
 
     codeHelper: {
       title: "Code Helper",
-      subtitle: "Stuck? Paste your question and/or your code below, and get real help from an AI tutor.",
+      subtitle: "Stuck? Type your question and/or paste your code below, and get real help from an AI tutor.",
       guestGate: "Code Helper needs an account so we can keep it fair for everyone — guest progress carries over when you sign in.",
       questionLabel: "Your question (optional)",
       questionPlaceholder: "e.g. Why does my loop only print 4 times?",
+      questionNoPaste: "Type your question in your own words — pasting is turned off here.",
       codeLabel: "Your code (optional)",
       ask: "Ask for Help",
       send: "Send",
@@ -850,7 +863,7 @@ export const translations = {
         desc: "Resuelve acertijos de código uno tras otro antes de que se acabe el tiempo.",
         winTitle: "🏁 ¡Terminaste la Carrera!",
         loseTitle: "⏱️ Se Acabó el Tiempo",
-        dashBonus: "¡El bono de velocidad de Dash añadió segundos extra a tu reloj!",
+        dashBonus: "¡El bono de velocidad de Vex añadió segundos extra a tu reloj!",
       },
 
       bugHunt: {
@@ -868,7 +881,7 @@ export const translations = {
         desc: "Lee el código, adivina qué imprime — rondas rápidas, sin piedad.",
         winTitle: "🔮 ¡Lo Lograste!",
         loseTitle: "💭 ¡Tan Cerca!",
-        scopeBonus: "¡Scope reveló una respuesta incorrecta antes de elegir!",
+        scopeBonus: "¡Ifra reveló una respuesta incorrecta antes de elegir!",
       },
 
       codeGolf: {
@@ -879,7 +892,7 @@ export const translations = {
         yourLines: "Tus Líneas",
         par: "Par",
         lines: "líneas",
-        trimBonus: "¡El bono de refactorización de Trim añadió puntos extra a tu puntuación!",
+        trimBonus: "¡El bono de refactorización de Lambda añadió puntos extra a tu puntuación!",
       },
 
       showdown: {
@@ -888,7 +901,7 @@ export const translations = {
         winTitle: "🥇 ¡Campeón del Enfrentamiento!",
         loseTitle: "💥 Eliminado",
         roundsSurvived: "Rondas Sobrevividas",
-        nullPointerSave: "¡La protección de racha de Null Pointer salvó tu partida!",
+        nullPointerSave: "¡La protección de racha de Firewall salvó tu partida!",
         getReady: "Prepárate...",
       },
 
@@ -900,7 +913,7 @@ export const translations = {
         yourTime: "Tu Tiempo",
         ghostTime: "Tiempo Fantasma",
         beatGhost: "¡Venciste el tiempo del fantasma!",
-        tankBonus: "¡La resistencia de Bastion te dio una vida extra!",
+        tankBonus: "¡La resistencia de Stack te dio una vida extra!",
       },
 
       chaosRound: {
@@ -1055,6 +1068,18 @@ export const translations = {
       supportUnavailable: "El contacto de soporte aún no está configurado — vuelve pronto.",
     },
 
+    buddy: {
+      greet: ["¡Hola! Soy {name}. ¡Resolvamos esto juntos!", "¡Listo cuando tú lo estés!", "Lee la tarea y ¡a por ello! Yo te cubro."],
+      idle: ["Tómate tu tiempo. Estoy aquí.", "Prueba algo: cada ejecución te enseña algo.", "¡Tú puedes!"],
+      thinking: ["Uy, ya veo por dónde vas…", "Mmm, interesante…", "¡Sigue escribiendo, sigue pensando!"],
+      running: ["Ejecutando… ¡crucemos los dedos!", "A ver qué pasa…", "Compilando esperanza…"],
+      correct: ["¡SÍ! ¡Eso es! 🎉", "¡Lo clavaste! Tienes talento.", "¡Perfecto! ¡El Kernel está orgulloso de ti!", "¡Boom! ¡Sin bugs!"],
+      wrong: ["¡Uy! Casi.", "¡Ufff, por poco!", "Mmm, no es eso…"],
+      retry: ["Los errores son solo datos. ¡Mira la pista e inténtalo otra vez!", "Lee la salida con cuidado: es una pista.", "Hasta los mejores depuran. ¡Otra vez!"],
+      step: ["¡Bien! ¡Siguiente paso!", "¡Uno menos!", "¡Genial, sigue así!"],
+      close: "Cerrar",
+    },
+
     characters: {
       title: "Personajes",
       subtitle: "¡Desbloquea personajes jugando y elige uno para representarte en el Modo Clasificado!",
@@ -1075,6 +1100,7 @@ export const translations = {
       guestGate: "El Ayudante de Código necesita una cuenta para que sea justo para todos — tu progreso como invitado se conserva al iniciar sesión.",
       questionLabel: "Tu pregunta (opcional)",
       questionPlaceholder: "ej. ¿Por qué mi bucle solo imprime 4 veces?",
+      questionNoPaste: "Escribe tu pregunta con tus propias palabras — pegar texto está desactivado aquí.",
       codeLabel: "Tu código (opcional)",
       ask: "Pedir Ayuda",
       send: "Enviar",
@@ -1394,7 +1420,7 @@ export const translations = {
         desc: "在時間耗盡前連續解出程式謎題。",
         winTitle: "🏁 完成競速！",
         loseTitle: "⏱️ 時間到",
-        dashBonus: "Dash 的速度加成為你的時鐘增加了額外的秒數！",
+        dashBonus: "Vex 的速度加成為你的時鐘增加了額外的秒數！",
       },
 
       bugHunt: {
@@ -1412,7 +1438,7 @@ export const translations = {
         desc: "閱讀程式碼，猜猜它會印出什麼 — 快節奏回合，毫不留情。",
         winTitle: "🔮 猜中了！",
         loseTitle: "💭 就差一點！",
-        scopeBonus: "Scope 在你作答前揭露了一個錯誤選項！",
+        scopeBonus: "Ifra 在你作答前揭露了一個錯誤選項！",
       },
 
       codeGolf: {
@@ -1423,7 +1449,7 @@ export const translations = {
         yourLines: "你的行數",
         par: "標準桿",
         lines: "行",
-        trimBonus: "Trim 的重構加成幫你的分數多加了一些！",
+        trimBonus: "Lambda 的重構加成幫你的分數多加了一些！",
       },
 
       showdown: {
@@ -1432,7 +1458,7 @@ export const translations = {
         winTitle: "🥇 對決冠軍！",
         loseTitle: "💥 已淘汰",
         roundsSurvived: "存活回合數",
-        nullPointerSave: "Null Pointer 的連續保護拯救了你的紀錄！",
+        nullPointerSave: "Firewall 的連續保護拯救了你的紀錄！",
         getReady: "準備好...",
       },
 
@@ -1444,7 +1470,7 @@ export const translations = {
         yourTime: "你的時間",
         ghostTime: "幽靈時間",
         beatGhost: "你打敗了幽靈的時間！",
-        tankBonus: "Bastion 的堅韌給了你一條額外的生命！",
+        tankBonus: "Stack 的堅韌給了你一條額外的生命！",
       },
 
       chaosRound: {
@@ -1598,6 +1624,18 @@ export const translations = {
       supportUnavailable: "支援聯絡方式尚未設定，請稍後再回來查看。",
     },
 
+    buddy: {
+      greet: ["嗨！我是 {name}。我們一起破解這題吧！", "準備好就開始吧！", "先讀題目，再試試看——我幫你看著！"],
+      idle: ["慢慢來，我就在這裡。", "試試看吧——每次執行都會學到東西。", "你一定可以的！"],
+      thinking: ["喔，我知道你的想法了……", "嗯，很有趣……", "繼續打字，繼續思考！"],
+      running: ["執行中……祝好運！", "看看會發生什麼……", "正在編譯希望……"],
+      correct: ["耶！就是這樣！🎉", "完美命中！你真有天分。", "太棒了！Kernel 為你驕傲！", "砰——零錯誤！"],
+      wrong: ["哎呀！差一點。", "哇，好險！", "嗯，不是這樣……"],
+      retry: ["錯誤只是資料。看看提示再試一次！", "仔細看輸出——那是線索。", "最厲害的程式設計師也要除錯。再來一次！"],
+      step: ["很好！下一步！", "完成一步了！", "太棒了——繼續！"],
+      close: "關閉",
+    },
+
     characters: {
       title: "角色",
       subtitle: "透過遊玩解鎖角色，選一個代表你參加排名模式！",
@@ -1618,6 +1656,7 @@ export const translations = {
       guestGate: "程式小幫手需要帳號才能對每個人公平——登入後訪客進度會自動保留。",
       questionLabel: "你的問題（選填）",
       questionPlaceholder: "例如：為什麼我的迴圈只印出 4 次？",
+      questionNoPaste: "請用你自己的話輸入問題——這裡無法貼上文字。",
       codeLabel: "你的程式碼（選填）",
       ask: "尋求協助",
       send: "傳送",
@@ -1937,7 +1976,7 @@ export const translations = {
         desc: "시간이 다 되기 전에 코딩 퍼즐을 연달아 풀어보세요.",
         winTitle: "🏁 레이스 완주!",
         loseTitle: "⏱️ 시간 종료",
-        dashBonus: "Dash의 속도 보너스로 시계에 시간이 추가됐어요!",
+        dashBonus: "Vex의 속도 보너스로 시계에 시간이 추가됐어요!",
       },
 
       bugHunt: {
@@ -1955,7 +1994,7 @@ export const translations = {
         desc: "코드를 읽고 무엇이 출력될지 맞혀보세요 — 빠른 라운드, 봐주기 없음.",
         winTitle: "🔮 정확해요!",
         loseTitle: "💭 아깝네요!",
-        scopeBonus: "Scope가 답을 고르기 전에 오답 하나를 보여줬어요!",
+        scopeBonus: "Ifra가 답을 고르기 전에 오답 하나를 보여줬어요!",
       },
 
       codeGolf: {
@@ -1966,7 +2005,7 @@ export const translations = {
         yourLines: "내 코드 줄 수",
         par: "기준 줄 수",
         lines: "줄",
-        trimBonus: "Trim의 리팩토링 보너스로 점수가 더 올라갔어요!",
+        trimBonus: "Lambda의 리팩토링 보너스로 점수가 더 올라갔어요!",
       },
 
       showdown: {
@@ -1975,7 +2014,7 @@ export const translations = {
         winTitle: "🥇 서바이벌 챔피언!",
         loseTitle: "💥 탈락",
         roundsSurvived: "생존한 라운드",
-        nullPointerSave: "Null Pointer의 연속 보호로 살아남았어요!",
+        nullPointerSave: "Firewall의 연속 보호로 살아남았어요!",
         getReady: "준비하세요...",
       },
 
@@ -1987,7 +2026,7 @@ export const translations = {
         yourTime: "내 기록",
         ghostTime: "고스트 기록",
         beatGhost: "고스트의 기록을 이겼어요!",
-        tankBonus: "Bastion의 강인함 덕분에 생명이 하나 더 생겼어요!",
+        tankBonus: "Stack의 강인함 덕분에 생명이 하나 더 생겼어요!",
       },
 
       chaosRound: {
@@ -2141,6 +2180,18 @@ export const translations = {
       supportUnavailable: "지원 연락처가 아직 설정되지 않았어요 — 곧 다시 확인해 주세요.",
     },
 
+    buddy: {
+      greet: ["안녕! 나는 {name}야. 같이 풀어 보자!", "준비되면 시작해!", "문제를 읽고 도전해 봐 — 내가 지켜볼게!"],
+      idle: ["천천히 해. 나 여기 있어.", "일단 해 봐 — 실행할 때마다 배우는 게 있어.", "넌 할 수 있어!"],
+      thinking: ["오, 무슨 생각인지 알겠어…", "음, 흥미로운데…", "계속 쓰고, 계속 생각해!"],
+      running: ["실행 중… 행운을 빌어!", "어떻게 될까…", "희망을 컴파일하는 중…"],
+      correct: ["좋아! 바로 그거야! 🎉", "완벽해! 타고났구나.", "최고야! Kernel이 자랑스러워해!", "펑 — 버그 제로!"],
+      wrong: ["앗! 아깝다.", "와, 거의 맞았어!", "음, 그게 아니야…"],
+      retry: ["실수는 그냥 데이터야. 힌트를 보고 다시 해 봐!", "출력을 잘 읽어 봐 — 그게 단서야.", "최고의 코더도 디버깅해. 한 번 더!"],
+      step: ["좋아! 다음 단계!", "하나 끝!", "잘했어 — 계속 가자!"],
+      close: "닫기",
+    },
+
     characters: {
       title: "캐릭터",
       subtitle: "플레이해서 캐릭터를 잠금 해제하고, 랭크 모드에서 나를 대표할 캐릭터를 골라보세요!",
@@ -2157,10 +2208,11 @@ export const translations = {
 
     codeHelper: {
       title: "코드 도우미",
-      subtitle: "막혔나요? 질문과 코드를 아래에 붙여넣으면 AI 튜터가 진짜로 도와줘요.",
+      subtitle: "막혔나요? 아래에 질문을 입력하고 코드를 붙여넣으면 AI 튜터가 진짜로 도와줘요.",
       guestGate: "코드 도우미는 모두에게 공평하도록 계정이 필요해요 — 로그인하면 게스트 진행 상황이 그대로 이어져요.",
       questionLabel: "질문 (선택 사항)",
       questionPlaceholder: "예: 왜 반복문이 4번만 출력되나요?",
+      questionNoPaste: "질문은 직접 입력해 주세요 — 여기서는 붙여넣기를 사용할 수 없어요.",
       codeLabel: "코드 (선택 사항)",
       ask: "도움 요청하기",
       send: "보내기",

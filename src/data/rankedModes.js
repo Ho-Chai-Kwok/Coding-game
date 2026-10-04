@@ -148,35 +148,35 @@ export function getDailyRotation(date = new Date()) {
 // ability string — keeps the mechanical effect honest and easy to change.
 
 export function bugHuntMultiplier(character) {
-  if (character?.id === "sherlock-byte") return 1.25;
-  if (character?.id === "patch") return 1.15;
-  if (character?.id === "null-pointer") return 1.05;
+  if (character?.id === "bugsy") return 1.25;
+  if (character?.id === "pixel") return 1.15;
+  if (character?.id === "nyx") return 1.05;
   return 1;
 }
 
 export function bugHuntHighlightsFirst(character) {
-  return character?.id === "sherlock-byte";
+  return character?.id === "bugsy";
 }
 
 export function codeRaceBonusSeconds(streakOf3Count, character) {
-  if (character?.id !== "dash") return 0;
+  if (character?.id !== "vex") return 0;
   return streakOf3Count;
 }
 
 export function predictOutputRevealsWrong(character) {
-  return character?.id === "scope";
+  return character?.id === "ifra";
 }
 
 export function codeGolfBonusPerLineUnderPar(character) {
-  return character?.id === "trim" ? 0.1 : 0;
+  return character?.id === "lambda" ? 0.1 : 0;
 }
 
 export function debugDuelHasFreeMiss(character) {
-  return character?.id === "bastion";
+  return character?.id === "stack";
 }
 
 export function showdownSeesCategoryEarly(character) {
-  return character?.id === "blueprint";
+  return character?.id === "async";
 }
 
 export function chaosRoundFavorable(character) {
@@ -184,17 +184,17 @@ export function chaosRoundFavorable(character) {
 }
 
 export function relayBatonBonusSeconds(character) {
-  return character?.id === "bridge" ? 1 : 0;
+  return character?.id === "cache" ? 1 : 0;
 }
 
-// Applied on top of every mode's own scoring — Null Pointer's "all modes"
-// ability, plus a shared streak-forgiveness flag some modes read.
+// Applied on top of every mode's own scoring — Nyx's and Recursa's "all
+// modes" ability, plus Firewall's streak-forgiveness flag some modes read.
 export function universalScoreMultiplier(character) {
-  return character?.id === "null-pointer" ? 1.05 : 1;
+  return character?.id === "nyx" || character?.id === "recursa" ? 1.05 : 1;
 }
 
 export function hasStreakForgiveness(character) {
-  return character?.id === "null-pointer";
+  return character?.id === "firewall";
 }
 
 export function applyBonusMultiplier(basePoints, character) {

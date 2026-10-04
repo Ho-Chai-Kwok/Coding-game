@@ -2,14 +2,20 @@ import CodeChallenge from "./CodeChallenge";
 import QuizChallenge from "./QuizChallenge";
 import TerminalChallenge from "./TerminalChallenge";
 import { useI18n } from "../i18n/I18nContext";
+import { CHARACTERS } from "../data/characters";
+import BuddyCoach from "./byteborn/BuddyCoach";
+import { useBuddy } from "./byteborn/useBuddy";
+import "./byteborn/byteborn.css";
 
 export default function LevelScreen({
   level,
   language = "javascript",
   onBack,
   onCompleteLevel,
+  character = CHARACTERS[0],
 }) {
   const { t } = useI18n();
+  const [mood, feedback] = useBuddy();
   const placeholders = t("levelScreen.placeholder");
   const message = placeholders[level.stageNumber % placeholders.length] ?? placeholders[0];
 
@@ -19,8 +25,8 @@ export default function LevelScreen({
         ← {t("back")}
       </button>
 
-      <div className="level-screen__character">{level.character}</div>
       <h2>{level.title}</h2>
+      <BuddyCoach character={character} mood={mood} />
 
       {level.content?.type === "code" && (
         <CodeChallenge
@@ -28,6 +34,7 @@ export default function LevelScreen({
           levelId={level.id}
           language={language}
           onSolved={() => onCompleteLevel(level)}
+          onFeedback={feedback}
         />
       )}
 
@@ -35,6 +42,7 @@ export default function LevelScreen({
         <QuizChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}
+          onFeedback={feedback}
         />
       )}
 
@@ -42,6 +50,7 @@ export default function LevelScreen({
         <TerminalChallenge
           content={level.content}
           onSolved={() => onCompleteLevel(level)}
+          onFeedback={feedback}
         />
       )}
 

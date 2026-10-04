@@ -89,6 +89,7 @@ export default function RankedMatchRunner({ matchId, modeId, myUserId, character
     return (
       <RankedResult
         didWin={isDraw ? false : didWin}
+        character={character}
         emoji={isDraw ? "🤝" : didWin ? "🏆" : "😤"}
         title={
           isDraw

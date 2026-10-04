@@ -86,6 +86,7 @@ export default function BugHunt({ character, rankedPoints, seed, onFinish, onExi
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "🐞" : "🔍"}
         title={finished.didWin ? t("rankedModes.bugHunt.winTitle") : t("rankedModes.bugHunt.loseTitle")}
         statLines={[

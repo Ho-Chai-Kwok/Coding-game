@@ -1,0 +1,1238 @@
+/* Byteborn sprite animation system. One set of keyframes, driven by the
+   data-state on the <svg class="bb">; per-character quirks key off
+   data-char. Parts rotate around pivots set inline (transform-origin in
+   the sprite's own 200x240 coordinates, hence transform-box: view-box). */
+
+.bb {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.bb-k {
+  stroke: #1b1530;
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.bb-l {
+  fill: none;
+  stroke: #1b1530;
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.bb-hl {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+
+.bb-shadow {
+  fill: rgba(11, 9, 24, 0.22);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.bb-figure,
+.bb-head,
+.bb-arm,
+.bb-sway,
+.bb-wobble,
+.bb-wag,
+.bb-flicker,
+.bb-spin,
+.bb-tick,
+.bb-fx--crown {
+  transform-box: view-box;
+}
+
+.bb-figure {
+  transform-origin: 100px 228px;
+}
+
+/* ---- Idle ---------------------------------------------------------- */
+
+.bb[data-state="idle"] .bb-figure {
+  animation: bb-breathe 2.6s ease-in-out infinite;
+}
+
+.bb[data-state="idle"] .bb-arm--l {
+  animation: bb-arm-sway-l 2.6s ease-in-out infinite;
+}
+
+.bb[data-state="idle"] .bb-arm--r {
+  animation: bb-arm-sway-r 2.6s ease-in-out infinite;
+}
+
+.bb-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bb-blink 4.2s ease-in-out infinite;
+}
+
+@keyframes bb-breathe {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-2px) scale(1.012, 1.028); }
+}
+
+@keyframes bb-arm-sway-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes bb-arm-sway-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+@keyframes bb-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+/* ---- Thinking ------------------------------------------------------ */
+
+.bb[data-state="thinking"] .bb-figure {
+  animation: bb-ponder 2.4s ease-in-out infinite;
+}
+
+.bb[data-state="thinking"] .bb-head {
+  animation: bb-tilt 2.4s ease-in-out infinite;
+}
+
+@keyframes bb-ponder {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+@keyframes bb-tilt {
+  0%, 100% { transform: rotate(-9deg); }
+  50% { transform: rotate(-4deg) translateY(-1px); }
+}
+
+/* ---- Correct ------------------------------------------------------- */
+
+.bb[data-state="correct"] .bb-figure {
+  animation: bb-cheer 1.1s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+.bb[data-state="correct"] .bb-head {
+  animation: bb-nod 1.1s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-arm--l {
+  animation: bb-raise-l 1.1s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-arm--r {
+  animation: bb-raise-r 1.1s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-shadow {
+  animation: bb-shadow-hop 1.1s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+@keyframes bb-cheer {
+  0% { transform: translateY(0) scale(1, 1); }
+  12% { transform: translateY(0) scale(1.1, 0.88); }
+  32% { transform: translateY(-30px) scale(0.94, 1.08); }
+  50% { transform: translateY(-34px) scale(1, 1); }
+  68% { transform: translateY(0) scale(1.09, 0.9); }
+  80% { transform: translateY(-5px) scale(0.98, 1.03); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+@keyframes bb-shadow-hop {
+  0%, 100%, 68% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.6); opacity: 0.5; }
+}
+
+@keyframes bb-nod {
+  0%, 100% { transform: rotate(0deg); }
+  35% { transform: rotate(-5deg); }
+  70% { transform: rotate(4deg); }
+}
+
+@keyframes bb-raise-l {
+  0%, 100% { transform: rotate(var(--raise)); }
+  50% { transform: rotate(calc(var(--raise) - 22deg)); }
+}
+
+@keyframes bb-raise-r {
+  0%, 100% { transform: rotate(calc(var(--raise) * -1)); }
+  50% { transform: rotate(calc(var(--raise) * -1 + 22deg)); }
+}
+
+/* ---- Win (session/match result — bigger & longer than "correct") --- */
+
+.bb[data-state="win"] .bb-figure {
+  animation: bb-cheer-big 1.3s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+.bb[data-state="win"] .bb-head {
+  animation: bb-nod 0.9s ease-in-out infinite;
+}
+
+.bb[data-state="win"] .bb-arm--l {
+  animation: bb-raise-big-l 1.3s ease-in-out infinite;
+}
+
+.bb[data-state="win"] .bb-arm--r {
+  animation: bb-raise-big-r 1.3s ease-in-out infinite;
+}
+
+.bb[data-state="win"] .bb-shadow {
+  animation: bb-shadow-hop-big 1.3s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+@keyframes bb-cheer-big {
+  0% { transform: translateY(0) scale(1, 1) rotate(0deg); }
+  10% { transform: translateY(0) scale(1.14, 0.84) rotate(0deg); }
+  30% { transform: translateY(-46px) scale(0.92, 1.1) rotate(-4deg); }
+  45% { transform: translateY(-50px) scale(1, 1) rotate(4deg); }
+  62% { transform: translateY(0) scale(1.12, 0.86) rotate(0deg); }
+  74% { transform: translateY(-8px) scale(0.97, 1.05) rotate(0deg); }
+  86% { transform: translateY(0) scale(1.04, 0.97) rotate(0deg); }
+  100% { transform: translateY(0) scale(1, 1) rotate(0deg); }
+}
+
+@keyframes bb-shadow-hop-big {
+  0%, 100%, 62% { transform: scale(1); opacity: 1; }
+  45% { transform: scale(0.46); opacity: 0.4; }
+}
+
+@keyframes bb-raise-big-l {
+  0%, 100% { transform: rotate(var(--raise)); }
+  45% { transform: rotate(calc(var(--raise) - 34deg)); }
+}
+
+@keyframes bb-raise-big-r {
+  0%, 100% { transform: rotate(calc(var(--raise) * -1)); }
+  45% { transform: rotate(calc(var(--raise) * -1 + 34deg)); }
+}
+
+.bb[data-state="win"] .bb-star {
+  animation: bb-twinkle-big 0.8s ease-in-out infinite;
+}
+
+.bb[data-state="win"] .bb-star--b {
+  animation-delay: 0.15s;
+}
+
+.bb[data-state="win"] .bb-star--c {
+  animation-delay: 0.3s;
+}
+
+.bb[data-state="win"] .bb-star--d {
+  animation: bb-twinkle-big 0.8s ease-in-out infinite;
+  animation-delay: 0.45s;
+}
+
+@keyframes bb-twinkle-big {
+  0%, 100% { opacity: 0; scale: 0.3; rotate: 0deg; }
+  40%, 60% { opacity: 1; scale: 1.2; rotate: 70deg; }
+}
+
+/* ---- Wrong --------------------------------------------------------- */
+
+.bb[data-state="wrong"] .bb-figure {
+  animation:
+    bb-shake 0.55s ease-in-out 1,
+    bb-slump 2.6s ease-in-out 0.55s infinite;
+}
+
+.bb[data-state="wrong"] .bb-head {
+  animation: bb-droop 0.5s ease-out 0.4s forwards;
+}
+
+.bb[data-state="wrong"] .bb-arm--l {
+  animation: bb-drop-l 0.5s ease-out 0.3s forwards;
+}
+
+.bb[data-state="wrong"] .bb-arm--r {
+  animation: bb-drop-r 0.5s ease-out 0.3s forwards;
+}
+
+@keyframes bb-shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  15% { transform: translateX(-7px) rotate(-3deg); }
+  35% { transform: translateX(7px) rotate(3deg); }
+  55% { transform: translateX(-5px) rotate(-2deg); }
+  75% { transform: translateX(4px) rotate(1deg); }
+}
+
+@keyframes bb-slump {
+  0%, 100% { transform: translateY(3px) scale(1.03, 0.95); }
+  50% { transform: translateY(2px) scale(1.02, 0.965); }
+}
+
+@keyframes bb-droop {
+  to { transform: rotate(7deg) translateY(4px); }
+}
+
+@keyframes bb-drop-l {
+  to { transform: rotate(-6deg); }
+}
+
+@keyframes bb-drop-r {
+  to { transform: rotate(6deg); }
+}
+
+/* ---- Lose (session/match result — deeper & longer than "wrong") ---- */
+
+.bb[data-state="lose"] .bb-figure {
+  animation:
+    bb-shake 0.55s ease-in-out 1,
+    bb-slump-deep 3.2s ease-in-out 0.55s infinite;
+}
+
+.bb[data-state="lose"] .bb-head {
+  animation: bb-droop-shake 0.5s ease-out 0.4s forwards, bb-head-no 2.4s ease-in-out 0.9s infinite;
+}
+
+.bb[data-state="lose"] .bb-arm--l {
+  animation: bb-drop-deep-l 0.5s ease-out 0.3s forwards;
+}
+
+.bb[data-state="lose"] .bb-arm--r {
+  animation: bb-drop-deep-r 0.5s ease-out 0.3s forwards;
+}
+
+@keyframes bb-slump-deep {
+  0%, 100% { transform: translateY(6px) scale(1.04, 0.92); }
+  50% { transform: translateY(4px) scale(1.03, 0.935); }
+}
+
+@keyframes bb-droop-shake {
+  to { transform: rotate(10deg) translateY(7px); }
+}
+
+/* A slow, small "no..." headshake once the initial droop has settled. */
+@keyframes bb-head-no {
+  0%, 100% { rotate: 10deg; }
+  50% { rotate: 4deg; }
+}
+
+@keyframes bb-drop-deep-l {
+  to { transform: rotate(-10deg); }
+}
+
+@keyframes bb-drop-deep-r {
+  to { transform: rotate(10deg); }
+}
+
+/* ---- Perfect (flawless run — biggest celebration, gold crown) ------ */
+
+.bb[data-state="perfect"] .bb-figure {
+  animation: bb-cheer-perfect 1.5s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+.bb[data-state="perfect"] .bb-head {
+  animation: bb-nod 0.8s ease-in-out infinite;
+}
+
+.bb[data-state="perfect"] .bb-arm--l {
+  animation: bb-raise-big-l 1.5s ease-in-out infinite;
+}
+
+.bb[data-state="perfect"] .bb-arm--r {
+  animation: bb-raise-big-r 1.5s ease-in-out infinite;
+}
+
+.bb[data-state="perfect"] .bb-shadow {
+  animation: bb-shadow-hop-big 1.5s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+.bb[data-state="perfect"] .bb-fx--crown {
+  animation: bb-crown-bob 1.5s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+@keyframes bb-cheer-perfect {
+  0% { transform: translateY(0) scale(1, 1) rotate(0deg); }
+  10% { transform: translateY(0) scale(1.16, 0.82) rotate(0deg); }
+  28% { transform: translateY(-58px) scale(0.9, 1.14) rotate(-6deg); }
+  42% { transform: translateY(-64px) scale(1, 1) rotate(6deg); }
+  58% { transform: translateY(0) scale(1.14, 0.84) rotate(0deg); }
+  70% { transform: translateY(-10px) scale(0.96, 1.06) rotate(0deg); }
+  82% { transform: translateY(0) scale(1.05, 0.96) rotate(0deg); }
+  100% { transform: translateY(0) scale(1, 1) rotate(0deg); }
+}
+
+@keyframes bb-crown-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  28% { transform: translateY(-58px) rotate(-6deg); }
+  42% { transform: translateY(-64px) rotate(6deg); }
+  58% { transform: translateY(0) rotate(0deg); }
+}
+
+/* ---- Streak (hot streak — confident pump, warm glow) ---------------- */
+
+.bb[data-state="streak"] .bb-figure {
+  animation: bb-pump 0.7s ease-in-out infinite;
+  filter: drop-shadow(0 0 9px rgba(255, 145, 45, 0.5));
+}
+
+.bb[data-state="streak"] .bb-arm--l {
+  animation: bb-pump-arm-l 0.7s ease-in-out infinite;
+}
+
+.bb[data-state="streak"] .bb-arm--r {
+  animation: bb-pump-arm-r 0.7s ease-in-out infinite;
+}
+
+@keyframes bb-pump {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-4px) scale(1.03, 0.98); }
+}
+
+@keyframes bb-pump-arm-l {
+  0%, 100% { transform: rotate(calc(var(--raise) - 50deg)); }
+  50% { transform: rotate(calc(var(--raise) - 15deg)); }
+}
+
+@keyframes bb-pump-arm-r {
+  0%, 100% { transform: rotate(calc(var(--raise) * -1 + 50deg)); }
+  50% { transform: rotate(calc(var(--raise) * -1 + 15deg)); }
+}
+
+/* ---- Rank up (promoted a tier — the single biggest moment) --------- */
+
+.bb[data-state="rankUp"] .bb-figure {
+  animation: bb-cheer-perfect 2s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+.bb[data-state="rankUp"] .bb-head {
+  animation: bb-nod 0.8s ease-in-out infinite;
+}
+
+.bb[data-state="rankUp"] .bb-arm--l {
+  animation: bb-raise-big-l 2s ease-in-out infinite;
+}
+
+.bb[data-state="rankUp"] .bb-arm--r {
+  animation: bb-raise-big-r 2s ease-in-out infinite;
+}
+
+.bb[data-state="rankUp"] .bb-shadow {
+  animation: bb-shadow-hop-big 2s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+
+/* ---- Rank down (demoted — quiet and stoic, not panicked) ----------- */
+
+.bb[data-state="rankDown"] .bb-figure {
+  animation: bb-slump-deep 3.6s ease-in-out 0.1s infinite;
+}
+
+.bb[data-state="rankDown"] .bb-head {
+  animation: bb-droop-shake 0.7s ease-out 0.1s forwards;
+}
+
+.bb[data-state="rankDown"] .bb-arm--l {
+  animation: bb-drop-deep-l 0.7s ease-out forwards;
+}
+
+.bb[data-state="rankDown"] .bb-arm--r {
+  animation: bb-drop-deep-r 0.7s ease-out forwards;
+}
+
+/* ---- Shielded (promotion shield absorbed a loss — relieved, proud) - */
+
+.bb[data-state="shielded"] .bb-figure {
+  animation: bb-settle-proud 0.6s ease-out forwards, bb-guard-glow 1.6s ease-in-out 0.6s infinite;
+}
+
+.bb[data-state="shielded"] .bb-head {
+  animation: bb-nod-once 0.8s ease-in-out 0.5s 2;
+}
+
+.bb[data-state="shielded"] .bb-arm--l {
+  animation: bb-guard-l 0.5s ease-out forwards;
+}
+
+.bb[data-state="shielded"] .bb-arm--r {
+  animation: bb-guard-r 0.5s ease-out forwards;
+}
+
+@keyframes bb-settle-proud {
+  0% { transform: scale(1, 1); }
+  40% { transform: scale(1.06, 0.94); }
+  100% { transform: scale(1.02, 0.99); }
+}
+
+@keyframes bb-nod-once {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+@keyframes bb-guard-l {
+  to { transform: rotate(calc(var(--raise) - 60deg)); }
+}
+
+@keyframes bb-guard-r {
+  to { transform: rotate(calc(var(--raise) * -1 + 60deg)); }
+}
+
+@keyframes bb-guard-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(94, 166, 255, 0)); }
+  50% { filter: drop-shadow(0 0 12px rgba(94, 166, 255, 0.6)); }
+}
+
+/* ---- Greet (hello / welcome back — a friendly wave) ----------------- */
+
+.bb[data-state="greet"] .bb-figure {
+  animation: bb-sway-gentle 1.8s ease-in-out infinite;
+}
+
+.bb[data-state="greet"] .bb-arm--r {
+  animation: bb-wave 0.8s ease-in-out infinite;
+}
+
+@keyframes bb-sway-gentle {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+
+@keyframes bb-wave {
+  0%, 100% { transform: rotate(calc(var(--raise) * -1 + 10deg)); }
+  25% { transform: rotate(calc(var(--raise) * -1 + 40deg)); }
+  75% { transform: rotate(calc(var(--raise) * -1 - 10deg)); }
+}
+
+/* ---- Hype (queued, waiting for an opponent — eager bounce) --------- */
+
+.bb[data-state="hype"] .bb-figure {
+  animation: bb-hype-bounce 0.5s ease-in-out infinite;
+}
+
+.bb[data-state="hype"] .bb-head {
+  animation: bb-hype-nod 0.5s ease-in-out infinite;
+}
+
+@keyframes bb-hype-bounce {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-6px) scale(1.02, 0.97); }
+}
+
+@keyframes bb-hype-nod {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* ---- Waiting (finished, waiting on someone else — patient) --------- */
+
+.bb[data-state="waiting"] .bb-figure {
+  animation: bb-breathe-slow 3.6s ease-in-out infinite;
+}
+
+@keyframes bb-breathe-slow {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-1px) scale(1.008, 1.015); }
+}
+
+/* ---- Surprised (something unexpected — a quick startled recoil) ---- */
+
+.bb[data-state="surprised"] .bb-figure {
+  animation: bb-recoil 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+}
+
+.bb[data-state="surprised"] .bb-head {
+  animation: bb-recoil-head 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+}
+
+@keyframes bb-recoil {
+  0% { transform: translateY(0) scale(1, 1); }
+  30% { transform: translateY(-10px) scale(0.95, 1.08); }
+  60% { transform: translateY(2px) scale(1.03, 0.96); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+@keyframes bb-recoil-head {
+  0% { transform: rotate(0deg) translateY(0); }
+  30% { transform: rotate(-3deg) translateY(-3px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+
+/* ---- Sleepy (idle too long — slow heavy sway, eyes near-shut) ------ */
+
+.bb[data-state="sleepy"] .bb-figure {
+  animation: bb-sway-heavy 3.2s ease-in-out infinite;
+}
+
+.bb[data-state="sleepy"] .bb-head {
+  animation: bb-nod-sleepy 3.2s ease-in-out infinite;
+}
+
+.bb[data-state="sleepy"] .bb-blink {
+  animation: bb-blink-sleepy 3.2s ease-in-out infinite;
+}
+
+@keyframes bb-sway-heavy {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(2px) rotate(1deg); }
+}
+
+@keyframes bb-nod-sleepy {
+  0%, 100% { transform: rotate(3deg) translateY(1px); }
+  50% { transform: rotate(6deg) translateY(3px); }
+}
+
+@keyframes bb-blink-sleepy {
+  0%, 100% { transform: scaleY(0.25); }
+  50% { transform: scaleY(0.1); }
+}
+
+/* ---- Laughing (a fun/chaos moment — bouncy, big grin) --------------- */
+
+.bb[data-state="laughing"] .bb-figure {
+  animation: bb-laugh-shake 0.45s ease-in-out infinite;
+}
+
+.bb[data-state="laughing"] .bb-head {
+  animation: bb-laugh-head 0.45s ease-in-out infinite;
+}
+
+@keyframes bb-laugh-shake {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+@keyframes bb-laugh-head {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(4deg); }
+}
+
+/* ---- Confused (stuck / asked for a hint — puzzled head-tilt) ------- */
+
+.bb[data-state="confused"] .bb-figure {
+  animation: bb-ponder 2s ease-in-out infinite;
+}
+
+.bb[data-state="confused"] .bb-head {
+  animation: bb-tilt-both 1.8s ease-in-out infinite;
+}
+
+@keyframes bb-tilt-both {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+/* ---- Determined (racing the clock — minimal motion, locked in) ----- */
+
+.bb[data-state="determined"] .bb-figure {
+  animation: bb-focus-shake 0.3s ease-in-out infinite;
+}
+
+@keyframes bb-focus-shake {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(0.6px) translateY(-0.6px); }
+}
+
+/* ---- Cheer (encouraging the player — a gentle supportive clap) ----- */
+
+.bb[data-state="cheer"] .bb-figure {
+  animation: bb-breathe 1.3s ease-in-out infinite;
+}
+
+.bb[data-state="cheer"] .bb-arm--l {
+  animation: bb-clap-l 0.6s ease-in-out infinite;
+}
+
+.bb[data-state="cheer"] .bb-arm--r {
+  animation: bb-clap-r 0.6s ease-in-out infinite;
+}
+
+@keyframes bb-clap-l {
+  0%, 100% { transform: rotate(calc(var(--raise) - 70deg)); }
+  50% { transform: rotate(calc(var(--raise) - 50deg)); }
+}
+
+@keyframes bb-clap-r {
+  0%, 100% { transform: rotate(calc(var(--raise) * -1 + 70deg)); }
+  50% { transform: rotate(calc(var(--raise) * -1 + 50deg)); }
+}
+
+/* ---- Effects ------------------------------------------------------- */
+
+.bb-fx {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bb[data-state="correct"] .bb-fx--spark,
+.bb[data-state="win"] .bb-fx--spark,
+.bb[data-state="perfect"] .bb-fx--spark,
+.bb[data-state="rankUp"] .bb-fx--spark,
+.bb[data-state="streak"] .bb-fx--spark,
+.bb[data-state="laughing"] .bb-fx--spark,
+.bb[data-state="wrong"] .bb-fx--sweat,
+.bb[data-state="lose"] .bb-fx--sweat,
+.bb[data-state="rankDown"] .bb-fx--sweat,
+.bb[data-state="surprised"] .bb-fx--sweat,
+.bb[data-state="thinking"] .bb-fx--think,
+.bb[data-state="hype"] .bb-fx--think,
+.bb[data-state="confused"] .bb-fx--think,
+.bb[data-state="perfect"] .bb-fx--crown {
+  opacity: 1;
+}
+
+/* Streak's sparkle is the same 3-star asset, just tinted warm instead of
+   the usual yellow/cyan/pink so a hot streak reads differently at a
+   glance from a one-off correct answer. */
+.bb[data-state="streak"] .bb-fx--spark {
+  filter: hue-rotate(-35deg) saturate(1.3);
+}
+
+.bb-star {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.bb[data-state="correct"] .bb-star,
+.bb[data-state="streak"] .bb-star,
+.bb[data-state="laughing"] .bb-star {
+  animation: bb-twinkle 1.1s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-star--b,
+.bb[data-state="streak"] .bb-star--b,
+.bb[data-state="laughing"] .bb-star--b {
+  animation-delay: 0.25s;
+}
+
+.bb[data-state="correct"] .bb-star--c,
+.bb[data-state="streak"] .bb-star--c,
+.bb[data-state="laughing"] .bb-star--c {
+  animation-delay: 0.5s;
+}
+
+@keyframes bb-twinkle {
+  0%, 100% { opacity: 0; scale: 0.3; rotate: 0deg; }
+  40%, 60% { opacity: 1; scale: 1; rotate: 45deg; }
+}
+
+.bb[data-state="wrong"] .bb-fx--sweat {
+  animation: bb-sweat 1.6s ease-in infinite;
+}
+
+/* "surprised" gets the same quick worried bead as "wrong" — a startled
+   flinch, not a slow cry. */
+.bb[data-state="surprised"] .bb-fx--sweat {
+  animation: bb-sweat 0.9s ease-in 1;
+}
+
+/* Same drop, playing as a slower, bigger falling tear for "lose"/
+   "rankDown" instead of a quick worried sweat bead. */
+.bb[data-state="lose"] .bb-fx--sweat,
+.bb[data-state="rankDown"] .bb-fx--sweat {
+  animation: bb-tear 2.2s ease-in infinite;
+}
+
+.bb[data-state="lose"] .bb-fx--sweat path,
+.bb[data-state="rankDown"] .bb-fx--sweat path {
+  fill: #5EA6E8;
+  transform: scale(1.25);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes bb-sweat {
+  0% { transform: translateY(-4px); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+
+@keyframes bb-tear {
+  0% { transform: translateY(-2px); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(22px); opacity: 0; }
+}
+
+.bb[data-state="thinking"] .bb-fx--think circle,
+.bb[data-state="hype"] .bb-fx--think circle,
+.bb[data-state="confused"] .bb-fx--think circle {
+  animation: bb-dot 1.4s ease-in-out infinite;
+}
+
+.bb[data-state="thinking"] .bb-fx--think circle:nth-child(2),
+.bb[data-state="hype"] .bb-fx--think circle:nth-child(2),
+.bb[data-state="confused"] .bb-fx--think circle:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bb[data-state="thinking"] .bb-fx--think circle:nth-child(3),
+.bb[data-state="hype"] .bb-fx--think circle:nth-child(3),
+.bb[data-state="confused"] .bb-fx--think circle:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bb-dot {
+  0%, 100% { opacity: 0.35; translate: 0 0; }
+  50% { opacity: 1; translate: 0 -3px; }
+}
+
+/* ---- Signature quirks ---------------------------------------------- */
+
+.bb-spin {
+  animation: bb-spin 1.6s linear infinite;
+}
+
+.bb-spin--rev {
+  animation-direction: reverse;
+}
+
+.bb[data-state="correct"] .bb-spin,
+.bb[data-state="win"] .bb-spin,
+.bb[data-state="perfect"] .bb-spin,
+.bb[data-state="rankUp"] .bb-spin,
+.bb[data-state="streak"] .bb-spin,
+.bb[data-state="laughing"] .bb-spin {
+  animation-duration: 0.5s;
+}
+
+.bb[data-state="wrong"] .bb-spin,
+.bb[data-state="lose"] .bb-spin,
+.bb[data-state="rankDown"] .bb-spin {
+  animation-play-state: paused;
+}
+
+@keyframes bb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.bb-blinker {
+  animation: bb-blinker 1.1s steps(1) infinite;
+}
+
+@keyframes bb-blinker {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.25; }
+}
+
+.bb-float {
+  animation: bb-float 2.4s ease-in-out infinite;
+}
+
+@keyframes bb-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -4px; }
+}
+
+.bb-sway {
+  animation: bb-plume 2.2s ease-in-out infinite;
+}
+
+@keyframes bb-plume {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.bb-wobble {
+  animation: bb-wobble 1.3s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-wobble,
+.bb[data-state="win"] .bb-wobble,
+.bb[data-state="perfect"] .bb-wobble,
+.bb[data-state="rankUp"] .bb-wobble,
+.bb[data-state="streak"] .bb-wobble,
+.bb[data-state="laughing"] .bb-wobble {
+  animation-duration: 0.4s;
+}
+
+@keyframes bb-wobble {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+.bb-wag {
+  animation: bb-wag 1.8s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-wag,
+.bb[data-state="win"] .bb-wag,
+.bb[data-state="perfect"] .bb-wag,
+.bb[data-state="rankUp"] .bb-wag,
+.bb[data-state="streak"] .bb-wag,
+.bb[data-state="laughing"] .bb-wag {
+  animation-duration: 0.45s;
+}
+
+.bb[data-state="wrong"] .bb-wag,
+.bb[data-state="lose"] .bb-wag,
+.bb[data-state="rankDown"] .bb-wag {
+  animation: none;
+  transform: rotate(10deg);
+}
+
+@keyframes bb-wag {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(6deg); }
+}
+
+.bb-lava,
+.bb-glow {
+  animation: bb-glow 1.8s ease-in-out infinite;
+}
+
+.bb[data-state="correct"] .bb-lava,
+.bb[data-state="correct"] .bb-glow,
+.bb[data-state="win"] .bb-lava,
+.bb[data-state="win"] .bb-glow,
+.bb[data-state="perfect"] .bb-lava,
+.bb[data-state="perfect"] .bb-glow,
+.bb[data-state="rankUp"] .bb-lava,
+.bb[data-state="rankUp"] .bb-glow,
+.bb[data-state="streak"] .bb-lava,
+.bb[data-state="streak"] .bb-glow,
+.bb[data-state="laughing"] .bb-lava,
+.bb[data-state="laughing"] .bb-glow {
+  animation-duration: 0.5s;
+}
+
+@keyframes bb-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.bb-flicker {
+  animation: bb-flicker 0.9s ease-in-out infinite;
+}
+
+@keyframes bb-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); }
+  30% { transform: scale(0.94, 1.08) rotate(-3deg); }
+  65% { transform: scale(1.05, 0.95) rotate(3deg); }
+}
+
+.bb-tick {
+  animation: bb-spin 4s steps(12) infinite;
+}
+
+.bb-drift {
+  animation: bb-drift 3s ease-in-out infinite;
+}
+
+@keyframes bb-drift {
+  0%, 100% { translate: 0 0; opacity: 0.9; }
+  50% { translate: 0 -6px; opacity: 0.45; }
+}
+
+/* Stack: the head is the top of the stack — it pops off when happy. A
+   full win pops it higher and keeps it popping longer, not just a new
+   animation for its own sake — it's the same "stack overflow" joke, more
+   of it because the moment is bigger. */
+.bb[data-char="stack"][data-state="correct"] .bb-head {
+  animation: bb-pop 1.1s ease-in-out infinite;
+}
+
+.bb[data-char="stack"][data-state="win"] .bb-head,
+.bb[data-char="stack"][data-state="perfect"] .bb-head,
+.bb[data-char="stack"][data-state="rankUp"] .bb-head {
+  animation: bb-pop-big 0.9s ease-in-out infinite, bb-nod 0.9s ease-in-out infinite;
+}
+
+@keyframes bb-pop {
+  0%, 100% { transform: translateY(0); }
+  35%, 55% { transform: translateY(-14px) rotate(-4deg); }
+}
+
+@keyframes bb-pop-big {
+  0%, 100% { translate: 0 0; }
+  35%, 55% { translate: 0 -22px; }
+}
+
+/* Nyx fades out a little when things go wrong — she "goes null" — and
+   further still on an actual loss, since it's the bigger version of the
+   same joke. */
+.bb[data-char="nyx"][data-state="wrong"] .bb-figure,
+.bb[data-char="nyx"][data-state="rankDown"] .bb-figure {
+  opacity: 0.6;
+}
+
+.bb[data-char="nyx"][data-state="lose"] .bb-figure {
+  opacity: 0.35;
+}
+
+.bb[data-char="nyx"][data-state="sleepy"] .bb-figure {
+  opacity: 0.75;
+}
+
+/* The Glitch: colour channels jitter apart. */
+.bb-rgb-c {
+  animation: bb-rgb-c 1.2s steps(1) infinite;
+}
+
+.bb-rgb-m {
+  animation: bb-rgb-m 1.2s steps(1) infinite;
+}
+
+.bb[data-state="correct"] .bb-rgb-c,
+.bb[data-state="correct"] .bb-rgb-m,
+.bb[data-state="wrong"] .bb-rgb-c,
+.bb[data-state="wrong"] .bb-rgb-m {
+  animation-duration: 0.35s;
+}
+
+/* Win/perfect/rankUp jitter even faster (excited glitching); lose/
+   rankDown drag to a near-stop (the signal's dying) — same quirk,
+   pushed to each extreme as the stakes go up. */
+.bb[data-state="win"] .bb-rgb-c,
+.bb[data-state="win"] .bb-rgb-m,
+.bb[data-state="perfect"] .bb-rgb-c,
+.bb[data-state="perfect"] .bb-rgb-m,
+.bb[data-state="rankUp"] .bb-rgb-c,
+.bb[data-state="rankUp"] .bb-rgb-m {
+  animation-duration: 0.18s;
+}
+
+.bb[data-state="lose"] .bb-rgb-c,
+.bb[data-state="lose"] .bb-rgb-m,
+.bb[data-state="rankDown"] .bb-rgb-c,
+.bb[data-state="rankDown"] .bb-rgb-m {
+  animation-duration: 2.4s;
+}
+
+@keyframes bb-rgb-c {
+  0% { translate: -6px 0; }
+  30% { translate: -9px 1px; }
+  55% { translate: -4px -1px; }
+  80% { translate: -7px 0; }
+}
+
+@keyframes bb-rgb-m {
+  0% { translate: 6px 0; }
+  30% { translate: 4px -1px; }
+  55% { translate: 9px 1px; }
+  80% { translate: 7px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb *,
+  .bb {
+    animation: none !important;
+  }
+}
+
+/* --- Lesson buddy (BuddyCoach) --- */
+
+.buddy {
+  --buddy-color: #4fe0a8;
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  width: 100%;
+  max-width: 640px;
+  margin: 4px auto 14px;
+  padding: 6px 10px 8px 4px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--bg, #fff) 88%, transparent);
+  backdrop-filter: blur(6px);
+  text-align: left;
+}
+
+.buddy__sprite {
+  flex-shrink: 0;
+  width: 116px;
+  height: 132px;
+}
+
+.buddy__bubble {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  background: var(--code-bg);
+  box-shadow: 0 3px 0 var(--border);
+  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.buddy__bubble::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  bottom: 14px;
+  width: 14px;
+  height: 14px;
+  background: var(--code-bg);
+  border-left: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
+  transform: rotate(45deg);
+}
+
+.buddy__name {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--buddy-color);
+  filter: brightness(0.8);
+}
+
+.buddy__line {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-h);
+}
+
+.buddy--correct .buddy__bubble {
+  border-color: #22c55e;
+  box-shadow: 0 3px 0 #16a34a;
+}
+
+.buddy--correct .buddy__bubble::before {
+  border-color: #22c55e;
+}
+
+.buddy--wrong .buddy__bubble {
+  border-color: #f87171;
+  box-shadow: 0 3px 0 #dc2626;
+  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both, buddy-nudge 0.4s 0.1s ease-in-out;
+}
+
+.buddy--wrong .buddy__bubble::before {
+  border-color: #f87171;
+}
+
+@keyframes buddy-pop {
+  from { opacity: 0; transform: scale(0.85) translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes buddy-nudge {
+  0%, 100% { translate: 0; }
+  25% { translate: -5px; }
+  75% { translate: 5px; }
+}
+
+@media (max-width: 480px) {
+  .buddy__sprite { width: 96px; height: 110px; }
+  .buddy__line { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buddy__bubble { animation: none !important; }
+}
+
+.buddy__close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg, #fff) 70%, transparent);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.buddy__close:hover {
+  opacity: 1;
+}
+
+/* Collapsed state: a small tap-to-open bubble instead of the full card —
+   the default, so the buddy is never in the way until the player wants
+   it. Same sticky slot as the open `.buddy` card so nothing shifts when
+   it toggles. */
+.buddy-toggle {
+  --buddy-color: #4fe0a8;
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 14px;
+  padding: 4px 14px 4px 4px;
+  border: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg, #fff) 88%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 0 var(--border);
+  cursor: pointer;
+  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.buddy-toggle__sprite {
+  flex-shrink: 0;
+  width: 44px;
+  height: 50px;
+  margin-bottom: -6px;
+}
+
+.buddy-toggle__label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--buddy-color);
+  filter: brightness(0.8);
+}
+
+/* A reaction happened while the player had it closed — a quiet pulse
+   invites them to open it without forcing the panel open on its own. */
+.buddy-toggle--unseen {
+  box-shadow: 0 2px 0 var(--border), 0 0 0 2px var(--buddy-color);
+  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both, buddy-toggle-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes buddy-toggle-pulse {
+  0%, 100% { box-shadow: 0 2px 0 var(--border), 0 0 0 2px var(--buddy-color); }
+  50% { box-shadow: 0 2px 0 var(--border), 0 0 0 5px color-mix(in srgb, var(--buddy-color) 40%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buddy-toggle--unseen { animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both !important; }
+}
+
+/* --- Roster rarity frames for the Byteborn tiers --- */
+
+.character-card--starter,
+.character-card--common {
+  border-color: #94a3b8;
+}
+
+.character-card--epic {
+  border-color: #c084fc;
+  background: linear-gradient(180deg, rgba(192, 132, 252, 0.14), var(--code-bg) 55%);
+}
+
+.character-card--mythic {
+  border-color: #f43f5e;
+  background: linear-gradient(180deg, rgba(244, 63, 94, 0.13), var(--code-bg) 55%);
+}
+
+.character-card--boss {
+  border-color: #ff2bd6;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.12), rgba(255, 43, 214, 0.08) 30%, var(--code-bg) 60%);
+}
+
+.character-card__stage .char-rig {
+  height: 100%;
+}
+
+.character-card__concept {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  opacity: 0.8;
+}

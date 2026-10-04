@@ -1,9 +1,35 @@
 import { useState, useRef, useCallback } from "react";
 import CharacterRig from "./CharacterRig";
+import { ALL_STATES } from "./byteborn/ByteBornSprite";
 import { CHARACTERS, isCharacterUnlocked, unlockProgress, unlockHint } from "../data/characters";
 import { useI18n } from "../i18n/I18nContext";
 
-const PREVIEW_STATES = ["correct", "wrong", "thinking"];
+// One emoji per state (see ALL_STATES / ByteBornSprite.jsx's own top
+// comment for what each one actually looks like) — a little collectible
+// strip under each unlocked character so the roster shows off the full
+// range of reactions, not just the 3 it used to cycle through at random.
+const STATE_EMOJI = {
+  idle: "🙂",
+  thinking: "🤔",
+  correct: "✅",
+  wrong: "❌",
+  win: "🏆",
+  lose: "💥",
+  perfect: "👑",
+  streak: "🔥",
+  rankUp: "⬆️",
+  rankDown: "⬇️",
+  shielded: "🛡️",
+  greet: "👋",
+  hype: "🤩",
+  waiting: "⏳",
+  surprised: "😮",
+  sleepy: "😴",
+  laughing: "😂",
+  confused: "❓",
+  determined: "😤",
+  cheer: "👏",
+};
 
 export default function CharacterRoster({
   unlockCtx,
@@ -15,14 +41,22 @@ export default function CharacterRoster({
   const [previewState, setPreviewState] = useState({});
   const timers = useRef({});
 
-  const preview = useCallback((id) => {
-    const next = PREVIEW_STATES[Math.floor(Math.random() * PREVIEW_STATES.length)];
-    setPreviewState((prev) => ({ ...prev, [id]: next }));
+  // Hover/focus (desktop, keyboard) switches the preview instantly and
+  // reverts the moment it's no longer hovered/focused — no timer needed,
+  // the pointer leaving IS the signal. Touch devices have no hover, so a
+  // tap uses the same `preview` fallback as before: show it, then settle
+  // back to idle on its own after a moment.
+  const setState = useCallback((id, state) => {
     clearTimeout(timers.current[id]);
+    setPreviewState((prev) => ({ ...prev, [id]: state }));
+  }, []);
+
+  const preview = useCallback((id, state) => {
+    setState(id, state);
     timers.current[id] = setTimeout(() => {
       setPreviewState((prev) => ({ ...prev, [id]: "idle" }));
     }, 1500);
-  }, []);
+  }, [setState]);
 
   const unlockedCount = CHARACTERS.filter((c) => isCharacterUnlocked(c, unlockCtx)).length;
 
@@ -60,7 +94,7 @@ export default function CharacterRoster({
               <button
                 type="button"
                 className="character-card__stage"
-                onClick={() => unlocked && preview(c.id)}
+                onClick={() => unlocked && preview(c.id, ALL_STATES[Math.floor(Math.random() * ALL_STATES.length)])}
                 disabled={!unlocked}
                 aria-label={unlocked ? `Preview ${c.name}` : `${c.name}, locked`}
               >
@@ -68,13 +102,33 @@ export default function CharacterRoster({
                 {!unlocked && <span className="character-card__lock">🔒</span>}
               </button>
 
+              {unlocked && (
+                <div className="character-card__emoji-row" onMouseLeave={() => setState(c.id, "idle")}>
+                  {ALL_STATES.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      className={`character-card__emoji${state === s ? " character-card__emoji--active" : ""}`}
+                      onMouseEnter={() => setState(c.id, s)}
+                      onFocus={() => setState(c.id, s)}
+                      onBlur={() => setState(c.id, "idle")}
+                      onClick={() => preview(c.id, s)}
+                      aria-label={s}
+                    >
+                      {STATE_EMOJI[s]}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <h2 className="character-card__name">{c.name}</h2>
               <span className="character-card__archetype">{c.archetype}</span>
+              <span className="character-card__concept">{"</>"} {c.concept}</span>
 
               {unlocked ? (
                 <>
                   <p className="character-card__ability">{c.ability}</p>
-                  <p className="character-card__move-line">{c.moveLine}</p>
+                  <p className="character-card__move-line">“{c.catchphrase}”</p>
                   <button
                     type="button"
                     className={`character-card__select${

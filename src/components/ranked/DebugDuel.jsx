@@ -78,6 +78,7 @@ export default function DebugDuel({ character, rankedPoints, seed, onFinish, onE
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "⚔️" : "💀"}
         title={finished.didWin ? t("rankedModes.debugDuel.winTitle") : t("rankedModes.debugDuel.loseTitle")}
         statLines={

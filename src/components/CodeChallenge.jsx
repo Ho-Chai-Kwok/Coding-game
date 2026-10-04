@@ -18,7 +18,7 @@ function resolveContent(content, language) {
 
 // C, C++ and Java lessons live in their own lazy-loaded chunk; wait for it,
 // then hand the merged lesson to the challenge below.
-export default function CodeChallenge({ content, levelId, language = "javascript", onSolved }) {
+export default function CodeChallenge({ content, levelId, language = "javascript", onSolved, onFeedback }) {
   // A lesson can pin its own language (SQL and NumPy/Pandas-style Python
   // side quests), overriding whichever language the learner picked for the
   // main path — that choice isn't relevant to a lesson that's specifically
@@ -41,7 +41,7 @@ export default function CodeChallenge({ content, levelId, language = "javascript
   }, [compiled, key, levelId, language]);
 
   if (pinnedLanguage) {
-    return <CodeChallengeBody key={levelId} active={content} language={pinnedLanguage} onSolved={onSolved} />;
+    return <CodeChallengeBody key={levelId} active={content} language={pinnedLanguage} onSolved={onSolved} onFeedback={onFeedback} />;
   }
 
   if (compiled) {
@@ -53,11 +53,12 @@ export default function CodeChallenge({ content, levelId, language = "javascript
           active={{ ...content, ...loaded.lesson }}
           language={language}
           onSolved={onSolved}
+          onFeedback={onFeedback}
         />
       );
     }
     // No hand-written lesson for this level in that language: fall back to JavaScript.
-    return <CodeChallengeBody key={key} active={content} language="javascript" onSolved={onSolved} />;
+    return <CodeChallengeBody key={key} active={content} language="javascript" onSolved={onSolved} onFeedback={onFeedback} />;
   }
 
   return (
@@ -66,11 +67,12 @@ export default function CodeChallenge({ content, levelId, language = "javascript
       active={resolveContent(content, language)}
       language={language}
       onSolved={onSolved}
+      onFeedback={onFeedback}
     />
   );
 }
 
-function CodeChallengeBody({ active, language, onSolved }) {
+function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
   const { t } = useI18n();
   const compiled = isCompiledLanguage(language);
   const [code, setCode] = useState(active.starterCode);
@@ -79,6 +81,7 @@ function CodeChallengeBody({ active, language, onSolved }) {
 
   async function handleRun() {
     setRunning(true);
+    onFeedback?.("running");
     const { logs, error } =
       language === "sql"
         ? await runSqlCode(active.seedSql, code)
@@ -95,12 +98,14 @@ function CodeChallengeBody({ active, language, onSolved }) {
 
     if (error) {
       setResult({ status: "error", logs, error });
+      onFeedback?.("wrong");
       return;
     }
 
     const output = logs.join("\n").trim();
     const passed = output === active.expectedOutput;
     setResult({ status: passed ? "success" : "mismatch", logs, error: null });
+    onFeedback?.(passed ? "correct" : "wrong");
   }
 
   return (
@@ -118,7 +123,10 @@ function CodeChallengeBody({ active, language, onSolved }) {
         <CodeEditor
           className="code-challenge__editor"
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={(e) => {
+            setCode(e.target.value);
+            onFeedback?.("thinking");
+          }}
           language={language}
           rows={Math.min(16, Math.max(5, active.starterCode.split("\n").length + 1))}
         />

@@ -354,19 +354,25 @@ function AppShell() {
   }
 
   function completeLevel(level) {
+    // Found from the current (pre-update) world rather than reached-into
+    // from inside the setWorldsState updater below: a level's identity at
+    // a given stageNumber doesn't change just because this completion is
+    // about to unlock it, so there's no need to depend on setState's
+    // updater-timing to know what "next" is.
+    const world = worldsState.find((w) => w.id === level.worldId);
+    const nextLevel = world?.levels.find((l) => l.stageNumber === level.stageNumber + 1) ?? null;
+
     setWorldsState((prev) => {
       const next = structuredClone(prev);
-      const world = next.find((w) => w.id === level.worldId);
-      const lvl = world.levels.find((l) => l.id === level.id);
+      const w = next.find((w2) => w2.id === level.worldId);
+      const lvl = w.levels.find((l) => l.id === level.id);
       lvl.status = "completed";
 
-      const nextLevel = world.levels.find(
-        (l) => l.stageNumber === level.stageNumber + 1,
-      );
-      if (nextLevel && nextLevel.status === "locked") {
-        nextLevel.status = "unlocked";
-      } else if (!nextLevel) {
-        const nextWorld = next.find((w) => w.id === world.id + 1);
+      if (nextLevel) {
+        const nl = w.levels.find((l) => l.id === nextLevel.id);
+        if (nl.status === "locked") nl.status = "unlocked";
+      } else {
+        const nextWorld = next.find((w2) => w2.id === w.id + 1);
         if (nextWorld && nextWorld.status === "locked") {
           nextWorld.status = "unlocked";
           // A world being unlocked must also unlock its own first level,
@@ -379,26 +385,38 @@ function AppShell() {
 
       return next;
     });
-    setActiveLevel(null);
+
+    // Duolingo-style: go straight into the next lesson instead of
+    // dropping back to the map after every single level. Only when a
+    // level finishes the whole world (no next stage within it) does this
+    // fall back to the map — jumping straight into a brand-new world's
+    // first level with no "world complete" moment of its own would be a
+    // jarring surprise, not a convenience, so that's still a deliberate
+    // stop, not an oversight.
+    setActiveLevel(nextLevel ? { ...nextLevel, status: "unlocked" } : null);
   }
 
   function completeSideQuestLesson(lesson) {
+    const quest = sideQuestsState.find((q) => q.id === lesson.questId);
+    const nextLesson = quest?.lessons.find((x) => x.lessonNumber === lesson.lessonNumber + 1) ?? null;
+
     setSideQuestsState((prev) => {
       const next = structuredClone(prev);
-      const quest = next.find((q) => q.id === lesson.questId);
-      const l = quest.lessons.find((x) => x.id === lesson.id);
+      const q = next.find((q2) => q2.id === lesson.questId);
+      const l = q.lessons.find((x) => x.id === lesson.id);
       l.status = "completed";
 
-      const nextLesson = quest.lessons.find(
-        (x) => x.lessonNumber === lesson.lessonNumber + 1,
-      );
-      if (nextLesson && nextLesson.status === "locked") {
-        nextLesson.status = "unlocked";
+      if (nextLesson) {
+        const nl = q.lessons.find((x) => x.id === nextLesson.id);
+        if (nl.status === "locked") nl.status = "unlocked";
       }
 
       return next;
     });
-    setActiveSideQuestLesson(null);
+
+    // Same "continue straight into the next lesson" behavior as
+    // completeLevel above — see its comment.
+    setActiveSideQuestLesson(nextLesson ? { ...nextLesson, status: "unlocked" } : null);
   }
 
   // Ranked PvP always requires a signed-in account (see RankedHome's
@@ -520,6 +538,7 @@ function AppShell() {
         streak={streak}
         overallProgress={overallProgress}
         continueWorld={continueWorld}
+        selectedCharacter={selectedCharacter}
         onContinueLearning={handleContinueLearning}
         onOpenSettings={() => switchMode("settings")}
         onOpenCalendar={() => switchMode("calendar")}
@@ -586,10 +605,12 @@ function AppShell() {
     } else if (activeLevel) {
       screen = (
         <LevelScreen
+          key={activeLevel.id}
           level={activeLevel}
           language={language}
           onBack={() => setActiveLevel(null)}
           onCompleteLevel={completeLevel}
+          character={selectedCharacter}
         />
       );
     } else if (activeWorld) {
@@ -607,6 +628,7 @@ function AppShell() {
         <WorldMap
           worlds={worldsState}
           language={language}
+          selectedCharacter={selectedCharacter}
           onChangeLanguage={() => setLanguage(null)}
           onSelectWorld={enterWorld}
           onOpenPractice={() => switchMode("practice")}
@@ -630,9 +652,11 @@ function AppShell() {
     if (activeSideQuestLesson) {
       screen = (
         <LevelScreen
+          key={activeSideQuestLesson.id}
           level={activeSideQuestLesson}
           onBack={() => setActiveSideQuestLesson(null)}
           onCompleteLevel={completeSideQuestLesson}
+          character={selectedCharacter}
         />
       );
     } else if (activeQuest) {
@@ -650,6 +674,7 @@ function AppShell() {
         <SideQuestMap
           sidequests={sideQuestsState}
           mainLessonsCompleted={mainLessonsCompleted}
+          selectedCharacter={selectedCharacter}
           onGoToLearning={() => switchMode("learning")}
           onSelectQuest={(q) => setActiveSideQuestId(q.id)}
           onBack={backToModes}
@@ -707,7 +732,13 @@ function AppShell() {
       );
     } else if (rankChange) {
       hideBottomNav = false;
-      screen = <RankChange change={rankChange} onContinue={() => setRankChange(null)} />;
+      screen = (
+        <RankChange
+          change={rankChange}
+          character={selectedCharacter}
+          onContinue={() => setRankChange(null)}
+        />
+      );
     } else {
       hideBottomNav = false;
       screen = (

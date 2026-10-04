@@ -116,6 +116,7 @@ export default function Showdown({ character, rankedPoints, matchId, seed, onFin
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "🥇" : "💥"}
         title={finished.didWin ? t("rankedModes.showdown.winTitle") : t("rankedModes.showdown.loseTitle")}
         statLines={[{ label: t("rankedModes.showdown.roundsSurvived"), value: finished.roundsSurvived }]}

@@ -170,12 +170,21 @@ export default function CodeHelper({ defaultLanguage = "javascript", onBack }) {
             className="code-helper__question"
             value={question}
             onChange={(e) => setQuestion(e.target.value.slice(0, CODE_HELP_QUESTION_MAX))}
+            // Deliberately not pasteable: the point of asking is to put the
+            // question in the kid's own words, not to drop in text copied
+            // from somewhere else (the lesson's instructions, a friend, a
+            // "just give me the answer" prompt). The code box right below
+            // this is a completely different case — pasting the code
+            // someone's actually stuck on is the whole point of it — so
+            // only this field blocks paste, not CodeEditor.
+            onPaste={(e) => e.preventDefault()}
             placeholder={t("codeHelper.questionPlaceholder")}
             rows={3}
           />
           <p className="code-helper__counter">
             {question.length}/{CODE_HELP_QUESTION_MAX}
           </p>
+          <p className="code-helper__no-paste-hint">{t("codeHelper.questionNoPaste")}</p>
 
           <label className="settings__label">{t("codeHelper.codeLabel")}</label>
           <div className="code-helper__editor-frame">

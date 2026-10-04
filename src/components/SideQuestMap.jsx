@@ -2,8 +2,19 @@ import { useMemo, useState } from "react";
 import { useI18n } from "../i18n/I18nContext";
 import { SKILL_GATE_LESSONS, meetsSkillGate } from "../data/skillGate";
 import SkillGateNotice from "./SkillGateNotice";
+import CharacterBadge from "./CharacterBadge";
 
-export default function SideQuestMap({ sidequests, mainLessonsCompleted = 0, onGoToLearning, onSelectQuest, onBack }) {
+// Same spirit as Home/World Map: react to real completion, not chosen by
+// the player. Side quests are smaller and more "pick whatever looks fun"
+// than the main path, so this only needs the two clearest signals —
+// everything done, or nothing started yet.
+function sideQuestCharacterState(completedLessons, totalLessons) {
+  if (totalLessons > 0 && completedLessons === totalLessons) return "perfect";
+  if (completedLessons === 0) return "greet";
+  return "idle";
+}
+
+export default function SideQuestMap({ sidequests, mainLessonsCompleted = 0, selectedCharacter, onGoToLearning, onSelectQuest, onBack }) {
   const { t } = useI18n();
   const [activeTag, setActiveTag] = useState(null);
   const unlocked = meetsSkillGate(mainLessonsCompleted);
@@ -40,6 +51,14 @@ export default function SideQuestMap({ sidequests, mainLessonsCompleted = 0, onG
           {t("sideQuestMap.subtitle")} {completedLessons}/{totalLessons}{" "}
           {t("sideQuestMap.lessonsComplete")}
         </p>
+        {selectedCharacter && unlocked && (
+          <div className="world-map__character">
+            <CharacterBadge
+              character={selectedCharacter}
+              state={sideQuestCharacterState(completedLessons, totalLessons)}
+            />
+          </div>
+        )}
       </header>
 
       {!unlocked ? (

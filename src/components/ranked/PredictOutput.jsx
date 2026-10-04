@@ -89,6 +89,7 @@ export default function PredictOutput({ character, rankedPoints, matchId, seed, 
     return (
       <RankedResult
         didWin={finished.didWin}
+        character={character}
         emoji={finished.didWin ? "🔮" : "💭"}
         title={finished.didWin ? t("rankedModes.predictOutput.winTitle") : t("rankedModes.predictOutput.loseTitle")}
         statLines={[
