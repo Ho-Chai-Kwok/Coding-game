@@ -9,6 +9,13 @@
 // Unlocks are built only from stats the app already tracks: total lessons
 // completed (learning + side quests), ranked wins/matches/points and login
 // streak. CHARACTERS[0] is the starter and the fallback for old saves.
+//
+// `personality` ("cute" | "cool") picks which flavor of reaction a
+// character plays when tapped in a lesson (see BuddyCoach.jsx) — judged
+// from each one's own existing blurb/moveLine above, not arbitrary:
+// Pixel/Cache/Bugsy/Firewall are explicitly written as sweet, chatty, or
+// "the gentlest giant in the city"; the rest (knights, assassins,
+// marksmen, a villain) read more composed/edgy.
 
 export const CHARACTERS = [
   {
@@ -16,6 +23,7 @@ export const CHARACTERS = [
     name: "Pixel",
     archetype: "Support",
     tier: "Starter",
+    personality: "cute",
     concept: "Output / print()",
     color: "#4FE0A8",
     catchphrase: "Hello, World! …Is anyone listening?",
@@ -29,6 +37,7 @@ export const CHARACTERS = [
     name: "Cache",
     archetype: "Support",
     tier: "Common",
+    personality: "cute",
     concept: "Variables & memory",
     color: "#2FD3B5",
     catchphrase: "Already got it! …I think.",
@@ -42,6 +51,7 @@ export const CHARACTERS = [
     name: "Vex Loop",
     archetype: "Assassin",
     tier: "Epic",
+    personality: "cool",
     concept: "Loops (for / while)",
     color: "#FF3D8B",
     catchphrase: "Again. And again. And — break.",
@@ -55,6 +65,7 @@ export const CHARACTERS = [
     name: "Ifra",
     archetype: "Tank",
     tier: "Rare",
+    personality: "cool",
     concept: "Conditionals (if / else)",
     color: "#F5C842",
     catchphrase: "True or false. Choose.",
@@ -68,6 +79,7 @@ export const CHARACTERS = [
     name: "Lambda",
     archetype: "Marksman",
     tier: "Legendary",
+    personality: "cool",
     concept: "Functions",
     color: "#E0B860",
     catchphrase: "One line. One job. Done.",
@@ -81,6 +93,7 @@ export const CHARACTERS = [
     name: "Bugsy",
     archetype: "Support",
     tier: "Rare",
+    personality: "cute",
     concept: "Debugging",
     color: "#7BD35A",
     catchphrase: "Found it! Line 42!",
@@ -94,6 +107,7 @@ export const CHARACTERS = [
     name: "Stack",
     archetype: "Tank",
     tier: "Rare",
+    personality: "cool",
     concept: "Stacks (push / pop)",
     color: "#FFB23D",
     catchphrase: "Last in. First out. Every time.",
@@ -107,6 +121,7 @@ export const CHARACTERS = [
     name: "Async",
     archetype: "Marksman",
     tier: "Epic",
+    personality: "cool",
     concept: "Async / await",
     color: "#FFB547",
     catchphrase: "Don't wait for me.",
@@ -120,6 +135,7 @@ export const CHARACTERS = [
     name: "The Glitch",
     archetype: "Villain",
     tier: "Boss",
+    personality: "cool",
     concept: "Bugs & errors (try / except)",
     color: "#FF2BD6",
     catchphrase: "I am the bug you didn't fix.",
@@ -133,6 +149,7 @@ export const CHARACTERS = [
     name: "Firewall",
     archetype: "Tank",
     tier: "Epic",
+    personality: "cute",
     concept: "Security & validation",
     color: "#E2513A",
     catchphrase: "Not on the list. Not getting in.",
@@ -146,6 +163,7 @@ export const CHARACTERS = [
     name: "Nyx",
     archetype: "Assassin",
     tier: "Mythic",
+    personality: "cool",
     concept: "None / null",
     color: "#9B5CFF",
     catchphrase: "You can't hit what doesn't exist.",
@@ -159,6 +177,7 @@ export const CHARACTERS = [
     name: "Recursa",
     archetype: "Controller",
     tier: "Legendary",
+    personality: "cool",
     concept: "Recursion",
     color: "#7B4DFF",
     catchphrase: "To understand me, first understand me.",

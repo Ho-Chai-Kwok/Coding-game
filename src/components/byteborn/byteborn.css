@@ -1019,93 +1019,37 @@
   }
 }
 
-/* --- Lesson buddy (BuddyCoach) --- */
+/* --- Lesson buddy (BuddyCoach) — just the character, tappable, no text */
 
 .buddy {
   --buddy-color: #4fe0a8;
   position: sticky;
   top: 8px;
   z-index: 5;
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  width: 100%;
-  max-width: 640px;
+  display: block;
+  width: 108px;
+  height: 122px;
   margin: 4px auto 14px;
-  padding: 6px 10px 8px 4px;
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--bg, #fff) 88%, transparent);
-  backdrop-filter: blur(6px);
-  text-align: left;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transition: transform 0.15s ease;
+}
+
+.buddy:hover {
+  transform: scale(1.06);
+}
+
+.buddy:active {
+  transform: scale(0.94);
 }
 
 .buddy__sprite {
-  flex-shrink: 0;
-  width: 116px;
-  height: 132px;
-}
-
-.buddy__bubble {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  margin-bottom: 18px;
-  padding: 10px 14px;
-  border: 2px solid var(--border);
-  border-radius: 18px;
-  background: var(--code-bg);
-  box-shadow: 0 3px 0 var(--border);
-  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-.buddy__bubble::before {
-  content: "";
-  position: absolute;
-  left: -9px;
-  bottom: 14px;
-  width: 14px;
-  height: 14px;
-  background: var(--code-bg);
-  border-left: 2px solid var(--border);
-  border-bottom: 2px solid var(--border);
-  transform: rotate(45deg);
-}
-
-.buddy__name {
   display: block;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  color: var(--buddy-color);
-  filter: brightness(0.8);
-}
-
-.buddy__line {
-  margin: 2px 0 0;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.35;
-  color: var(--text-h);
-}
-
-.buddy--correct .buddy__bubble {
-  border-color: #22c55e;
-  box-shadow: 0 3px 0 #16a34a;
-}
-
-.buddy--correct .buddy__bubble::before {
-  border-color: #22c55e;
-}
-
-.buddy--wrong .buddy__bubble {
-  border-color: #f87171;
-  box-shadow: 0 3px 0 #dc2626;
-  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both, buddy-nudge 0.4s 0.1s ease-in-out;
-}
-
-.buddy--wrong .buddy__bubble::before {
-  border-color: #f87171;
+  width: 100%;
+  height: 100%;
 }
 
 @keyframes buddy-pop {
@@ -1113,94 +1057,13 @@
   to { opacity: 1; transform: none; }
 }
 
-@keyframes buddy-nudge {
-  0%, 100% { translate: 0; }
-  25% { translate: -5px; }
-  75% { translate: 5px; }
-}
-
 @media (max-width: 480px) {
-  .buddy__sprite { width: 96px; height: 110px; }
-  .buddy__line { font-size: 14px; }
+  .buddy { width: 92px; height: 104px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .buddy__bubble { animation: none !important; }
-}
-
-.buddy__close {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 24px;
-  height: 24px;
-  display: grid;
-  place-items: center;
-  border: none;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--bg, #fff) 70%, transparent);
-  color: var(--text);
-  font-size: 12px;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.buddy__close:hover {
-  opacity: 1;
-}
-
-/* Collapsed state: a small tap-to-open bubble instead of the full card —
-   the default, so the buddy is never in the way until the player wants
-   it. Same sticky slot as the open `.buddy` card so nothing shifts when
-   it toggles. */
-.buddy-toggle {
-  --buddy-color: #4fe0a8;
-  position: sticky;
-  top: 8px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 4px 0 14px;
-  padding: 4px 14px 4px 4px;
-  border: none;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--bg, #fff) 88%, transparent);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 0 var(--border);
-  cursor: pointer;
-  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-.buddy-toggle__sprite {
-  flex-shrink: 0;
-  width: 44px;
-  height: 50px;
-  margin-bottom: -6px;
-}
-
-.buddy-toggle__label {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--buddy-color);
-  filter: brightness(0.8);
-}
-
-/* A reaction happened while the player had it closed — a quiet pulse
-   invites them to open it without forcing the panel open on its own. */
-.buddy-toggle--unseen {
-  box-shadow: 0 2px 0 var(--border), 0 0 0 2px var(--buddy-color);
-  animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both, buddy-toggle-pulse 1.6s ease-in-out infinite;
-}
-
-@keyframes buddy-toggle-pulse {
-  0%, 100% { box-shadow: 0 2px 0 var(--border), 0 0 0 2px var(--buddy-color); }
-  50% { box-shadow: 0 2px 0 var(--border), 0 0 0 5px color-mix(in srgb, var(--buddy-color) 40%, transparent); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .buddy-toggle--unseen { animation: buddy-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both !important; }
+  .buddy { animation: none !important; }
+  .buddy:hover, .buddy:active { transform: none; }
 }
 
 /* --- Roster rarity frames for the Byteborn tiers --- */

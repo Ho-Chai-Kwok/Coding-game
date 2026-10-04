@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ByteBornSprite from "./ByteBornSprite";
-import { useI18n } from "../../i18n/I18nContext";
 
-// Duolingo-style lesson buddy: the player's selected Byteborn stands beside
-// the lesson and reacts to what they do. Challenges report events through
-// `onFeedback` and this hook turns them into a sprite state + speech line:
+// The player's selected Byteborn, sitting in on the lesson — no text, no
+// speech bubble, no open/close panel. It does two things:
 //
-//   "thinking" (typing)  -> thinking pose, falls back to idle after a pause
-//   "running"            -> thinking pose until the result comes in
-//   "correct"            -> cheer, stays until the player moves on
-//   "wrong"              -> wince, then back to idle with a "try again" line
-//   "step"               -> quick cheer for a finished terminal step
+//   1. Reacts on its own to real events (typing, running, right/wrong —
+//      see useBuddy.js), the same as before, just without ever saying
+//      anything out loud.
+//   2. Reacts to being tapped, any time, with one extra reaction picked
+//      from a pool flavored to that character's own personality (see
+//      CUTE_TAPS/COOL_TAPS below and `personality` in data/characters.js)
+//      — a little toy, independent of how the lesson is actually going.
+//
+// Tap reactions deliberately never draw from win/lose/perfect/streak/
+// rankUp/rankDown/shielded (those mean something real elsewhere — an
+// actual match result or rank change) or correct/wrong (already means
+// "you got this one right/wrong" via the real mood below) — so an
+// idle tap can never be mistaken for real feedback about anything.
 const SPRITE_STATE = {
   idle: "idle",
   greet: "idle",
@@ -22,62 +28,37 @@ const SPRITE_STATE = {
   wrong: "wrong",
 };
 
-// Closed (a small tap-to-open bubble) by default, rather than a sticky bar
-// sitting over the lesson the whole time — opening it is a deliberate
-// choice, not something forced on every player. It's a fresh choice each
-// lesson, too: LevelScreen mounts a new BuddyCoach per level (keyed by
-// level id), so this `open` state naturally resets to closed on its own
-// every time a new lesson starts, with no extra reset code needed here.
+const CUTE_TAPS = ["greet", "laughing", "surprised", "sleepy", "cheer", "hype"];
+const COOL_TAPS = ["determined", "confused", "waiting", "thinking", "idle"];
+const TAP_HOLD_MS = 1600;
+
 export default function BuddyCoach({ character, mood }) {
-  const { t } = useI18n();
-  const [open, setOpen] = useState(false);
-  // While closed, remember whether the mood has moved on since the player
-  // last saw it, so the closed bubble can gently flag "something changed"
-  // (e.g. you got one wrong) without forcing the panel open for them.
-  // Updated from the click that opens the panel (the event that causes
-  // it), not from an effect reacting to `open` — nothing to synchronize
-  // with an external system here, just state driven by a click.
-  const [seenBeat, setSeenBeat] = useState(mood.beat);
-  const hasUnseen = !open && mood.beat !== seenBeat;
+  const [tapState, setTapState] = useState(null);
+  const timer = useRef(null);
 
-  function handleOpen() {
-    setOpen(true);
-    setSeenBeat(mood.beat);
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  function handlePress() {
+    const pool = character.personality === "cool" ? COOL_TAPS : CUTE_TAPS;
+    const next = pool[Math.floor(Math.random() * pool.length)];
+    clearTimeout(timer.current);
+    setTapState(next);
+    timer.current = setTimeout(() => setTapState(null), TAP_HOLD_MS);
   }
 
-  const raw = t(`buddy.${mood.kind}`);
-  const lines = Array.isArray(raw) ? raw : [raw];
-  const line = String(lines[mood.beat % lines.length] ?? "").replace("{name}", character.name);
-  const state = SPRITE_STATE[mood.kind] ?? "idle";
-
-  if (!open) {
-    return (
-      <button
-        type="button"
-        className={`buddy-toggle${hasUnseen ? " buddy-toggle--unseen" : ""}`}
-        style={{ "--buddy-color": character.color }}
-        onClick={handleOpen}
-      >
-        <span className="buddy-toggle__sprite">
-          <ByteBornSprite id={character.id} state={state} showFx={false} label={character.name} />
-        </span>
-        <span className="buddy-toggle__label">{character.name}</span>
-      </button>
-    );
-  }
+  const state = tapState ?? SPRITE_STATE[mood.kind] ?? "idle";
 
   return (
-    <div className={`buddy buddy--${state}`} style={{ "--buddy-color": character.color }}>
-      <button type="button" className="buddy__close" onClick={() => setOpen(false)} aria-label={t("buddy.close")}>
-        ✕
-      </button>
-      <div className="buddy__sprite">
+    <button
+      type="button"
+      className="buddy"
+      style={{ "--buddy-color": character.color }}
+      onClick={handlePress}
+      aria-label={character.name}
+    >
+      <span className="buddy__sprite">
         <ByteBornSprite id={character.id} state={state} label={character.name} />
-      </div>
-      <div className="buddy__bubble" key={mood.beat} role="status" aria-live="polite">
-        <span className="buddy__name">{character.name}</span>
-        <p className="buddy__line">{line}</p>
-      </div>
-    </div>
+      </span>
+    </button>
   );
 }

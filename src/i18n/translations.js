@@ -512,18 +512,6 @@ export const translations = {
       supportUnavailable: "Support contact isn't set up yet — check back soon.",
     },
 
-    buddy: {
-      greet: ["Hi! I'm {name}. Let's crack this one together!", "Ready when you are!", "Read the task, then give it a go — I'll watch your back."],
-      idle: ["Take your time. I'm right here.", "Try something — every run teaches you something.", "You've got this!"],
-      thinking: ["Ooh, I see where you're going…", "Hmm, interesting…", "Keep typing, keep thinking!"],
-      running: ["Running it… fingers crossed!", "Let's see what happens…", "Compiling hope…"],
-      correct: ["YES! That's it! 🎉", "Nailed it! You're a natural.", "Perfect! The Kernel is proud of you!", "Boom — bug-free!"],
-      wrong: ["Ouch! Not quite.", "Whoa, close one!", "Hmm, that's not it…"],
-      retry: ["Mistakes are just data. Check the hint and try again!", "Read the output carefully — it's a clue.", "Even the best coders debug. One more go!"],
-      step: ["Nice! Next step!", "That's one down!", "Great — keep going!"],
-      close: "Close",
-    },
-
     characters: {
       title: "Characters",
       subtitle: "Unlock characters by playing, and pick one to represent you in Ranked Mode!",
@@ -1068,18 +1056,6 @@ export const translations = {
       supportDesc: "¿Preguntas, comentarios o encontraste un error? Nos encantaría saber de ti.",
       supportEmail: "Escríbenos",
       supportUnavailable: "El contacto de soporte aún no está configurado — vuelve pronto.",
-    },
-
-    buddy: {
-      greet: ["¡Hola! Soy {name}. ¡Resolvamos esto juntos!", "¡Listo cuando tú lo estés!", "Lee la tarea y ¡a por ello! Yo te cubro."],
-      idle: ["Tómate tu tiempo. Estoy aquí.", "Prueba algo: cada ejecución te enseña algo.", "¡Tú puedes!"],
-      thinking: ["Uy, ya veo por dónde vas…", "Mmm, interesante…", "¡Sigue escribiendo, sigue pensando!"],
-      running: ["Ejecutando… ¡crucemos los dedos!", "A ver qué pasa…", "Compilando esperanza…"],
-      correct: ["¡SÍ! ¡Eso es! 🎉", "¡Lo clavaste! Tienes talento.", "¡Perfecto! ¡El Kernel está orgulloso de ti!", "¡Boom! ¡Sin bugs!"],
-      wrong: ["¡Uy! Casi.", "¡Ufff, por poco!", "Mmm, no es eso…"],
-      retry: ["Los errores son solo datos. ¡Mira la pista e inténtalo otra vez!", "Lee la salida con cuidado: es una pista.", "Hasta los mejores depuran. ¡Otra vez!"],
-      step: ["¡Bien! ¡Siguiente paso!", "¡Uno menos!", "¡Genial, sigue así!"],
-      close: "Cerrar",
     },
 
     characters: {
@@ -1627,17 +1603,6 @@ export const translations = {
       supportUnavailable: "支援聯絡方式尚未設定，請稍後再回來查看。",
     },
 
-    buddy: {
-      greet: ["嗨！我是 {name}。我們一起破解這題吧！", "準備好就開始吧！", "先讀題目，再試試看——我幫你看著！"],
-      idle: ["慢慢來，我就在這裡。", "試試看吧——每次執行都會學到東西。", "你一定可以的！"],
-      thinking: ["喔，我知道你的想法了……", "嗯，很有趣……", "繼續打字，繼續思考！"],
-      running: ["執行中……祝好運！", "看看會發生什麼……", "正在編譯希望……"],
-      correct: ["耶！就是這樣！🎉", "完美命中！你真有天分。", "太棒了！Kernel 為你驕傲！", "砰——零錯誤！"],
-      wrong: ["哎呀！差一點。", "哇，好險！", "嗯，不是這樣……"],
-      retry: ["錯誤只是資料。看看提示再試一次！", "仔細看輸出——那是線索。", "最厲害的程式設計師也要除錯。再來一次！"],
-      step: ["很好！下一步！", "完成一步了！", "太棒了——繼續！"],
-      close: "關閉",
-    },
 
     characters: {
       title: "角色",
@@ -2184,17 +2149,6 @@ export const translations = {
       supportUnavailable: "지원 연락처가 아직 설정되지 않았어요 — 곧 다시 확인해 주세요.",
     },
 
-    buddy: {
-      greet: ["안녕! 나는 {name}야. 같이 풀어 보자!", "준비되면 시작해!", "문제를 읽고 도전해 봐 — 내가 지켜볼게!"],
-      idle: ["천천히 해. 나 여기 있어.", "일단 해 봐 — 실행할 때마다 배우는 게 있어.", "넌 할 수 있어!"],
-      thinking: ["오, 무슨 생각인지 알겠어…", "음, 흥미로운데…", "계속 쓰고, 계속 생각해!"],
-      running: ["실행 중… 행운을 빌어!", "어떻게 될까…", "희망을 컴파일하는 중…"],
-      correct: ["좋아! 바로 그거야! 🎉", "완벽해! 타고났구나.", "최고야! Kernel이 자랑스러워해!", "펑 — 버그 제로!"],
-      wrong: ["앗! 아깝다.", "와, 거의 맞았어!", "음, 그게 아니야…"],
-      retry: ["실수는 그냥 데이터야. 힌트를 보고 다시 해 봐!", "출력을 잘 읽어 봐 — 그게 단서야.", "최고의 코더도 디버깅해. 한 번 더!"],
-      step: ["좋아! 다음 단계!", "하나 끝!", "잘했어 — 계속 가자!"],
-      close: "닫기",
-    },
 
     characters: {
       title: "캐릭터",
