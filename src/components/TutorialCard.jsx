@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useI18n } from "../i18n/I18nContext";
 
-// Starts OPEN by default — unlike BuddyCoach (supplementary encouragement,
-// fine to tuck away), this box is the actual teaching material for the
-// exercise below it, so hiding it from a first-time learner by default
-// would cost real understanding, not just screen space. Still collapsible
-// though: once the concept's familiar, there's no reason to keep paying
-// for the space it takes.
+// Closed by default, same as BuddyCoach — the actual task prompt lives in
+// a separate, always-visible line right below this (CodeChallenge's own
+// `instructions` paragraph), so collapsing this box never hides what the
+// exercise is asking for, only the background explanation/example. A
+// learner who wants the refresher taps it open; one who doesn't isn't
+// forced to scroll past it first.
 export default function TutorialCard({ tutorial, example }) {
   const { t } = useI18n();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   if (!tutorial) return null;
 
   return (
