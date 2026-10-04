@@ -852,24 +852,30 @@ button:not(:disabled):active {
 
 .tutorial-card__toggle {
   width: 100%;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border: none;
-  background: none;
-  /* A real tap target, not just the text's own thin line — easy to miss
-     on a phone, and the only feedback on a miss is "nothing happened,"
-     which reads as "this is stuck" rather than "I didn't quite hit it." */
-  margin: -8px -4px;
-  padding: 8px 4px;
-  border-radius: 8px;
+  /* A real button, not just text with a bit of padding — the whole bar
+     is visibly pressable (border + fill), at a proper 44px touch target,
+     not something you have to hunt for the exact clickable pixels of. */
+  margin: -10px -8px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   cursor: pointer;
   text-align: left;
-  transition: background 0.1s ease;
+  transition: background 0.1s ease, transform 0.1s ease;
+}
+
+.tutorial-card__toggle:hover {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
 .tutorial-card__toggle:active {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  transform: scale(0.99);
 }
 
 .tutorial-card__label {
