@@ -126,8 +126,10 @@ export default function CodeGolf({ character, language, rankedPoints, seed, onFi
             onChange={(e) => setCode(e.target.value)}
             language={language}
             rows={5}
+            disablePaste
           />
         </div>
+        <p className="code-challenge__no-paste-hint">{t("codeChallenge.noPaste")}</p>
 
         <p className="code-golf__line-count">
           {t("rankedModes.codeGolf.yourLines")}: {countCodeLines(code, language)}

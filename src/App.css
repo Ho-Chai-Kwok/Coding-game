@@ -850,6 +850,18 @@ button:not(:disabled):active {
   gap: 8px;
 }
 
+.tutorial-card__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
 .tutorial-card__label {
   font-family: var(--heading);
   font-size: 13px;
@@ -857,6 +869,12 @@ button:not(:disabled):active {
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.tutorial-card__chevron {
+  color: var(--accent);
+  font-size: 13px;
+  opacity: 0.7;
 }
 
 .tutorial-card__text {
@@ -1057,6 +1075,14 @@ button:not(:disabled):active {
 .code-challenge__hint {
   font-size: 13px;
   color: var(--text);
+}
+
+.code-challenge__no-paste-hint {
+  margin: -4px 0 0;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text);
+  opacity: 0.6;
 }
 
 .code-challenge__continue {

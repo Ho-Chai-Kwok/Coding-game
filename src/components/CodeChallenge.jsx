@@ -129,8 +129,10 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
           }}
           language={language}
           rows={Math.min(16, Math.max(5, active.starterCode.split("\n").length + 1))}
+          disablePaste
         />
       </div>
+      <p className="code-challenge__no-paste-hint">{t("codeChallenge.noPaste")}</p>
 
       <button className="code-challenge__run" onClick={handleRun} disabled={running}>
         {running ? t("codeChallenge.running") : t("codeChallenge.run")}

@@ -126,6 +126,7 @@ export const translations = {
       loadingPackage: "Loading package…",
       htmlNote: "Your HTML/CSS renders in a real, sandboxed preview — scripts don't run, but layout and styling are genuine.",
       rendering: "Rendering preview…",
+      noPaste: "Type your code here yourself — pasting is turned off in this box.",
     },
 
     onboarding: {
@@ -688,6 +689,7 @@ export const translations = {
       loadingPackage: "Cargando paquete…",
       htmlNote: "Tu HTML/CSS se renderiza en una vista previa real y aislada — los scripts no se ejecutan, pero el diseño y los estilos son genuinos.",
       rendering: "Renderizando vista previa…",
+      noPaste: "Escribe tu código tú mismo aquí — pegar texto está desactivado en este cuadro.",
     },
 
     onboarding: {
@@ -1244,6 +1246,7 @@ export const translations = {
       packageNote: "第一次執行會載入 {package}（幾 MB）——可能需要一點時間，之後就會被快取。",
       loadingPackage: "正在載入套件…",
       htmlNote: "你的 HTML/CSS 會在真實的沙盒預覽中渲染——腳本不會執行，但版面配置與樣式都是真實的。",
+      noPaste: "請自己在這裡輸入程式碼——這個框無法貼上文字。",
       rendering: "正在渲染預覽…",
     },
 
@@ -1800,6 +1803,7 @@ export const translations = {
       packageNote: "처음 실행하면 {package}를 불러와요 (몇 MB 정도) — 잠깐 걸릴 수 있고, 이후엔 캐시돼요.",
       loadingPackage: "패키지 불러오는 중…",
       htmlNote: "HTML/CSS는 실제 샌드박스 미리보기에서 렌더링돼요 — 스크립트는 실행되지 않지만 레이아웃과 스타일은 진짜예요.",
+      noPaste: "여기에 코드를 직접 입력해 주세요 — 이 입력란에서는 붙여넣기를 사용할 수 없어요.",
       rendering: "미리보기 렌더링 중…",
     },
 

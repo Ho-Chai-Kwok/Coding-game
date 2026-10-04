@@ -16,6 +16,12 @@ export default function CodeEditor({
   language = "javascript",
   rows = 5,
   className = "",
+  // Off by default (Code Helper's "paste your code" box genuinely needs
+  // paste — that's the whole point of it). Lesson/practice/ranked code
+  // challenges pass this as true: the exercise is solved by writing the
+  // code, not by moving text from the tutorial example (or anywhere
+  // else) straight into the editor.
+  disablePaste = false,
 }) {
   const textareaRef = useRef(null);
   const indentUnit = ["python", "c", "cpp", "java"].includes(language) ? "    " : "  ";
@@ -138,6 +144,7 @@ export default function CodeEditor({
       value={value}
       onChange={onChange}
       onKeyDown={handleKeyDown}
+      onPaste={disablePaste ? (e) => e.preventDefault() : undefined}
       spellCheck={false}
       rows={rows}
     />
