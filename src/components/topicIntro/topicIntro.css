@@ -1,0 +1,96 @@
+/* Topic intro: a short choreographed sequence before a new world's first
+   lesson. See data/topicIntros.js for the content/design rationale. */
+
+.topic-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+  background: linear-gradient(165deg, #140f28, #241a3f);
+  cursor: pointer;
+}
+
+.topic-intro__skip {
+  position: absolute;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.topic-intro__topic-label {
+  margin: 0;
+  color: #facc15;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.topic-intro__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 380px;
+  width: 100%;
+}
+
+.topic-intro__sprite {
+  width: 140px;
+  height: 160px;
+}
+
+.topic-intro__caption-row {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topic-intro__caption {
+  margin: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  white-space: pre-line;
+  animation: topic-intro-caption-in 0.3s ease-out both;
+}
+
+@keyframes topic-intro-caption-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.topic-intro__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.topic-intro__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.topic-intro__dot--active {
+  background: #facc15;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topic-intro__caption { animation: none !important; }
+}

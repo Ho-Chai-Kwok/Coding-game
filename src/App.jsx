@@ -19,6 +19,7 @@ import { describeRankChange } from "./data/rank";
 import { SKILL_GATE_LESSONS } from "./data/skillGate";
 import { toInstantLanguage, isCompiledLanguage } from "./data/languages";
 import { applyHeadStart, getHeadStartWorldId } from "./data/onboarding";
+import { TOPIC_INTROS, hasSeenIntro, markIntroSeen } from "./data/topicIntros";
 import "./App.css";
 
 // Lazy-loaded: these aren't needed for the first paint (mode select ->
@@ -39,6 +40,7 @@ const LoginCalendar = lazy(() => import("./components/LoginCalendar"));
 const CharacterRoster = lazy(() => import("./components/CharacterRoster"));
 const RankChange = lazy(() => import("./components/RankChange"));
 const KernelDash = lazy(() => import("./components/kernelDash/KernelDash"));
+const TopicIntro = lazy(() => import("./components/topicIntro/TopicIntro"));
 const LegalPage = lazy(() => import("./components/LegalPage"));
 const Onboarding = lazy(() => import("./components/Onboarding"));
 
@@ -61,6 +63,7 @@ function AppShell() {
   const [worldsState, setWorldsState] = useState(freshWorlds);
   const [activeWorldId, setActiveWorldId] = useState(null);
   const [activeLevel, setActiveLevel] = useState(null);
+  const [activeTopicIntro, setActiveTopicIntro] = useState(null); // null | { worldName, intro }
   const [language, setLanguage] = useState(null); // null | "javascript" | "python"
 
   // Side quest state
@@ -306,6 +309,11 @@ function AppShell() {
   }
 
   function enterWorld(worldId) {
+    const world = worldsState.find((w) => w.id === worldId);
+    const intro = world && TOPIC_INTROS[world.name];
+    if (intro && !hasSeenIntro(world.name)) {
+      setActiveTopicIntro({ worldName: world.name, intro });
+    }
     setActiveWorldId(worldId);
     setContinueWorldId(worldId);
   }
@@ -777,6 +785,18 @@ function AppShell() {
           onSelect={switchMode}
           lockedTabs={mainLessonsCompleted >= SKILL_GATE_LESSONS ? [] : ["sidequest", "ranked"]}
         />
+      )}
+      {activeTopicIntro && (
+        <Suspense fallback={null}>
+          <TopicIntro
+            character={selectedCharacter}
+            intro={activeTopicIntro.intro}
+            onDone={() => {
+              markIntroSeen(activeTopicIntro.worldName);
+              setActiveTopicIntro(null);
+            }}
+          />
+        </Suspense>
       )}
     </>
   );

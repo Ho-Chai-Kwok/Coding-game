@@ -30,7 +30,7 @@ export const translations = {
       nudgeDesc: "Tap Learn below to pick a language and get started!",
       leisureLabel: "Need a break?",
       learningTitle: "Learning Mode",
-      learningDesc: "100 worlds, one topic at a time — go slow, go steady!",
+      learningDesc: "150 worlds, one topic at a time — go slow, go steady!",
       sidequestTitle: "Side Quests",
       sidequestDesc: "Hands-on courses on real tools like Git, PyTorch, AWS, and NumPy!",
       rankedTitle: "Ranked Mode",
@@ -609,7 +609,7 @@ export const translations = {
       nudgeDesc: "Toca Aprender abajo para elegir un lenguaje y comenzar!",
       leisureLabel: "¿Necesitas un descanso?",
       learningTitle: "Modo Aprendizaje",
-      learningDesc: "100 mundos, un tema a la vez — ¡con calma, paso a paso!",
+      learningDesc: "150 mundos, un tema a la vez — ¡con calma, paso a paso!",
       sidequestTitle: "Misiones Secundarias",
       sidequestDesc: "Cursos prácticos sobre herramientas reales como Git, PyTorch, AWS y NumPy!",
       rankedTitle: "Modo Clasificado",
@@ -641,7 +641,7 @@ export const translations = {
 
     worldMap: {
       title: "Elige un Mundo 🗺️",
-      subtitle: "100 mundos, un tema cada uno — ¡aprende despacio, paso a paso!",
+      subtitle: "150 mundos, un tema cada uno — ¡aprende despacio, paso a paso!",
       stages: "etapas",
       change: "cambiar",
       chapters: [
@@ -1183,7 +1183,7 @@ export const translations = {
       nudgeDesc: "點選下方的「學習」選擇語言，開始學習吧！",
       leisureLabel: "需要休息一下嗎？",
       learningTitle: "學習模式",
-      learningDesc: "100 個世界，一次專注一個主題——慢慢來，穩紮穩打！",
+      learningDesc: "150 個世界，一次專注一個主題——慢慢來，穩紮穩打！",
       sidequestTitle: "支線任務",
       sidequestDesc: "透過實作學習 Git、PyTorch、AWS、NumPy 等真實工具！",
       rankedTitle: "排名模式",
@@ -1215,7 +1215,7 @@ export const translations = {
 
     worldMap: {
       title: "選擇一個世界 🗺️",
-      subtitle: "100 個世界，每個都有專屬主題——慢慢學，一步一步來！",
+      subtitle: "150 個世界，每個都有專屬主題——慢慢學，一步一步來！",
       stages: "關卡",
       change: "更換",
       chapters: [
@@ -1756,7 +1756,7 @@ export const translations = {
       nudgeDesc: "아래의 학습 탭을 눌러 언어를 선택하고 시작해보세요!",
       leisureLabel: "잠깐 쉬고 싶나요?",
       learningTitle: "학습 모드",
-      learningDesc: "100개의 월드, 한 번에 한 주제씩 — 천천히, 꾸준하게!",
+      learningDesc: "150개의 월드, 한 번에 한 주제씩 — 천천히, 꾸준하게!",
       sidequestTitle: "사이드 퀘스트",
       sidequestDesc: "Git, PyTorch, AWS, NumPy 같은 실전 도구를 직접 다뤄보는 코스!",
       rankedTitle: "랭크 모드",
@@ -1788,7 +1788,7 @@ export const translations = {
 
     worldMap: {
       title: "월드를 선택하세요 🗺️",
-      subtitle: "100개의 월드, 각각 하나의 주제 — 천천히 한 걸음씩 배워요!",
+      subtitle: "150개의 월드, 각각 하나의 주제 — 천천히 한 걸음씩 배워요!",
       stages: "스테이지",
       change: "변경",
       chapters: [

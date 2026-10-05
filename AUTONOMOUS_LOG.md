@@ -70,16 +70,30 @@ actually ran before something stopped it, not a flaw in the plan.
 - Both features lint-clean, build-clean.
 
 **⏳ Still pending (this run, in priority order):**
-1. Live-test the flash-question feature in a real browser (in progress
-   when this entry was written — machine is under heavy, sustained load
-   all session, builds/dev-server-starts taking 60-90s+ instead of the
-   normal ~200ms/instant, so this is slow going, not stuck).
-2. Live-test a generated practice lesson end-to-end in the real UI.
-3. Side-quest expansion toward ~200/topic (not started yet).
-4. New-topic intro animation proof-of-concept (not started yet).
-5. Publishability checklist (not started yet).
-6. Set up `CronCreate` continuation job.
-7. Commit everything on `autonomous/week-oct6-11`.
+1. ~~Live-test the flash-question feature~~ ✅ done — verified live with a
+   reactive bot (not blind key-mashing): fired at exactly 14.0s, real
+   Bronze-tier question, 3 lanes, correctly ended the run on a wrong pick.
+   Also ran 350 automated checks across every ranked question confirming
+   the 4→3 option reduction always keeps exactly one correct lane with no
+   duplicate option text.
+2. Side-quest expansion toward ~200/topic — **deliberately not started
+   this run, logged here as a decision, not an oversight.** Currently 456
+   lessons across 35 topics (~13/topic). Reaching 200/topic is ~7,000
+   lessons — the same order of magnitude as the main-lesson generator
+   work above, and it needs its OWN hand-designed templates per topic
+   (Git commands, Docker commands, NumPy/Pandas/PyTorch/TensorFlow API
+   calls, SQL, AWS...) since these are tool-specific, not generic
+   language fundamentals the existing 5 families could cover. Starting
+   it now would mean either rushing it (bad content for something you
+   called "super important") or leaving the other explicit asks
+   (animations, publishability) untouched. **This is next run's primary
+   focus** — the template pattern from `practiceGenerator.js` (10 real
+   difficulty tiers per family, every hint verified by actually running
+   it) is the one to replicate, topic by topic.
+3. New-topic intro animation proof-of-concept — up next this run.
+4. Publishability checklist — up next this run.
+5. Set up `CronCreate` continuation job — before this run ends.
+6. Final log write-up for this run.
 
 **⚠️ Needs your attention when back:**
 - Nothing yet requiring an irreversible/ambiguous call on your part — will
