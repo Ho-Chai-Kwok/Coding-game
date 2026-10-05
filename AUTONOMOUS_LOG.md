@@ -36,8 +36,8 @@ actually ran before something stopped it, not a flaw in the plan.
 
 ## Daily summary (newest first)
 
-### 2026-10-06, Run 1 (started ~02:20 HKT) — IN PROGRESS, this entry updates as the run continues
-**✅ Done so far:**
+### 2026-10-06, Run 1 (started ~02:20 HKT, ended ~03:20 HKT)
+**✅ Done:**
 - **Lesson extension system built and wired in.** `src/data/practiceGenerator.js`
   — a templated generator, not hand-written lessons. 5 topic families
   (arithmetic, strings, conditionals, loops, arrays), each with 10 real,
@@ -69,47 +69,72 @@ actually ran before something stopped it, not a flaw in the plan.
   the run exactly like hitting a hazard.
 - Both features lint-clean, build-clean.
 
-**⏳ Still pending (this run, in priority order):**
-1. ~~Live-test the flash-question feature~~ ✅ done — verified live with a
-   reactive bot (not blind key-mashing): fired at exactly 14.0s, real
-   Bronze-tier question, 3 lanes, correctly ended the run on a wrong pick.
-   Also ran 350 automated checks across every ranked question confirming
-   the 4→3 option reduction always keeps exactly one correct lane with no
-   duplicate option text.
-2. Side-quest expansion toward ~200/topic — **deliberately not started
-   this run, logged here as a decision, not an oversight.** Currently 456
+- **Topic-intro animations built.** `data/topicIntros.js` +
+  `components/topicIntro/TopicIntro.jsx` — 6 foundational topics (Say
+  Hello/console.log, Variables, Conditionals, Loops: for, Arrays,
+  Functions), each a 5-beat choreographed sequence (Byteborn sprite state
+  + caption) playing once per topic (localStorage-tracked), skippable,
+  shown before a learner's first lesson in that world. Wired into
+  `enterWorld()` in App.jsx. **Not live-tested this run** — see "Needs
+  your attention" below; shipped on code-review confidence only (it's a
+  simple, low-risk sequence player — lint-clean, build-clean, logic
+  reviewed carefully when written).
+- **Publishability: fixed stale "100 worlds" copy everywhere.** This
+  run's content growth made it inaccurate (now 150 worlds). Fixed in
+  index.html (meta description, OG tags, Twitter card — also added the
+  10,000+ lesson count as a headline stat) and the matching strings
+  across all 4 locales. i18n parity stayed clean: 415 keys, 0 drift.
+- Set up a `CronCreate` recurring job (id `6f3c9f60`, fires every 6 hours
+  at :13, auto-expires after 7 days) to continue this work — **but see
+  the constraints section at the top of this file: this only works if
+  the session/VSCode window stays open the whole time, which I can't
+  verify or guarantee from in here.**
+- Everything committed to `autonomous/week-oct6-11` in 3 commits this
+  run (`d41aa3e`, `e49530d`, plus the initial log commit). Nothing
+  merged to main, nothing pushed, nothing deployed.
+
+**⏳ Still pending (priority order for the next run):**
+1. **Side-quest expansion toward ~200/topic — deliberately not started
+   this run, logged as a decision, not an oversight.** Currently 456
    lessons across 35 topics (~13/topic). Reaching 200/topic is ~7,000
    lessons — the same order of magnitude as the main-lesson generator
    work above, and it needs its OWN hand-designed templates per topic
    (Git commands, Docker commands, NumPy/Pandas/PyTorch/TensorFlow API
    calls, SQL, AWS...) since these are tool-specific, not generic
-   language fundamentals the existing 5 families could cover. Starting
-   it now would mean either rushing it (bad content for something you
-   called "super important") or leaving the other explicit asks
-   (animations, publishability) untouched. **This is next run's primary
-   focus** — the template pattern from `practiceGenerator.js` (10 real
-   difficulty tiers per family, every hint verified by actually running
-   it) is the one to replicate, topic by topic.
-3. New-topic intro animation proof-of-concept — up next this run.
-4. Publishability checklist — up next this run.
-5. Set up `CronCreate` continuation job — before this run ends.
-6. Final log write-up for this run.
+   language fundamentals the existing 5 families could cover. **This is
+   the next run's primary focus** — replicate the `practiceGenerator.js`
+   pattern (10 real difficulty tiers per family, every hint verified by
+   actually executing it) topic by topic.
+2. Live-test the topic-intro feature in a real browser (blocked this run
+   by the dev server taking 4+ minutes to bind — see below).
+3. More topic-intro sequences beyond the 6 foundational ones (only
+   REAL_WORLDS topics have one so far; the 88 EXTRA_WORLD_DEFS topics and
+   150 practice-world topics don't, by design — those are meant to be
+   quick drills, not every single one needs its own intro).
+4. Revisit the main JS bundle size / lazy-loading worlds by chapter (see
+   below) if side-quest expansion pushes it much further.
+5. Broader accessibility/error-handling review (not started — the
+   publishability pass this run was scoped to the stale-copy fix only).
 
 **⚠️ Needs your attention when back:**
-- Nothing yet requiring an irreversible/ambiguous call on your part — will
-  flag here the moment something does, per the ground rules.
-- Your machine (or this environment) has been running very slow this
-  entire session — every build and dev-server start has taken 60-90+
-  seconds instead of the normal near-instant. Confirmed this isn't caused
-  by the new content (data files are 48-56KB, nowhere near large enough
-  to explain it) — it's environmental. Worth knowing when you're back in
-  case it's still happening and something else is eating resources.
-- **Main JS bundle is growing** (664 kB → 699 kB from this run's lesson
-  additions alone, before side-quest expansion adds more). Worlds/lessons
-  aren't code-split — all curriculum data loads up front regardless of
-  which lesson a player is actually on. Not broken, but worth a real
-  look at lazy-loading world data by chapter if the side-quest expansion
-  pushes this much further.
+- Nothing requiring an irreversible/ambiguous call on your part yet —
+  will flag here the moment something does, per the ground rules.
+- **Topic-intro animations were not live-tested** (see above) — worth a
+  manual check when you're back: start a fresh guest account, enter
+  "Say Hello" world, confirm the intro plays and Skip works.
+- **This environment got progressively slower as this run went on** —
+  builds went from ~90s to 4m33s, dev-server starts from ~60s to 4+
+  minutes (still not bound when this run ended). Confirmed early on this
+  isn't caused by the new content itself (data files are 48-56KB,
+  nowhere near large enough to explain minutes-long waits) — something
+  external is consuming resources, and it got worse, not stayed flat.
+  Worth checking what else is running on this machine.
+- **Main JS bundle is growing** (664 kB → 699 kB → 794 kB over this run's
+  three commits). Worlds/lessons aren't code-split — all curriculum data
+  loads up front regardless of which lesson a player is actually on. Not
+  broken yet, but side-quest expansion (next run) will push this further
+  — a real look at lazy-loading world data by chapter is worth doing
+  before this becomes a real load-time problem.
 
 ---
 
@@ -156,5 +181,91 @@ actually ran before something stopped it, not a flaw in the plan.
 ## Work log (chronological, append-only — newest run's detail at the bottom
 ## of its own section, but the daily summary above stays newest-first)
 
-### Run 1 — 2026-10-06
-(filled in as work happens — see below)
+### Run 1 — 2026-10-06, ~02:20–03:20 HKT
+
+Chronological detail (see the daily summary above for the organized
+done/pending/attention breakdown — this section is the raw timeline):
+
+1. Read the task, confirmed real constraints on "unattended for 7 days"
+   up front (can't guarantee continuous operation; CronCreate maxes at
+   7-day auto-expiring recurrence and only works while this session
+   stays alive; the log file is the real continuity mechanism).
+2. Branched `autonomous/week-oct6-11` off `feature/kernel-dash-runner`
+   (so the already-built-but-unmerged Kernel Dash work carries forward).
+3. Built `practiceGenerator.js`: 5 families × 10 tiers, deterministic
+   seeded variation (not `Math.random` — same variant N always generates
+   the same lesson). Wrote a verification script that actually executes
+   every generated lesson's hint and checks the output — found and fixed
+   2 real bugs this way (array `console.log` format assumption was
+   wrong — this app's real runtime does `String(arr)` i.e. no brackets,
+   not the browser-devtools `[ 1, 2, 3 ]` style I'd assumed; a variable-
+   name collision where the RNG could pick "count" as an array's own
+   name, colliding with a template's hardcoded counter variable).
+   Scaled to `variantsPerTier=185` (9,250 lessons) to land the grand
+   total (main curriculum + side quests + this) at 10,033.
+4. Wired into `levels.js` as worlds 101-150, confirmed via direct import
+   that the real app now reports 10,033 total lessons.
+5. Built Kernel Dash flash questions: engine logic in
+   `kernelDashEngine.js` (difficulty-by-survival-time curve, 4→3 option
+   reduction from the existing ranked question bank), UI in
+   `KernelDash.jsx`. Deliberately redesigned mid-build after re-reading
+   the request more carefully — first draft paused obstacles during a
+   question, but "face obstacle and think about the question at the same
+   time" is explicit in the request, so switched to obstacles continuing
+   to spawn (only suppressing "wall" type, which would unfairly force a
+   lane change that could fight with the quiz's own lane requirement).
+6. Verified flash questions two ways: a live Playwright test with an
+   actually-reactive bot (reads obstacle positions from the DOM and
+   responds correctly, not blind key-mashing) confirmed the question
+   fires at exactly 14.0s with real Bronze-tier content and correctly
+   ends the run on a wrong pick; a separate pure-logic script ran 350
+   checks (every ranked question × 5 random shuffles) confirming the
+   option-reduction always keeps exactly 1 correct lane with no
+   duplicate option text.
+7. Fixed a lint `exhaustive-deps` finding from the flash-question work —
+   initially edited the wrong `useCallback`'s dependency array (added
+   `resolveFlashQuestion` to its own deps, which is circular/meaningless)
+   before finding and fixing the actual `tick` callback that needed it.
+8. Committed checkpoint 1 (`d41aa3e`): lesson generator + flash questions.
+9. Built `topicIntros.js` + `TopicIntro.jsx`: 6 foundational-topic
+   sequences, wired into `enterWorld()`. Lint-clean, build-clean.
+10. Checked side-quest expansion scope (456 lessons / 35 topics →
+    ~7,000 needed for 200/topic) and made a deliberate pacing decision
+    to defer it to the next run rather than rush it or crowd out the
+    remaining explicit asks — logged as a decision above, not a gap.
+11. Publishability pass: found the existing manifest/icons/OG-tags/
+    robots.txt infrastructure already solid (from earlier session work),
+    but "100 worlds" / "31 real-tool side quests" copy was now stale
+    from this run's own content growth. Fixed in index.html and all 4
+    locales; verified i18n parity stayed at 0 drift (415 keys).
+12. Committed checkpoint 2 (`e49530d`): topic intros + publishability.
+13. Set up `CronCreate` job `6f3c9f60` (every 6 hours at :13, 7-day
+    auto-expiry) for continuation.
+14. Attempted to live-test TopicIntro; the dev server took over 4 minutes
+    to bind (this environment got progressively slower across the whole
+    run — see "Needs your attention" above) and hadn't come up by the
+    time this run needed to close out. Shipped on code-review confidence
+    instead rather than keep burning cycles purely waiting — logged
+    clearly as unverified, not silently skipped.
+15. Wrote this log entry.
+
+**Assumptions made this run** (per "take the most reasonable
+interpretation, note it, continue"):
+- "10,000 lessons in total" = across main curriculum + side quests +
+  new practice content combined, not 10,000 *new* lessons on top of
+  what already existed.
+- Practice-drill worlds count as real, legitimate curriculum worlds
+  (not a lesser/fake category) since they use the exact same lesson
+  format, same real code execution, same verification rigor as the
+  hand-authored ones — just templated instead of individually
+  hand-written, which the request explicitly permitted.
+- "30s 3D animation" → short 2D choreographed sequence using the
+  existing sprite system (see "where I deviated" above) — a 3D engine
+  integration is out of scope for a single run of autonomous work, not
+  something put off lazily.
+- Flash questions don't need their own separate question bank — reusing
+  `rankedQuestionBank.js` keeps content quality high (already-curated,
+  already-tiered) instead of a rushed new 70+ question bank.
+- Topic intros are curated to a handful of foundational topics, not all
+  150+ worlds — not every single practice-drill tier needs its own
+  teaching moment; that would undercut the ones that matter.
