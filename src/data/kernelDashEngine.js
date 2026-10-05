@@ -14,12 +14,17 @@ export const MAX_SPEED = 640; // px/sec hard cap, so it never becomes literally 
 export const SPEED_RAMP_PER_SEC = 5.5; // speed gained per second of survival, per second elapsed
 
 export const BASE_SPAWN_MS = 1500;
-export const MIN_SPAWN_MS = 520;
+export const MIN_SPAWN_MS = 600;
 export const SPAWN_RAMP_MS_PER_SEC = 8; // spawn interval shrinks by this much per second elapsed
 
-export const JUMP_MS = 520;
-export const DUCK_MS = 520;
-export const HIT_WINDOW = 34; // px of slack around the player's row for a collision/pickup to register
+// Jump/duck lock the player out of a second jump/duck until it finishes
+// (see doJump/doDuck in KernelDash.jsx) — kept comfortably shorter than
+// MIN_SPAWN_MS so even two same-lane hazards back to back at max
+// difficulty always leave a real window to react to the second one,
+// rather than the two floors meeting exactly and occasionally not.
+export const JUMP_MS = 420;
+export const DUCK_MS = 420;
+export const HIT_WINDOW = 40; // px of slack around the player's row for a collision/pickup to register
 
 export const SCORE_PER_PX = 0.045; // converts distance traveled into score
 export const COLLECTIBLE_SCORE = { semicolon: 12, brace: 30 };

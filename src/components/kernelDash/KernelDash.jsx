@@ -79,6 +79,11 @@ export default function KernelDash({ character, onBack }) {
     if (statusRef.current !== "playing") return;
     statusRef.current = "over";
     cancelAnimationFrame(rafRef.current);
+    // Clear the track immediately — whatever was still in flight (the
+    // thing you hit, anything else mid-fall) has no reason to keep
+    // sitting there behind the result overlay.
+    obstaclesRef.current = [];
+    setObstacles([]);
     const finalScore = Math.round(scoreRef.current);
     const newBest = finalScore > readBest();
     if (newBest) writeBest(finalScore);
@@ -264,7 +269,16 @@ export default function KernelDash({ character, onBack }) {
           <div
             key={o.id}
             className={`kernel-dash__obstacle kernel-dash__obstacle--${o.type}`}
-            style={{ "--lane": o.lane, top: `${Math.min(100, (o.distance / TRACK_LENGTH) * 100)}%` }}
+            // A plain `top: N%` makes a freshly-spawned obstacle (distance 0)
+            // appear already straddling the track's own top edge — half of
+            // it clipped off by `overflow: hidden` the instant it exists,
+            // which reads as a glitch, not an entrance. Subtracting a fixed
+            // pixel offset shifts the whole path up by a constant amount
+            // instead of a percentage of it, so distance 0 sits comfortably
+            // above the visible area (a clean off-screen spawn) and full
+            // distance lands just above the player's own row — bottom:14px
+            // in CSS — rather than exactly on the track's bottom edge.
+            style={{ "--lane": o.lane, top: `calc(${Math.min(100, (o.distance / TRACK_LENGTH) * 100)}% - 40px)` }}
           >
             {ICON[o.type]}
           </div>
