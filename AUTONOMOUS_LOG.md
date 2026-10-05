@@ -69,16 +69,23 @@ actually ran before something stopped it, not a flaw in the plan.
   the run exactly like hitting a hazard.
 - Both features lint-clean, build-clean.
 
-- **Topic-intro animations built.** `data/topicIntros.js` +
-  `components/topicIntro/TopicIntro.jsx` — 6 foundational topics (Say
+- **Topic-intro animations built AND live-tested.** `data/topicIntros.js`
+  + `components/topicIntro/TopicIntro.jsx` — 6 foundational topics (Say
   Hello/console.log, Variables, Conditionals, Loops: for, Arrays,
   Functions), each a 5-beat choreographed sequence (Byteborn sprite state
   + caption) playing once per topic (localStorage-tracked), skippable,
   shown before a learner's first lesson in that world. Wired into
-  `enterWorld()` in App.jsx. **Not live-tested this run** — see "Needs
-  your attention" below; shipped on code-review confidence only (it's a
-  simple, low-risk sequence player — lint-clean, build-clean, logic
-  reviewed carefully when written).
+  `enterWorld()` in App.jsx. Originally shipped on code-review confidence
+  only when Run 1 ended (dev server wouldn't bind in time) — the very
+  next wake-up (the one scheduled at the end of Run 1) came back to it
+  once the server was finally up, and live-tested the full flow as a
+  fresh guest: intro correctly triggers on first visit to "Say Hello",
+  shows the right topic label/caption, auto-advances to a new caption
+  after one beat (2.8s), Skip closes it immediately, the level map
+  underneath is reachable right after, and — the one that actually
+  matters for correctness — re-entering the same world a second time
+  does NOT replay it (localStorage "seen" tracking confirmed working).
+  Zero console/page errors throughout.
 - **Publishability: fixed stale "100 worlds" copy everywhere.** This
   run's content growth made it inaccurate (now 150 worlds). Fixed in
   index.html (meta description, OG tags, Twitter card — also added the
@@ -105,8 +112,9 @@ actually ran before something stopped it, not a flaw in the plan.
    the next run's primary focus** — replicate the `practiceGenerator.js`
    pattern (10 real difficulty tiers per family, every hint verified by
    actually executing it) topic by topic.
-2. Live-test the topic-intro feature in a real browser (blocked this run
-   by the dev server taking 4+ minutes to bind — see below).
+2. ~~Live-test the topic-intro feature~~ ✅ done — see above, the
+   scheduled wake-up right after Run 1 ended came back to this once the
+   dev server was finally up. Full flow verified live.
 3. More topic-intro sequences beyond the 6 foundational ones (only
    REAL_WORLDS topics have one so far; the 88 EXTRA_WORLD_DEFS topics and
    150 practice-world topics don't, by design — those are meant to be
@@ -119,9 +127,6 @@ actually ran before something stopped it, not a flaw in the plan.
 **⚠️ Needs your attention when back:**
 - Nothing requiring an irreversible/ambiguous call on your part yet —
   will flag here the moment something does, per the ground rules.
-- **Topic-intro animations were not live-tested** (see above) — worth a
-  manual check when you're back: start a fresh guest account, enter
-  "Say Hello" world, confirm the intro plays and Skip works.
 - **This environment got progressively slower as this run went on** —
   builds went from ~90s to 4m33s, dev-server starts from ~60s to 4+
   minutes (still not bound when this run ended). Confirmed early on this
