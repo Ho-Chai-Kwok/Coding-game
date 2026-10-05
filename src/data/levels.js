@@ -8,6 +8,7 @@
 // something from an earlier topic.
 
 import { EXTRA_WORLD_DEFS } from "./extraWorlds.js";
+import { buildPracticeWorldDefs } from "./practiceGenerator.js";
 
 const REAL_WORLDS = [
   {
@@ -1213,7 +1214,14 @@ function finalizeRealWorld(def, id, isFirstWorld) {
   };
 }
 
-const ALL_WORLD_DEFS = [...REAL_WORLDS, ...EXTRA_WORLD_DEFS];
+// Practice-drill worlds (101+): templated, data-varied repetition on the
+// core topics most worth drilling — see practiceGenerator.js for the full
+// design rationale and how to tune real content volume up further.
+// variantsPerTier=185 lands total lesson count (existing + generated)
+// right around the 10,000 target (see AUTONOMOUS_LOG.md).
+const PRACTICE_WORLD_DEFS = buildPracticeWorldDefs(185);
+
+const ALL_WORLD_DEFS = [...REAL_WORLDS, ...EXTRA_WORLD_DEFS, ...PRACTICE_WORLD_DEFS];
 
 export const worlds = ALL_WORLD_DEFS.map((def, i) =>
   finalizeRealWorld(def, i + 1, i === 0),

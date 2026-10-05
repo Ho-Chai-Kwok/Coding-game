@@ -54,10 +54,16 @@ export function spawnIntervalAt(elapsedSeconds) {
   return Math.max(MIN_SPAWN_MS, BASE_SPAWN_MS - elapsedSeconds * SPAWN_RAMP_MS_PER_SEC);
 }
 
-export function spawnObstacle() {
-  let roll = Math.random() * SPAWN_TOTAL_WEIGHT;
-  let type = SPAWN_POOL[0].type;
-  for (const p of SPAWN_POOL) {
+// `excludeWall`: during a flash question, a wall forcing the player out
+// of a lane would unfairly fight with needing to be in a *specific* lane
+// to answer — jump/duck hazards and collectibles don't have that
+// conflict (they never force a lane change), so only walls are held back.
+export function spawnObstacle(excludeWall = false) {
+  const pool = excludeWall ? SPAWN_POOL.filter((p) => p.type !== "wall") : SPAWN_POOL;
+  const totalWeight = excludeWall ? pool.reduce((s, p) => s + p.weight, 0) : SPAWN_TOTAL_WEIGHT;
+  let roll = Math.random() * totalWeight;
+  let type = pool[0].type;
+  for (const p of pool) {
     if (roll < p.weight) {
       type = p.type;
       break;
@@ -75,4 +81,62 @@ export function clearsHazard(type, action) {
   // lane gets you past it.
   if (type === "wall") return false;
   return true;
+}
+
+// ---- Flash questions ---------------------------------------------
+// Periodically, instead of a dodgeable obstacle, the run stops for a
+// multiple-choice question: each of the 3 lanes is labeled with an
+// answer, and whichever lane the player is standing in when the timer
+// runs out is their answer — right, and the run continues; wrong, and
+// it ends, same stakes as hitting a wall. Reuses the existing ranked
+// question bank (see rankedQuestionBank.js) rather than a separate
+// question set, picking difficulty from the SAME elapsed-time curve
+// that drives obstacle speed/spawn-rate, so "harder as you survive
+// longer" means one consistent thing across the whole mode.
+export const FIRST_FLASH_QUESTION_MS = 14000; // give the player a clean run before the first one
+export const FLASH_QUESTION_INTERVAL_MS = 22000; // roughly how often another one shows up
+export const FLASH_QUESTION_TIME_MS = 6500; // how long the player has to pick a lane
+export const FLASH_QUESTION_BONUS = 40; // score bonus for a correct answer
+
+// Maps elapsed survival time to a ranked difficulty level (1-7, same
+// scale as rank.js / rankedQuestionBank.js) — early questions pull from
+// Bronze/Silver, later ones climb toward Diamond+ as a run goes long.
+export function flashQuestionLevelAt(elapsedSeconds) {
+  if (elapsedSeconds < 25) return 1;
+  if (elapsedSeconds < 50) return 2;
+  if (elapsedSeconds < 80) return 3;
+  if (elapsedSeconds < 115) return 4;
+  if (elapsedSeconds < 150) return 5;
+  if (elapsedSeconds < 190) return 6;
+  return 7;
+}
+
+// Reduces a 4-option ranked question down to exactly LANE_COUNT (3)
+// options — always keeping the correct one — and assigns each to a
+// lane. `rng` is a 0..1 generator so callers can keep this deterministic
+// (tests, replays) or pass Math.random for real play.
+export function buildFlashQuestion(question, rng = Math.random) {
+  const wrongIndexes = question.options
+    .map((_, i) => i)
+    .filter((i) => i !== question.correctIndex);
+  // Fisher-Yates on just the wrong indexes, keep the first two.
+  for (let i = wrongIndexes.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [wrongIndexes[i], wrongIndexes[j]] = [wrongIndexes[j], wrongIndexes[i]];
+  }
+  const chosenIndexes = [question.correctIndex, ...wrongIndexes.slice(0, LANE_COUNT - 1)];
+  for (let i = chosenIndexes.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [chosenIndexes[i], chosenIndexes[j]] = [chosenIndexes[j], chosenIndexes[i]];
+  }
+  return {
+    topic: question.topic,
+    text: question.question,
+    explanation: question.explanation,
+    lanes: chosenIndexes.map((optIndex, lane) => ({
+      lane,
+      text: question.options[optIndex],
+      isCorrect: optIndex === question.correctIndex,
+    })),
+  };
 }

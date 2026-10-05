@@ -36,13 +36,66 @@ actually ran before something stopped it, not a flaw in the plan.
 
 ## Daily summary (newest first)
 
-### 2026-10-06, Run 1 (started ~02:20 HKT)
-**✅ Done today:**
-- (filled in at end of this run — see bottom)
+### 2026-10-06, Run 1 (started ~02:20 HKT) — IN PROGRESS, this entry updates as the run continues
+**✅ Done so far:**
+- **Lesson extension system built and wired in.** `src/data/practiceGenerator.js`
+  — a templated generator, not hand-written lessons. 5 topic families
+  (arithmetic, strings, conditionals, loops, arrays), each with 10 real,
+  hand-designed difficulty tiers (not just number-swaps — each tier is a
+  genuinely different *shape* of problem; variants within a tier vary by
+  data). Every single generated lesson's hint code was verified to
+  actually produce its claimed `expectedOutput` by really running it
+  (caught and fixed 2 real bugs this way — see "Problems found" below).
+  Wired into `src/data/levels.js` as worlds 101-150. At
+  `variantsPerTier=185`: 9,250 generated lessons. Combined with the
+  existing 327 main-curriculum + 456 side-quest lessons = **10,033 total**,
+  right at the 10,000 target. Real build verified (699 kB main bundle, up
+  from 664 kB — noted as a future optimization opportunity below, not
+  urgent).
+- **Kernel Dash: flash questions built.** `data/kernelDashEngine.js` +
+  `KernelDash.jsx` — periodically (first one at 14s survived, then every
+  ~22s) a multiple-choice question banner appears across the top of the
+  track, one answer per lane (reusing the existing `rankedQuestionBank.js`
+  — 4-option ranked questions reduced to 3, always keeping the correct
+  one). Difficulty climbs with survival time on the same curve as
+  obstacle speed (Bronze-tier early, climbing toward Diamond+ by ~3min).
+  **Deliberately does NOT pause obstacles** — re-read the request and
+  "face obstacle and think about the question at the same time" is
+  explicit, so hazards keep spawning during a question; only "wall"
+  (the one type that forces a lane change) is suppressed during a
+  question, since it would otherwise unfairly fight with needing to BE
+  in a specific lane to answer. Whichever lane the player is in when the
+  timer runs out is their answer — right gets a score bonus, wrong ends
+  the run exactly like hitting a hazard.
+- Both features lint-clean, build-clean.
 
-**⏳ Still pending:** (filled in at end of this run)
+**⏳ Still pending (this run, in priority order):**
+1. Live-test the flash-question feature in a real browser (in progress
+   when this entry was written — machine is under heavy, sustained load
+   all session, builds/dev-server-starts taking 60-90s+ instead of the
+   normal ~200ms/instant, so this is slow going, not stuck).
+2. Live-test a generated practice lesson end-to-end in the real UI.
+3. Side-quest expansion toward ~200/topic (not started yet).
+4. New-topic intro animation proof-of-concept (not started yet).
+5. Publishability checklist (not started yet).
+6. Set up `CronCreate` continuation job.
+7. Commit everything on `autonomous/week-oct6-11`.
 
-**⚠️ Needs your attention when back:** (filled in at end of this run)
+**⚠️ Needs your attention when back:**
+- Nothing yet requiring an irreversible/ambiguous call on your part — will
+  flag here the moment something does, per the ground rules.
+- Your machine (or this environment) has been running very slow this
+  entire session — every build and dev-server start has taken 60-90+
+  seconds instead of the normal near-instant. Confirmed this isn't caused
+  by the new content (data files are 48-56KB, nowhere near large enough
+  to explain it) — it's environmental. Worth knowing when you're back in
+  case it's still happening and something else is eating resources.
+- **Main JS bundle is growing** (664 kB → 699 kB from this run's lesson
+  additions alone, before side-quest expansion adds more). Worlds/lessons
+  aren't code-split — all curriculum data loads up front regardless of
+  which lesson a player is actually on. Not broken, but worth a real
+  look at lazy-loading world data by chapter if the side-quest expansion
+  pushes this much further.
 
 ---
 

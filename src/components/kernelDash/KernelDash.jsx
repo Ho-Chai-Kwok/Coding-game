@@ -11,11 +11,18 @@ import {
   COLLECTIBLE_SCORE,
   HAZARD_TYPES,
   COLLECTIBLE_TYPES,
+  FIRST_FLASH_QUESTION_MS,
+  FLASH_QUESTION_INTERVAL_MS,
+  FLASH_QUESTION_TIME_MS,
+  FLASH_QUESTION_BONUS,
   speedAt,
   spawnIntervalAt,
   spawnObstacle,
   clearsHazard,
+  flashQuestionLevelAt,
+  buildFlashQuestion,
 } from "../../data/kernelDashEngine";
+import { getQuestionPool } from "../../data/rankedQuestionBank";
 import "./kernelDash.css";
 
 const BEST_KEY = "codequest-kernel-dash-best";
@@ -54,6 +61,11 @@ export default function KernelDash({ character, onBack }) {
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(readBest);
   const [isNewBest, setIsNewBest] = useState(false);
+  // null while no flash question is up; otherwise { topic, text,
+  // explanation, lanes: [{lane, text, isCorrect}] } from buildFlashQuestion.
+  const [flashQuestion, setFlashQuestion] = useState(null);
+  const [flashTimeLeft, setFlashTimeLeft] = useState(0);
+  const [flashFeedback, setFlashFeedback] = useState(null); // null | "correct" | "wrong"
 
   const laneRef = useRef(lane);
   const actionRef = useRef(action);
@@ -64,6 +76,9 @@ export default function KernelDash({ character, onBack }) {
   const elapsedRef = useRef(0);
   const nextSpawnInRef = useRef(0);
   const scoreRef = useRef(0);
+  const flashQuestionRef = useRef(null);
+  const nextFlashInRef = useRef(0);
+  const flashTimeLeftRef = useRef(0);
   // The game loop's real source of truth — `obstacles` state exists only
   // to get this list onto the screen, never read back inside the loop
   // itself (reading from a just-called setState updater to decide whether
@@ -93,6 +108,29 @@ export default function KernelDash({ character, onBack }) {
     setStatus("over");
   }, []);
 
+  // Resolves the current flash question against whatever lane the player
+  // is standing in right now — called either when the countdown hits zero
+  // or (for a snappier feel) the instant the player's own action makes
+  // the answer obviously locked in. Right: a score bonus and the run
+  // continues. Wrong: same stakes as hitting a hazard — the run ends.
+  const resolveFlashQuestion = useCallback(() => {
+    const q = flashQuestionRef.current;
+    if (!q) return;
+    const picked = q.lanes.find((l) => l.lane === laneRef.current);
+    const correct = Boolean(picked?.isCorrect);
+    flashQuestionRef.current = null;
+    setFlashQuestion(null);
+    if (correct) {
+      scoreRef.current += FLASH_QUESTION_BONUS;
+      setFlashFeedback("correct");
+      setTimeout(() => setFlashFeedback(null), 700);
+      nextFlashInRef.current = FLASH_QUESTION_INTERVAL_MS;
+    } else {
+      setFlashFeedback("wrong");
+      endRun();
+    }
+  }, [endRun]);
+
   const tick = useCallback(
     (now) => {
       if (statusRef.current !== "playing") return;
@@ -103,12 +141,36 @@ export default function KernelDash({ character, onBack }) {
       const travel = speed * dt;
 
       scoreRef.current += travel * SCORE_PER_PX;
+
+      // Flash question: either count down an active one, or check whether
+      // it's time to trigger the next one.
+      if (flashQuestionRef.current) {
+        flashTimeLeftRef.current -= dt * 1000;
+        setFlashTimeLeft(Math.max(0, flashTimeLeftRef.current));
+        if (flashTimeLeftRef.current <= 0) {
+          resolveFlashQuestion();
+          if (statusRef.current !== "playing") return; // a wrong answer just ended the run
+        }
+      } else {
+        nextFlashInRef.current -= dt * 1000;
+        if (nextFlashInRef.current <= 0) {
+          const level = flashQuestionLevelAt(elapsedRef.current);
+          const pool = getQuestionPool(level);
+          const raw = pool[Math.floor(Math.random() * pool.length)];
+          const built = buildFlashQuestion(raw);
+          flashQuestionRef.current = built;
+          flashTimeLeftRef.current = FLASH_QUESTION_TIME_MS;
+          setFlashQuestion(built);
+          setFlashTimeLeft(FLASH_QUESTION_TIME_MS);
+        }
+      }
+
       nextSpawnInRef.current -= dt * 1000;
 
       let list = obstaclesRef.current;
       if (nextSpawnInRef.current <= 0) {
         nextSpawnInRef.current = spawnIntervalAt(elapsedRef.current);
-        list = [...list, spawnObstacle()];
+        list = [...list, spawnObstacle(Boolean(flashQuestionRef.current))];
       }
 
       let collided = false;
@@ -145,7 +207,7 @@ export default function KernelDash({ character, onBack }) {
       }
       rafRef.current = requestAnimationFrame(tick);
     },
-    [endRun],
+    [endRun, resolveFlashQuestion],
   );
 
   function startRun() {
@@ -160,6 +222,12 @@ export default function KernelDash({ character, onBack }) {
     elapsedRef.current = 0;
     scoreRef.current = 0;
     nextSpawnInRef.current = spawnIntervalAt(0);
+    flashQuestionRef.current = null;
+    nextFlashInRef.current = FIRST_FLASH_QUESTION_MS;
+    flashTimeLeftRef.current = 0;
+    setFlashQuestion(null);
+    setFlashTimeLeft(0);
+    setFlashFeedback(null);
     laneRef.current = 1;
     actionRef.current = null;
     statusRef.current = "playing";
@@ -285,11 +353,37 @@ export default function KernelDash({ character, onBack }) {
         ))}
 
         <div
-          className={`kernel-dash__player${action ? ` kernel-dash__player--${action}` : ""}`}
+          className={`kernel-dash__player${action ? ` kernel-dash__player--${action}` : ""}${flashFeedback ? ` kernel-dash__player--${flashFeedback}` : ""}`}
           style={{ "--lane": lane }}
         >
           <ByteBornSprite id={character.id} state={runState} label={character.name} />
         </div>
+
+        {flashQuestion && (
+          <div className="kernel-dash__flash" role="alert">
+            <div className="kernel-dash__flash-bar">
+              <div
+                className="kernel-dash__flash-bar-fill"
+                style={{ width: `${(flashTimeLeft / FLASH_QUESTION_TIME_MS) * 100}%` }}
+              />
+            </div>
+            <p className="kernel-dash__flash-question">{flashQuestion.text}</p>
+            <div className="kernel-dash__flash-lanes">
+              {flashQuestion.lanes
+                .slice()
+                .sort((a, b) => a.lane - b.lane)
+                .map((l) => (
+                  <span
+                    key={l.lane}
+                    className={`kernel-dash__flash-lane${l.lane === lane ? " kernel-dash__flash-lane--active" : ""}`}
+                    style={{ "--lane": l.lane }}
+                  >
+                    {l.text}
+                  </span>
+                ))}
+            </div>
+          </div>
+        )}
 
         {status === "ready" && (
           <div className="kernel-dash__overlay">
