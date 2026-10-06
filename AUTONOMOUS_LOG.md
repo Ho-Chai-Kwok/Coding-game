@@ -36,6 +36,93 @@ actually ran before something stopped it, not a flaw in the plan.
 
 ## Daily summary (newest first)
 
+### 2026-10-06, Run 2 (started ~07:30 HKT, ended ~08:10 HKT)
+**✅ Done:**
+- **Side-quest expansion: 9 of 35 topics taken to 200 lessons each.**
+  Picked up item #1 from Run 1's pending list. Built
+  `src/data/sidequestDrills.js` (a generic drill-question generator, same
+  spirit as `practiceGenerator.js` but for quiz content instead of
+  executable code) and `src/data/sidequestFactBanks.js` (curated, accurate
+  term/fact pairs per topic). The hand-written "intro" lessons for each
+  topic are untouched — the generator appends spaced-repetition-style
+  practice questions after them, built from 6 question-phrasing templates
+  cycled against each fact, repeating lower-tier (foundational) facts more
+  often once the full fact×template pool is exhausted, same philosophy as
+  "repetitive but from different angles." Topics done this run: **Git &
+  GitHub, Docker, NumPy, Pandas, PyTorch, TensorFlow, SQL Basics, AWS
+  Cloud Basics, Linux & Bash** — the ones you named explicitly, plus
+  Linux & Bash as a foundational eighth/ninth. Total side-quest lessons:
+  465 → **2,119** across all 35 quests (the other 26 topics are
+  unchanged this run, not silently dropped — see pending list).
+- **Caught and fixed two real content-quality bugs before shipping,**
+  both via actually reading sampled output, not just checking it ran:
+  1. A grammar bug where facts written as verb phrases ("creates a new
+     array") got spliced into infinitive slots ("asked you to creates an
+     immutable tensor") — fixed by tagging every fact with a `kind`
+     ("does" vs "is") and giving each kind its own template set.
+  2. A capitalization bug where lowercasing a sentence's first letter for
+     mid-sentence use mangled brand names — "NumPy's rule..." became
+     "numPy's rule...", "TensorFlow's API" became "tensorFlow's API",
+     "AWS's service" became "aWS's service". Fixed by protecting any
+     first word with more than one uppercase letter from the lowercase
+     pass. Also found that the "which statement is correct" template
+     and the per-lesson `explanation` field used the *question's* fact's
+     grammar for *distractor* facts pulled from the opposite kind —
+     fixed with a shared `stateAbout()` helper that checks each fact's
+     own kind.
+- **Verification:** `scripts/verify-sidequest-drills.mjs` — checks every
+  generated question has exactly 4 distinct options with exactly one
+  correct, and that each expanded quest actually reaches ~200 lessons.
+  All 9 topics pass. Re-sampled ~45 real generated questions by hand
+  after each fix to confirm the grammar actually reads right, not just
+  that the structural checks pass.
+- **Live-tested end to end** against the real production build (not just
+  dev mode — see the dev-mode note below): seeded a guest session past
+  onboarding and the skill gate via localStorage, opened Side Quests
+  (correctly shows "35 short courses — 0/2,119 lessons complete!"),
+  opened Git & GitHub (shows "0/200 lessons complete", original
+  hand-written lessons 1-22 still intact and in order), opened lesson 1
+  ("What is Git?") and confirmed it renders correctly — "Lesson 1 of
+  200", right question/options, Pixel's sprite in the header, zero
+  console errors.
+- Lint clean (`npm run lint` / oxlint), build clean (1m6s, no errors).
+- Committed to `autonomous/week-oct6-11` (`b0abdd3`, plus the small log
+  correction `de9a457` from the previous wake-up). Nothing merged to
+  main, nothing pushed, nothing deployed.
+
+**⚠️ Dev-mode-only crash found and ruled out as non-blocking:** the app
+occasionally throws `useI18n must be used within an I18nProvider` from
+`AuthGate` on a cold `npm run dev` load — reproduced it twice. Checked
+`main.jsx`'s provider nesting (`I18nProvider` correctly wraps
+`AuthProvider` wraps `App`), so this reads like a Vite dev-server/React
+double-render timing quirk, not a real provider-order bug. Confirmed the
+**production build does not have this issue** — ran the identical
+guest-login flow against `vite build`'s output served statically
+(`npx serve -s dist`) twice with zero errors. Since this only ever
+showed up under `npm run dev` and never in the build that actually
+ships, I'm not treating it as a release blocker, but flagging it here in
+case it's annoying during your own local testing — a hard refresh
+clears it.
+
+**⏳ Still pending (priority order for the next run):**
+1. **Side-quest expansion: 26 of 35 topics remaining.** React, Node.js,
+   REST APIs, Kubernetes, CI/CD, MongoDB, GraphQL, Flask, Matplotlib,
+   Jupyter Notebooks, Machine Learning Basics, Prompt Engineering,
+   LangChain, LangGraph, Computer Vision, NLP, Vector Databases & RAG,
+   Regular Expressions, Testing & TDD, HTML, CSS, PHP, Tech Interview
+   Prep, Resumes & Portfolios, Open Source & Collaboration, Tech Career
+   Paths. Same pattern as this run: add a fact bank to
+   `sidequestFactBanks.js` keyed by the exact quest name, tag each fact
+   `kind: "is"` or leave it as the default verb-phrase form, then it's
+   picked up automatically — no engine changes needed, just data.
+2. More topic-intro sequences beyond the 6 foundational ones (unchanged
+   from Run 1 — still true).
+3. Bundle size is still growing (see below) — worth revisiting once
+   side-quest expansion is further along.
+4. Broader accessibility/error-handling review (not started).
+
+---
+
 ### 2026-10-06, Run 1 (started ~02:20 HKT, ended ~03:20 HKT)
 **✅ Done:**
 - **Lesson extension system built and wired in.** `src/data/practiceGenerator.js`
@@ -134,11 +221,12 @@ actually ran before something stopped it, not a flaw in the plan.
   nowhere near large enough to explain minutes-long waits) — something
   external is consuming resources, and it got worse, not stayed flat.
   Worth checking what else is running on this machine.
-- **Main JS bundle is growing** (664 kB → 699 kB → 794 kB over this run's
-  three commits). Worlds/lessons aren't code-split — all curriculum data
-  loads up front regardless of which lesson a player is actually on. Not
-  broken yet, but side-quest expansion (next run) will push this further
-  — a real look at lazy-loading world data by chapter is worth doing
+- **Main JS bundle is growing** (664 kB → 699 kB → 794 kB → 820 kB,
+  Run 1's three commits plus Run 2's side-quest expansion). Worlds/
+  lessons aren't code-split — all curriculum data loads up front
+  regardless of which lesson a player is actually on. Not broken yet,
+  but the 26 remaining side-quest topics will push this further — a
+  real look at lazy-loading world/quest data by chapter is worth doing
   before this becomes a real load-time problem.
 
 ---
