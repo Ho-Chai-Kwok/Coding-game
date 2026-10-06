@@ -5,6 +5,9 @@
 // tool instead. Unlike main-path worlds, every quest is open from the
 // start, but its 10 lessons unlock one at a time within that quest.
 
+import { buildDrillLessons } from "./sidequestDrills.js";
+import { SIDEQUEST_FACT_BANKS } from "./sidequestFactBanks.js";
+
 const RAW_QUESTS = [
   {
     name: "Git & GitHub",
@@ -4799,6 +4802,24 @@ console.log(data.data.country.currency);`,
     ],
   },
 ];
+
+// Expand the topics we have a fact bank for from their hand-written ~10-20
+// "intro" lessons up toward ~200, by generating varied practice-drill quiz
+// questions from real term/fact pairs (see sidequestDrills.js for the
+// generator and sidequestFactBanks.js for the data — and
+// scripts/verify-sidequest-drills.mjs for the correctness check run after
+// every edit to either). Topics with no fact bank yet are left exactly as
+// hand-written; expanding the rest is logged as future work in
+// AUTONOMOUS_LOG.md, not silently skipped.
+const DRILL_TARGET_TOTAL = 200;
+RAW_QUESTS.forEach((q) => {
+  const facts = SIDEQUEST_FACT_BANKS[q.name];
+  if (!facts) return;
+  const needed = DRILL_TARGET_TOTAL - q.lessons.length;
+  if (needed <= 0) return;
+  const drills = buildDrillLessons(q.name, facts, needed);
+  q.lessons = [...q.lessons, ...drills];
+});
 
 // Most lessons are still a quiz (concept check). A lesson with
 // `type: "terminal"` instead gets a real, typeable command-line sandbox —
