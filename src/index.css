@@ -1,3 +1,13 @@
+/* Global box-sizing reset. Without this, any element given a `width` plus
+   `padding` (border-box was previously applied piecemeal, rule by rule,
+   which is exactly how .skill-gate got missed and overflowed phone
+   viewports — see QA_REPORT.md CQ-05). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #3a2e57;
