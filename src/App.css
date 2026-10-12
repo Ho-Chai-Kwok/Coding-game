@@ -4753,3 +4753,69 @@ button:not(:disabled):active {
 .primer-card__continue {
   margin-top: 4px;
 }
+
+/* --- Leave-match confirmation (CQ-04): shown instead of a native
+   window.confirm() when Back fires during a live ranked match. --- */
+.leave-match-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 15, 40, 0.55);
+}
+
+.leave-match-confirm__card {
+  width: 100%;
+  max-width: 340px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px 20px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.leave-match-confirm__title {
+  margin: 0 0 8px;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.leave-match-confirm__body {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.leave-match-confirm__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leave-match-confirm__stay,
+.leave-match-confirm__leave {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.leave-match-confirm__stay {
+  background: var(--accent);
+  color: #fff;
+}
+
+.leave-match-confirm__leave {
+  background: var(--accent-bg);
+  color: var(--text-h);
+}

@@ -350,7 +350,7 @@ These are still unchecked in `ROADMAP.md`:
 
 ## Checklist
 
-- [x] CQ-01  - [x] CQ-02  - [x] CQ-03  - [ ] CQ-04  - [x] CQ-05  - [ ] CQ-06
+- [x] CQ-01  - [x] CQ-02  - [x] CQ-03  - [x] CQ-04  - [x] CQ-05  - [ ] CQ-06
 - [ ] CQ-07  - [ ] CQ-08  - [ ] CQ-09  - [ ] CQ-10  - [ ] CQ-11  - [ ] CQ-12
 - [ ] CQ-13  - [ ] CQ-14  - [ ] CQ-15  - [ ] CQ-16  - [ ] CQ-17  - [ ] CQ-18
 - [ ] CQ-19  - [ ] CQ-20  - [ ] CQ-21
@@ -426,3 +426,54 @@ drop-in "append and run" solution the generated drills guarantee by
 construction; the two hand-authored bugs CQ-02 actually named were fixed
 by direct inspection instead, which is the right scale of effort for 2
 specific lessons versus 9,250 generated ones.
+
+**CQ-04 (fixed):** `App.jsx` never touched browser history at all —
+`mode`/`activeWorldId`/etc. were plain `useState`, so Back always just
+left the site. Added two pure functions, `hashForScreen()` and
+`parseHash()`, as the translation layer between navigation state and a
+hash string (`#/learn/w/3/l/3-2`, `#/quests/q/sq-1`, `#/settings`, ...),
+plus three effects: one mirrors state → `history.pushState()` whenever
+the screen actually changes, one listens for `popstate` and restores the
+matching screen, and one applies whatever hash the tab was opened or
+reloaded with (supports deep-linking, not just Back). A `suppressNextPushRef`
+stops the mirror-effect from re-pushing a duplicate entry for a change
+that came *from* a popstate in the first place — without it, pressing
+Back would immediately cancel itself.
+
+Ranked PvP is deliberately simpler: it collapses to one opaque `#/ranked`
+entry rather than encoding shuffle/queue/match sub-states, since a live
+match holds real matchmaking/realtime subscriptions that can't be safely
+reconstructed from a bare URL. Instead, Back during an active match
+(`rankedMatchId` set) is intercepted: the native back navigation is
+cancelled by immediately re-pushing the current hash, and an in-app
+"Leave this match?" overlay shows instead (not `window.confirm`, per the
+report's own suggestion) — confirming applies the original destination
+directly via `history.replaceState` (which can't itself trigger another
+`popstate`), deliberately avoiding a `history.back()` + async-state-update
+race that would otherwise risk the confirmation re-firing off a stale
+closure.
+
+Verified live against the rebuilt production build (not dev mode — see
+the dev-mode note above): Home → Learn → World 1 → Lesson, then browser
+Back x3, landed on Level map → World map → Home in that exact order with
+the right hash at each step and the URL never leaving the site (both of
+CQ-04's named acceptance criteria); reloading directly on `#/learn/w/1`
+reopened World 1's level map immediately. Also checked a scenario CQ-04
+didn't explicitly ask for: mixing in-app "← Back" link clicks with
+browser Back. It still never breaks or exits the app, but since an in-app
+back-link click is just another state change (pushing a new forward
+entry, same as any navigation) rather than a literal `history.back()`
+pop, browser-Back afterward can feel slightly non-linear in that specific
+mixed sequence — noted here for transparency since it's a real (if minor
+and non-breaking) nuance the acceptance criteria don't cover, not because
+it reproduces the reported bug.
+
+*Environment note, unrelated to this fix:* while testing this item, `git
+status` and the Vite dev server both stalled for extended periods on
+what looked like pure I/O waits (near-zero accumulated CPU time while
+"running"). `git status --short` specifically was fixed by setting
+`GIT_OPTIONAL_LOCKS=0` (it opportunistically refreshes/writes the index
+by default; disabling that made it instant) — worth setting that env var
+generally if this machine's `~/Desktop` is iCloud-synced, since iCloud's
+own file-coordination is a known cause of exactly this kind of stall on
+files it's actively watching.

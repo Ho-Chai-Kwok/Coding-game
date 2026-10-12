@@ -54,6 +54,85 @@ function freshSideQuests() {
   return structuredClone(sidequests);
 }
 
+// URL-synced navigation (see QA_REPORT.md CQ-04): the browser/Android Back
+// button used to just leave the site entirely, because screen changes
+// never touched history (mode was plain useState, nothing ever called
+// pushState). These two pure functions are the translation layer between
+// "the bit of state that decides what's on screen" and a hash string —
+// hashForScreen going one way for every navigation, parseHash going the
+// other way when a popstate (Back/Forward) fires. Ranked PvP collapses to
+// a single opaque "#/ranked" entry rather than encoding shuffle/queue/
+// match sub-states individually: a live match holds real realtime
+// subscriptions that restoring from a bare URL on Back can't safely
+// reconstruct, so CQ-04's fix (see below) intercepts Back during an
+// active match with an in-app confirmation instead of ever trying to
+// restore "the middle of a match" from a URL.
+function hashForScreen({
+  mode, activeWorldId, activeLevel, activeSideQuestId, activeSideQuestLesson, rankedMode,
+}) {
+  if (!mode) return "#/";
+  if (mode === "learning") {
+    if (activeWorldId && activeLevel) return `#/learn/w/${activeWorldId}/l/${activeLevel.id}`;
+    if (activeWorldId) return `#/learn/w/${activeWorldId}`;
+    return "#/learn";
+  }
+  if (mode === "sidequest") {
+    if (activeSideQuestId && activeSideQuestLesson) return `#/quests/q/${activeSideQuestId}/l/${activeSideQuestLesson.id}`;
+    if (activeSideQuestId) return `#/quests/q/${activeSideQuestId}`;
+    return "#/quests";
+  }
+  if (["practice", "settings", "calendar", "characters", "helper", "kernelDash"].includes(mode)) {
+    return `#/${mode === "kernelDash" ? "kernel-dash" : mode}`;
+  }
+  // Anything else is the ranked-PvP catch-all branch (rankedMode drives
+  // which ranked screen shows, mode itself is just "not one of the above").
+  void rankedMode;
+  return "#/ranked";
+}
+
+// Parses a hash back into the subset of navigation state needed to
+// restore that screen — used both for the initial deep-link-on-reload
+// (CQ-04's "reloading on #/learn/w/1 reopens World 1") and for popstate.
+// Needs the live worlds/sidequests lists to turn an id in the URL into
+// the actual level/lesson object the screens expect, exactly like
+// onSelectWorld/onSelectLevel already do from a click.
+function parseHash(hash, worldsState, sideQuestsState) {
+  if (hash === "#/" || hash === "" || hash === "#") return { mode: null };
+  if (hash === "#/learn") return { mode: "learning" };
+  if (hash === "#/quests") return { mode: "sidequest" };
+  if (["#/practice", "#/settings", "#/calendar", "#/characters", "#/helper"].includes(hash)) {
+    return { mode: hash.slice(2) };
+  }
+  if (hash === "#/kernel-dash") return { mode: "kernelDash" };
+  if (hash === "#/ranked") return { mode: "ranked" };
+
+  let m = hash.match(/^#\/learn\/w\/([^/]+)\/l\/([^/]+)$/);
+  if (m) {
+    const world = worldsState.find((w) => String(w.id) === m[1]);
+    const level = world?.levels.find((l) => l.id === m[2]);
+    if (world && level) return { mode: "learning", activeWorldId: world.id, activeLevel: level };
+    return world ? { mode: "learning", activeWorldId: world.id } : { mode: "learning" };
+  }
+  m = hash.match(/^#\/learn\/w\/([^/]+)$/);
+  if (m) {
+    const world = worldsState.find((w) => String(w.id) === m[1]);
+    return world ? { mode: "learning", activeWorldId: world.id } : { mode: "learning" };
+  }
+  m = hash.match(/^#\/quests\/q\/([^/]+)\/l\/([^/]+)$/);
+  if (m) {
+    const quest = sideQuestsState.find((q) => q.id === m[1]);
+    const lesson = quest?.lessons.find((l) => l.id === m[2]);
+    if (quest && lesson) return { mode: "sidequest", activeSideQuestId: quest.id, activeSideQuestLesson: lesson };
+    return quest ? { mode: "sidequest", activeSideQuestId: quest.id } : { mode: "sidequest" };
+  }
+  m = hash.match(/^#\/quests\/q\/([^/]+)$/);
+  if (m) {
+    const quest = sideQuestsState.find((q) => q.id === m[1]);
+    return quest ? { mode: "sidequest", activeSideQuestId: quest.id } : { mode: "sidequest" };
+  }
+  return null; // unrecognized hash (e.g. a Supabase #access_token=... fragment) - leave navigation state alone
+}
+
 function AppShell() {
   const { user } = useAuth();
 
@@ -361,6 +440,101 @@ function AppShell() {
   function backToModes() {
     switchMode(null);
   }
+
+  // --- URL-synced navigation (CQ-04) ------------------------------------
+  // Shown instead of silently losing a live ranked match when Back fires
+  // mid-match — see the popstate handler below.
+  const [showLeaveMatchConfirm, setShowLeaveMatchConfirm] = useState(false);
+  // Guards against the hash-sync effect re-pushing a history entry for a
+  // state change that *came from* a popstate (Back/Forward) in the first
+  // place — without this, pressing Back would immediately push a
+  // duplicate entry right back on, breaking Forward and effectively
+  // undoing the Back press.
+  const suppressNextPushRef = useRef(false);
+  // Whether the very first hash (the URL this tab was actually opened or
+  // reloaded with) has been applied yet — runs once, after onboarding
+  // resolves, so a reload on e.g. #/learn/w/3 reopens World 3 instead of
+  // bouncing to the home screen and silently dropping the URL.
+  const appliedInitialHashRef = useRef(false);
+  // The hash Back was actually trying to reach when it got intercepted by
+  // the leave-match confirmation — applied directly (via replaceState, so
+  // it can never itself trigger another popstate) if the player confirms.
+  const pendingLeaveHashRef = useRef("#/");
+
+  const currentHash = hashForScreen({ mode, activeWorldId, activeLevel, activeSideQuestId, activeSideQuestLesson, rankedMode });
+
+  useEffect(() => {
+    if (onboardingComplete !== true) return;
+    if (!appliedInitialHashRef.current) {
+      // First run after onboarding resolves: adopt whatever's already in
+      // the address bar instead of overwriting it with "#/".
+      appliedInitialHashRef.current = true;
+      const initial = parseHash(window.location.hash, worldsState, sideQuestsState);
+      if (initial && initial.mode) {
+        suppressNextPushRef.current = true;
+        if (initial.mode === "learning") {
+          setMode("learning");
+          if (initial.activeWorldId) setActiveWorldId(initial.activeWorldId);
+          if (initial.activeLevel) setActiveLevel(initial.activeLevel);
+        } else if (initial.mode === "sidequest") {
+          setMode("sidequest");
+          if (initial.activeSideQuestId) setActiveSideQuestId(initial.activeSideQuestId);
+          if (initial.activeSideQuestLesson) setActiveSideQuestLesson(initial.activeSideQuestLesson);
+        } else if (initial.mode === "ranked") {
+          setMode("ranked");
+        } else {
+          setMode(initial.mode);
+        }
+        history.replaceState(null, "", hashForScreen({ mode: initial.mode, ...initial }));
+        return;
+      }
+      // No usable hash (fresh visit) — establish "#/" as the first entry
+      // so the very first Back press has somewhere real to land, instead
+      // of leaving the site immediately.
+      history.replaceState(null, "", "#/");
+      return;
+    }
+    if (suppressNextPushRef.current) {
+      suppressNextPushRef.current = false;
+      return;
+    }
+    if (window.location.hash !== currentHash) {
+      history.pushState(null, "", currentHash);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onboardingComplete, mode, activeWorldId, activeLevel, activeSideQuestId, activeSideQuestLesson, rankedMode]);
+
+  useEffect(() => {
+    function onPopState() {
+      // A live ranked match holds real matchmaking/realtime state that
+      // can't be safely reconstructed from a URL — rather than silently
+      // dropping the player out of it (or trying, riskily, to resume it),
+      // ask first. Cancels the native back navigation by immediately
+      // re-pushing the current hash; actually leaving happens only if
+      // they confirm, via the overlay's own "Leave match" button below.
+      if (rankedMatchId) {
+        pendingLeaveHashRef.current = window.location.hash || "#/";
+        history.pushState(null, "", currentHash);
+        setShowLeaveMatchConfirm(true);
+        return;
+      }
+      const next = parseHash(window.location.hash, worldsState, sideQuestsState);
+      if (!next) return; // unrecognized fragment (e.g. a Supabase auth token) - don't touch navigation state
+      suppressNextPushRef.current = true;
+      setActiveWorldId(next.activeWorldId ?? null);
+      setActiveLevel(next.activeLevel ?? null);
+      setActiveSideQuestId(next.activeSideQuestId ?? null);
+      setActiveSideQuestLesson(next.activeSideQuestLesson ?? null);
+      if (next.mode !== "ranked") {
+        setRankedMode(null);
+        setRankedMatchId(null);
+        setRankedPracticing(false);
+      }
+      setMode(next.mode);
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [rankedMatchId, currentHash, worldsState, sideQuestsState]);
 
   function completeLevel(level) {
     // Found from the current (pre-update) world rather than reached-into
@@ -797,6 +971,51 @@ function AppShell() {
             }}
           />
         </Suspense>
+      )}
+      {showLeaveMatchConfirm && (
+        <div className="leave-match-confirm" role="alertdialog" aria-modal="true" aria-labelledby="leave-match-title">
+          <div className="leave-match-confirm__card">
+            <p id="leave-match-title" className="leave-match-confirm__title">Leave this match?</p>
+            <p className="leave-match-confirm__body">
+              You're still in a ranked match. Going back now will leave it.
+            </p>
+            <div className="leave-match-confirm__actions">
+              <button
+                type="button"
+                className="leave-match-confirm__stay"
+                onClick={() => setShowLeaveMatchConfirm(false)}
+              >
+                Stay in match
+              </button>
+              <button
+                type="button"
+                className="leave-match-confirm__leave"
+                onClick={() => {
+                  setShowLeaveMatchConfirm(false);
+                  setRankedMode(null);
+                  setRankedMatchId(null);
+                  setRankedPracticing(false);
+                  // Apply the destination directly instead of calling
+                  // history.back() — that would fire a second popstate,
+                  // racing this same click handler's (still in-flight)
+                  // state updates and risking the confirmation re-firing
+                  // on a stale closure. replaceState never triggers
+                  // popstate, so there's nothing to race.
+                  const dest = parseHash(pendingLeaveHashRef.current, worldsState, sideQuestsState) ?? { mode: null };
+                  suppressNextPushRef.current = true;
+                  setActiveWorldId(dest.activeWorldId ?? null);
+                  setActiveLevel(dest.activeLevel ?? null);
+                  setActiveSideQuestId(dest.activeSideQuestId ?? null);
+                  setActiveSideQuestLesson(dest.activeSideQuestLesson ?? null);
+                  setMode(dest.mode);
+                  history.replaceState(null, "", hashForScreen({ mode: dest.mode, ...dest }));
+                }}
+              >
+                Leave match
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
