@@ -17,6 +17,17 @@ jobs:
           node-version: 20
           cache: npm
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      # Every generated practice-drill lesson's hint actually produces its
+      # claimed output, in both languages — see QA_REPORT.md CQ-02/CQ-03.
+      - run: node scripts/verify-drills.mjs
+      # Every generated side-quest drill question has exactly 4 distinct
+      # options with exactly one correct, and each expanded quest reaches
+      # its target lesson count — see AUTONOMOUS_LOG.md.
+      - run: node scripts/verify-sidequest-drills.mjs

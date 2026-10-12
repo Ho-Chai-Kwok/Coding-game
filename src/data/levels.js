@@ -34,6 +34,8 @@ const REAL_WORLDS = [
           tutorial:
             "print() is how you print a message to the screen in Python. Put your message in quotes inside the parentheses.",
           example: 'print("Hi there!")\n# prints: Hi there!',
+          instructions:
+            "Every programmer's first program prints a greeting. Use print() to print exactly: Hello, World!",
           starterCode:
             '# Use print() to print a message.\n# Fill in the string below:\n\nprint("")',
           hint: 'print() takes a string in quotes, like print("some text").',
@@ -515,6 +517,7 @@ const REAL_WORLDS = [
         python: {
           tutorial: "== checks whether two values are equal, and gives back True or False.",
           example: "print(5 == 5)\n# prints: True",
+          instructions: "Print whether 7 is equal to 7, using ==.",
           starterCode: "# Print whether 7 == 7\n\n",
           hint: "print(7 == 7)",
           expectedOutput: "True",

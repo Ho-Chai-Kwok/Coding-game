@@ -350,7 +350,7 @@ These are still unchecked in `ROADMAP.md`:
 
 ## Checklist
 
-- [x] CQ-01  - [ ] CQ-02  - [ ] CQ-03  - [ ] CQ-04  - [x] CQ-05  - [ ] CQ-06
+- [x] CQ-01  - [x] CQ-02  - [x] CQ-03  - [ ] CQ-04  - [x] CQ-05  - [ ] CQ-06
 - [ ] CQ-07  - [ ] CQ-08  - [ ] CQ-09  - [ ] CQ-10  - [ ] CQ-11  - [ ] CQ-12
 - [ ] CQ-13  - [ ] CQ-14  - [ ] CQ-15  - [ ] CQ-16  - [ ] CQ-17  - [ ] CQ-18
 - [ ] CQ-19  - [ ] CQ-20  - [ ] CQ-21
@@ -381,3 +381,48 @@ intact, `print("x")` shows the friendly message with zero dialogs opened,
 and a normal correct program still runs and grades correctly. The "all
 existing JS drill hints still pass" criterion is covered by CQ-03's new
 `scripts/verify-drills.mjs` (not yet written as of this commit — see CQ-03).
+
+**CQ-02 + CQ-03 (fixed together):** Root cause for both was the same
+function — `makeLesson()` in `practiceGenerator.js` built a `python` block
+with only `tutorial`/`example`/`starterCode`/`hint`, reusing the shared JS
+`instructions` verbatim (no `python.instructions` field existed at all)
+and never computing a Python-specific `expectedOutput`. Fixed by extending
+`makeLesson()` with optional `pyInstructions`/`pyTutorial`/`pyExample`/
+`pyExpected` overrides, then filling them in across all 50 tier functions
+(5 families × 10 tiers) wherever the shared text named a JS-only construct
+(console.log, let/const, ===, .length, .push(), i++/i--, Math.max, ...) —
+not a blind find-replace, a real per-tier value, matching the discipline
+the file already used for js/py starter-code pairs. The one division tier
+(arithmetic tier 4) switches Python's hint from `/` to `//` — Python's `/`
+always returns a float (16/4 → 4.0) even when it divides evenly, and these
+variants are deliberately set up to divide evenly, so `//` is the correct
+idiomatic fix, not a float-formatting workaround. The 4 array tiers that
+print the array/list itself (tiers 1, 4, 9, 10 — exactly the worlds
+CQ-03 named: 141, 144, 149, 150) get a `pyExpected` using Python's actual
+`print()` list format ("[1, 2, 3]", brackets and spaces) instead of this
+app's JS console.log convention ("1,2,3", bare comma-joined — see
+runCode.js's fakeConsole). Also fixed the two hand-authored lessons CQ-02
+named (1-1 "First Print", 6-2 "Equal To") by adding their missing
+`python.instructions`.
+
+Verification, not assumption: `scripts/verify-drills.mjs` actually runs
+every one of the 9,250 generated drills' `starterCode + hint` through
+Node's Function constructor for JS, and through a real `python3 -c`
+subprocess for Python (same method CQ-03's own reproduction notes used),
+comparing real output to the claimed `expectedOutput` — 0 failures in
+either language. A second pass scans every code lesson's *effective*
+Python-mode text (the same `python.field ?? field` merge CodeChallenge.jsx
+actually does) for JS-syntax leaks — 0 flagged (the QA report's own
+suggested bare-word regex for `let`/`const` flagged ~185 false positives
+from ordinary English sentences like "doesn't need a keyword like let" or
+"let you insert variables"; tightened to require an actual declaration
+shape, `let x =`, not just the word). Both checks are wired into CI
+(`.github/workflows/ci.yml`) so this can't silently regress. Scope note:
+this script checks the generated practice-drill worlds specifically
+(matching CQ-03's own "for each level in worlds 101-150" reproduction
+method) — a hand-authored lesson's `hint` is prose guidance or code meant
+to be inserted at a specific gap in `starterCode`, not always a literal
+drop-in "append and run" solution the generated drills guarantee by
+construction; the two hand-authored bugs CQ-02 actually named were fixed
+by direct inspection instead, which is the right scale of effort for 2
+specific lessons versus 9,250 generated ones.
