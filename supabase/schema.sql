@@ -55,6 +55,40 @@ create policy "Users can update their own progress"
   on public.progress for update
   using (auth.uid() = user_id);
 
+-- Rejects a display name that leaks contact info (email, phone, URL) or
+-- contains an obviously inappropriate word — see QA_REPORT.md CQ-06. The
+-- real backstop: the client (src/utils/displayName.js) already keeps the
+-- UI from ever sending one of these, but this constraint is what stops
+-- it even from a direct API call that skips the client entirely. Keep
+-- this in sync with displayName.js's own logic if either changes — it's
+-- deliberately a short, basic first pass (the most unambiguous, severe
+-- terms), not a complete content-moderation system.
+create or replace function public.is_safe_display_name(name text)
+returns boolean as $$
+begin
+  if name is null or length(trim(name)) = 0 then
+    return false;
+  end if;
+  if name ~* '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}' then
+    return false; -- email
+  end if;
+  if regexp_replace(name, '[^0-9]', '', 'g') ~ '[0-9]{7,}' then
+    return false; -- phone number (7+ digits in a row, separators stripped)
+  end if;
+  if name ~* '(https?://|www\.)|\b[a-z0-9-]+\.(com|net|org|io|co|me|tv|gg)\b' then
+    return false; -- URL / bare domain
+  end if;
+  if lower(name) ~ '(nigger|nigga|faggot|retard|cunt|rape|nazi)' then
+    return false; -- blocked word
+  end if;
+  return true;
+end;
+$$ language plpgsql immutable;
+
+alter table public.profiles drop constraint if exists profiles_display_name_safe;
+alter table public.profiles add constraint profiles_display_name_safe
+  check (public.is_safe_display_name(display_name));
+
 -- Automatically create a profile row whenever a new user signs up.
 create or replace function public.handle_new_user()
 returns trigger as $$
@@ -130,6 +164,13 @@ alter table public.ranked_queue enable row level security;
 create policy "Users can view their own queue entry"
   on public.ranked_queue for select
   using (auth.uid() = user_id);
+
+-- See is_safe_display_name() and QA_REPORT.md CQ-06 — ranked_queue's
+-- display_name is the one actually shown to a live opponent, so this is
+-- the constraint that matters most.
+alter table public.ranked_queue drop constraint if exists ranked_queue_display_name_safe;
+alter table public.ranked_queue add constraint ranked_queue_display_name_safe
+  check (public.is_safe_display_name(display_name));
 
 -- One row per matched pair, playing the same seeded content so neither
 -- side gets an easier draw. Only touched by try_ranked_match() (creates

@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 import { BASE_AVATARS, REWARD_AVATARS } from "../data/rewards";
 import { LANGUAGES } from "../data/languages";
 import { getSuggestions } from "../utils/insights";
+import { isSafeDisplayName } from "../utils/displayName";
 import { version as APP_VERSION } from "../../package.json";
 
 const ALL_AVATARS = [
@@ -213,8 +214,18 @@ export default function Settings({
           value={profile.displayName}
           placeholder={t("settings.displayNamePlaceholder")}
           maxLength={20}
+          aria-describedby="display-name-warning"
           onChange={(e) => onChangeProfile({ ...profile, displayName: e.target.value })}
         />
+        {/* Warns, doesn't block typing — the real enforcement is the
+            fallback in useRankedQueue.js and the database CHECK
+            constraint, both of which can't be bypassed by ignoring this.
+            See QA_REPORT.md CQ-06. */}
+        {!isSafeDisplayName(profile.displayName) && (
+          <p id="display-name-warning" className="settings__warning">
+            ⚠️ {t("settings.displayNameWarning")}
+          </p>
+        )}
 
         <p className="settings__label">{t("settings.chooseAvatar")}</p>
         <div className="settings__avatar-grid">

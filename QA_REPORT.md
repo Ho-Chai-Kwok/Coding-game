@@ -321,6 +321,15 @@ These are still unchecked in `ROADMAP.md`:
 - Get the legal review.
 - Connect a custom domain.
 - Turn on GitHub → Vercel auto-deploy.
+- **Run the updated `supabase/schema.sql` against the live database** —
+  adds `is_safe_display_name()` and the two `CHECK` constraints from
+  CQ-06's fix. Safe to re-run the whole file (idempotent, same as every
+  other change in it).
+- **CQ-06's age-gate policy decision**: block under-13 signups entirely,
+  or build a parental-email-consent flow? Real legal tradeoffs (COPPA,
+  and PDPO if HK schools are a target) that need an actual decision, not
+  a guess — the display-name safety-net half of CQ-06 is done without
+  needing this answer, but the age question itself isn't built yet.
 
 ---
 
@@ -477,3 +486,34 @@ by default; disabling that made it instant) — worth setting that env var
 generally if this machine's `~/Desktop` is iCloud-synced, since iCloud's
 own file-coordination is a known cause of exactly this kind of stall on
 files it's actively watching.
+
+**CQ-06, code-side portion only (fixed) — the age-gate policy is an
+owner decision, see below.** Added `src/utils/displayName.js`
+(`isSafeDisplayName()`/`unsafeDisplayNameReason()`) rejecting an empty
+name, an email address, a 7+-digit phone number (digit-run check after
+stripping separators, so "Player2024" or "Level99" are never false
+positives — tested explicitly), a URL/bare domain, or a short blocklist
+of obviously inappropriate words. Wired in at two points: Settings shows
+a warning (doesn't block typing — the name is still only *used* once it
+passes the checks below) via a new `settings.displayNameWarning` i18n key
+in all 4 locales (parity re-checked: 0 drift, 460 keys); `useRankedQueue.js`
+falls back to the literal string "Player" instead of ever sending an
+unsafe name to `try_ranked_match()` — this is the one real choke point
+every ranked match actually goes through, so it's the meaningful
+enforcement point client-side, not just the Settings warning. Added the
+real backstop too: `is_safe_display_name()` in `supabase/schema.sql`,
+a `CHECK` constraint on both `profiles.display_name` and
+`ranked_queue.display_name` (the one actually shown to a live opponent)
+mirroring the client-side logic — this is what stops an unsafe name even
+from a direct API call that skips the client UI entirely. Schema changes
+are written the same way the rest of this file already is (idempotent,
+re-runnable), but like every other schema change in this project,
+actually applying it to the live database is a manual step in Supabase's
+SQL Editor — see the owner-only item added below.
+
+**CQ-06, age-gate policy — genuinely an owner decision, not guessed.**
+The report's two options (block under-13 signups entirely vs. require
+parental-email consent) have real legal/product tradeoffs (COPPA in the
+US, PDPO if HK schools are a target) that aren't mine to pick. Added a
+line to the owner-only items list below rather than building one option
+and hoping it's the right one.
