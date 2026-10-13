@@ -127,6 +127,15 @@ export const translations = {
       loadingPackage: "Loading package…",
       htmlNote: "Your HTML/CSS renders in a real, sandboxed preview — scripts don't run, but layout and styling are genuine.",
       rendering: "Rendering preview…",
+      hintBtn: "Hint",
+      hideHintBtn: "Hide hint",
+      expectedLabel: "Expected:",
+      yourOutputLabel: "Your output:",
+      caseNote: "So close — check uppercase/lowercase and punctuation carefully.",
+      showDetails: "Show technical details",
+      hideDetails: "Hide technical details",
+      showSolution: "Show solution",
+      solutionFilled: "Solution filled in below — try running it, then Continue.",
     },
 
     onboarding: {
@@ -707,6 +716,15 @@ export const translations = {
       loadingPackage: "Cargando paquete…",
       htmlNote: "Tu HTML/CSS se renderiza en una vista previa real y aislada — los scripts no se ejecutan, pero el diseño y los estilos son genuinos.",
       rendering: "Renderizando vista previa…",
+      hintBtn: "Pista",
+      hideHintBtn: "Ocultar pista",
+      expectedLabel: "Esperado:",
+      yourOutputLabel: "Tu salida:",
+      caseNote: "¡Casi! Revisa mayúsculas/minúsculas y la puntuación con cuidado.",
+      showDetails: "Mostrar detalles técnicos",
+      hideDetails: "Ocultar detalles técnicos",
+      showSolution: "Mostrar solución",
+      solutionFilled: "Solución completada abajo — pruébala y luego pulsa Continuar.",
     },
 
     onboarding: {
@@ -1282,6 +1300,15 @@ export const translations = {
       loadingPackage: "正在載入套件…",
       htmlNote: "你的 HTML/CSS 會在真實的沙盒預覽中渲染——腳本不會執行，但版面配置與樣式都是真實的。",
       rendering: "正在渲染預覽…",
+      hintBtn: "提示",
+      hideHintBtn: "隱藏提示",
+      expectedLabel: "預期結果：",
+      yourOutputLabel: "你的輸出：",
+      caseNote: "就差一點——仔細檢查大小寫和標點符號。",
+      showDetails: "顯示技術細節",
+      hideDetails: "隱藏技術細節",
+      showSolution: "顯示解答",
+      solutionFilled: "解答已填入下方——試著執行看看，然後點繼續。",
     },
 
     onboarding: {
@@ -1856,6 +1883,15 @@ export const translations = {
       loadingPackage: "패키지 불러오는 중…",
       htmlNote: "HTML/CSS는 실제 샌드박스 미리보기에서 렌더링돼요 — 스크립트는 실행되지 않지만 레이아웃과 스타일은 진짜예요.",
       rendering: "미리보기 렌더링 중…",
+      hintBtn: "힌트",
+      hideHintBtn: "힌트 숨기기",
+      expectedLabel: "예상 결과:",
+      yourOutputLabel: "내 출력:",
+      caseNote: "거의 다 왔어요 — 대소문자와 문장 부호를 다시 확인해보세요.",
+      showDetails: "기술적 세부 정보 보기",
+      hideDetails: "기술적 세부 정보 숨기기",
+      showSolution: "정답 보기",
+      solutionFilled: "아래에 정답이 채워졌어요 — 실행해보고 계속하기를 눌러보세요.",
     },
 
     onboarding: {

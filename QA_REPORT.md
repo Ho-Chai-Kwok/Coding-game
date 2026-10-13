@@ -360,7 +360,7 @@ These are still unchecked in `ROADMAP.md`:
 ## Checklist
 
 - [x] CQ-01  - [x] CQ-02  - [x] CQ-03  - [x] CQ-04  - [x] CQ-05  - [ ] CQ-06
-- [ ] CQ-07  - [ ] CQ-08  - [ ] CQ-09  - [ ] CQ-10  - [ ] CQ-11  - [ ] CQ-12
+- [x] CQ-07  - [ ] CQ-08  - [ ] CQ-09  - [ ] CQ-10  - [ ] CQ-11  - [ ] CQ-12
 - [ ] CQ-13  - [ ] CQ-14  - [ ] CQ-15  - [ ] CQ-16  - [ ] CQ-17  - [ ] CQ-18
 - [ ] CQ-19  - [ ] CQ-20  - [ ] CQ-21
 
@@ -517,3 +517,42 @@ parental-email consent) have real legal/product tradeoffs (COPPA in the
 US, PDPO if HK schools are a target) that aren't mine to pick. Added a
 line to the owner-only items list below rather than building one option
 and hoping it's the right one.
+
+**CQ-07 (fixed):** Added `src/utils/friendlyError.js` — maps the common
+beginner mistakes (unterminated string, missing `)`, `X is not defined`,
+Python `IndentationError`/`NameError`/`SyntaxError`/`TypeError`) to a
+plain sentence; the raw engine message stays available behind a "show
+technical details" toggle rather than disappearing. `CodeChallenge.jsx`
+now shows a 💡 Hint button next to Run, visible and clickable before any
+run attempt (not just after a wrong answer). A wrong-output result now
+shows an actual Expected/Your-output diff with the first differing
+character highlighted, plus a note when the only difference is
+case/punctuation. After 3 failed runs (wrong output or an error) a "Show
+solution" button appears.
+
+Quiz explanations needed no fix — `QuizChallenge.jsx` already showed
+`content.explanation` on both a correct and an incorrect answer.
+
+**Real bug caught before shipping, same class as CQ-03's:** the first
+"Show solution" implementation just filled the editor with `active.hint`
+— correct for every generated drill and most hand-authored lessons, but
+5 hand-authored lessons (1-1 "First Print", 1-2 "Print a Number", 1-5
+"Banner Challenge", 2-3 "Uncomment It", 8-4 "Adding It Up") use `hint` as
+plain-English guidance or as a snippet meant to be inserted mid-
+`starterCode`, not appended after it — live-testing lesson 1-1 caught
+this immediately (filling in the "solution" produced a syntax error, not
+a working program). Fixed by adding an explicit `solution`/
+`python.solution` override to exactly those 5 lessons (10 fields,
+hand-written and individually verified), with `handleShowSolution()`
+falling back to `starterCode + hint` — the same combination
+`scripts/verify-drills.mjs` already proved correct for every generated
+drill — everywhere else. New `scripts/verify-solutions.mjs` checks this
+for all 9,299 code lessons (every hand-authored one plus every generated
+drill) in both languages via the same real-execution method as
+verify-drills.mjs; wired into CI. Live-verified end to end on the exact
+lesson that broke: 3 failed runs → Show solution → fills in the correct
+program → actually solves the lesson.
+
+i18n: added `hintBtn`/`hideHintBtn`/`expectedLabel`/`yourOutputLabel`/
+`caseNote`/`showDetails`/`hideDetails`/`showSolution`/`solutionFilled`
+to all 4 locales — parity re-checked, 0 drift, 469 keys.

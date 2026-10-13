@@ -31,3 +31,6 @@ jobs:
       # options with exactly one correct, and each expanded quest reaches
       # its target lesson count — see AUTONOMOUS_LOG.md.
       - run: node scripts/verify-sidequest-drills.mjs
+      # "Show solution" (CQ-07) fills in a correct program for every code
+      # lesson in the whole curriculum, hand-authored worlds included.
+      - run: node scripts/verify-solutions.mjs

@@ -10,6 +10,13 @@ import { runReactCode } from "../utils/reactRuntime";
 import { runHtmlCode } from "../utils/htmlRuntime";
 import { isCompiledLanguage } from "../data/languages";
 import { useI18n } from "../i18n/I18nContext";
+import { friendlyErrorMessage, firstDiffIndex } from "../utils/friendlyError";
+
+// After this many failed runs (wrong output or an error) on the same
+// lesson, offer to fill in the solution outright rather than leaving
+// someone stuck indefinitely — see QA_REPORT.md CQ-07. Resets whenever a
+// fresh lesson mounts (plain useState, no persistence needed).
+const SHOW_SOLUTION_AFTER = 3;
 
 function resolveContent(content, language) {
   if (language !== "python" || !content.python) return content;
@@ -78,6 +85,10 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
   const [code, setCode] = useState(active.starterCode);
   const [result, setResult] = useState(null); // { status, logs, error }
   const [running, setRunning] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [showErrorDetails, setShowErrorDetails] = useState(false);
+  const [failCount, setFailCount] = useState(0);
+  const [solutionShown, setSolutionShown] = useState(false);
 
   async function handleRun() {
     setRunning(true);
@@ -98,6 +109,8 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
 
     if (error) {
       setResult({ status: "error", logs, error });
+      setShowErrorDetails(false);
+      setFailCount((n) => n + 1);
       onFeedback?.("wrong");
       return;
     }
@@ -105,7 +118,24 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
     const output = logs.join("\n").trim();
     const passed = output === active.expectedOutput;
     setResult({ status: passed ? "success" : "mismatch", logs, error: null });
+    if (!passed) setFailCount((n) => n + 1);
     onFeedback?.(passed ? "correct" : "wrong");
+  }
+
+  function handleShowSolution() {
+    // `hint` is a complete, verified-correct snippet meant to be appended
+    // after starterCode for the vast majority of lessons (every generated
+    // drill, and most hand-authored ones) — but a handful of hand-
+    // authored lessons use `hint` as plain-English guidance instead (e.g.
+    // "console.log() takes a string in quotes, like ..."), which isn't
+    // runnable on its own. Those lessons set an explicit `solution` (the
+    // actual complete program) as an override; everything else falls
+    // back to the starterCode+hint concatenation, which is the exact
+    // combination scripts/verify-drills.mjs already checks for every
+    // generated lesson. See QA_REPORT.md CQ-07.
+    setCode(active.solution ?? `${active.starterCode}\n${active.hint}`);
+    setSolutionShown(true);
+    onFeedback?.("thinking");
   }
 
   return (
@@ -132,9 +162,29 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
         />
       </div>
 
-      <button className="code-challenge__run" onClick={handleRun} disabled={running}>
-        {running ? t("codeChallenge.running") : t("codeChallenge.run")}
-      </button>
+      <div className="code-challenge__actions">
+        <button className="code-challenge__run" onClick={handleRun} disabled={running}>
+          {running ? t("codeChallenge.running") : t("codeChallenge.run")}
+        </button>
+        {/* Always available, even before a first run — not just after a
+            wrong answer. See QA_REPORT.md CQ-07. */}
+        <button
+          type="button"
+          className="code-challenge__hint-toggle"
+          onClick={() => setShowHint((v) => !v)}
+        >
+          💡 {showHint ? t("codeChallenge.hideHintBtn") : t("codeChallenge.hintBtn")}
+        </button>
+      </div>
+      {showHint && <p className="code-challenge__hint">💡 {active.hint}</p>}
+      {failCount >= SHOW_SOLUTION_AFTER && !solutionShown && (
+        <button type="button" className="code-challenge__show-solution" onClick={handleShowSolution}>
+          🔓 {t("codeChallenge.showSolution")}
+        </button>
+      )}
+      {solutionShown && (
+        <p className="code-challenge__online-note">✅ {t("codeChallenge.solutionFilled")}</p>
+      )}
       {compiled && (
         <p className="code-challenge__online-note">
           ☁️ {running ? t("codeChallenge.compiling") : t("codeChallenge.onlineNote")}
@@ -165,23 +215,64 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
             </>
           )}
 
-          {result.status === "mismatch" && (
-            <>
-              <p className="code-challenge__result-title">{t("codeChallenge.mismatch")}</p>
-              <p className="code-challenge__result-detail">
-                {t("codeChallenge.output")}{" "}
-                {result.logs.length ? result.logs.join("\n") : t("codeChallenge.nothingPrinted")}
-              </p>
-              <p className="code-challenge__hint">💡 {active.hint}</p>
-            </>
-          )}
+          {result.status === "mismatch" && (() => {
+            const actual = result.logs.join("\n");
+            const expected = active.expectedOutput;
+            const diffIdx = firstDiffIndex(actual, expected);
+            const caseOnlyDiff = actual !== expected && actual.toLowerCase() === expected.toLowerCase();
+            return (
+              <>
+                <p className="code-challenge__result-title">{t("codeChallenge.mismatch")}</p>
+                <div className="code-challenge__diff">
+                  <p className="code-challenge__diff-row">
+                    <span className="code-challenge__diff-label">{t("codeChallenge.expectedLabel")}</span>
+                    <code className="code-challenge__diff-value">{expected}</code>
+                  </p>
+                  <p className="code-challenge__diff-row">
+                    <span className="code-challenge__diff-label">{t("codeChallenge.yourOutputLabel")}</span>
+                    <code className="code-challenge__diff-value">
+                      {actual.length ? (
+                        diffIdx === -1 ? actual : (
+                          <>
+                            {actual.slice(0, diffIdx)}
+                            <mark className="code-challenge__diff-char">{actual.slice(diffIdx, diffIdx + 1) || " "}</mark>
+                            {actual.slice(diffIdx + 1)}
+                          </>
+                        )
+                      ) : (
+                        t("codeChallenge.nothingPrinted")
+                      )}
+                    </code>
+                  </p>
+                </div>
+                {caseOnlyDiff && <p className="code-challenge__diff-note">{t("codeChallenge.caseNote")}</p>}
+              </>
+            );
+          })()}
 
-          {result.status === "error" && (
-            <>
-              <p className="code-challenge__result-title">{t("codeChallenge.error")}</p>
-              <p className="code-challenge__result-detail">{result.error}</p>
-            </>
-          )}
+          {result.status === "error" && (() => {
+            const friendly = friendlyErrorMessage(result.error);
+            return (
+              <>
+                <p className="code-challenge__result-title">{t("codeChallenge.error")}</p>
+                <p className="code-challenge__result-detail">{friendly ?? result.error}</p>
+                {friendly && (
+                  <>
+                    <button
+                      type="button"
+                      className="code-challenge__details-toggle"
+                      onClick={() => setShowErrorDetails((v) => !v)}
+                    >
+                      {showErrorDetails ? t("codeChallenge.hideDetails") : t("codeChallenge.showDetails")}
+                    </button>
+                    {showErrorDetails && (
+                      <p className="code-challenge__result-detail code-challenge__result-detail--raw">{result.error}</p>
+                    )}
+                  </>
+                )}
+              </>
+            );
+          })()}
         </div>
       )}
     </div>
