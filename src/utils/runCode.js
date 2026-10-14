@@ -14,6 +14,12 @@
 // lesson wiped a guest's progress; `print()` — a common Python habit —
 // opened the browser's print dialog via the old main-thread `window`).
 const TIMEOUT_MS = 3000;
+// A lesson that genuinely needs a network round-trip (REST/GraphQL side
+// quests) gets more room before the timeout fires — a slow connection
+// legitimately needs more than 3s for a real fetch(), and the generic
+// "is there a loop that never stops?" message is actively misleading
+// when the real cause is just a slow network. See QA_REPORT.md CQ-01c.
+const FETCH_TIMEOUT_MS = 10000;
 
 function workerSource() {
   // Intentionally minimal: collects console.log output into `logs` the
@@ -61,6 +67,11 @@ export async function runJsCode(code) {
     let settled = false;
     const blobUrl = URL.createObjectURL(new Blob([workerSource()], { type: "application/javascript" }));
     const worker = new Worker(blobUrl);
+    // Crude but effective: a lesson whose code actually calls fetch(...)
+    // gets the longer, network-aware budget and message. Doesn't try to
+    // be a real JS parser — a false positive just means a slightly more
+    // generous timeout, never a safety regression.
+    const isNetworkCall = /\bfetch\s*\(/.test(code);
 
     function finish(result) {
       if (settled) return;
@@ -74,9 +85,11 @@ export async function runJsCode(code) {
     const timer = setTimeout(() => {
       finish({
         logs: [],
-        error: "Your code ran for too long — is there a loop that never stops? Check your counter (like `i++`).",
+        error: isNetworkCall
+          ? "This is taking a while to respond — check your internet connection and try again."
+          : "Your code ran for too long — is there a loop that never stops? Check your counter (like `i++`).",
       });
-    }, TIMEOUT_MS);
+    }, isNetworkCall ? FETCH_TIMEOUT_MS : TIMEOUT_MS);
 
     worker.onmessage = (e) => {
       const { logs, error } = e.data;

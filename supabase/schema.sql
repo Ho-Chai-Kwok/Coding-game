@@ -56,13 +56,30 @@ create policy "Users can update their own progress"
   using (auth.uid() = user_id);
 
 -- Rejects a display name that leaks contact info (email, phone, URL) or
--- contains an obviously inappropriate word — see QA_REPORT.md CQ-06. The
--- real backstop: the client (src/utils/displayName.js) already keeps the
--- UI from ever sending one of these, but this constraint is what stops
--- it even from a direct API call that skips the client entirely. Keep
--- this in sync with displayName.js's own logic if either changes — it's
--- deliberately a short, basic first pass (the most unambiguous, severe
--- terms), not a complete content-moderation system.
+-- contains an obviously inappropriate word — see QA_REPORT.md CQ-06/
+-- CQ-06b. The real backstop: the client (src/utils/displayName.js)
+-- already keeps the UI from ever sending one of these, but this
+-- constraint is what stops it even from a direct API call that skips
+-- the client entirely. Keep this in sync with displayName.js's own
+-- logic if either changes — it's deliberately a short, basic first pass
+-- (the most unambiguous, severe terms), not a complete content-
+-- moderation system.
+--
+-- CQ-06b fixed two real bugs here, both confirmed against a real local
+-- Postgres 16/18 before shipping, not assumed:
+--   1. The blocked-word check was a raw substring match with no word
+--      boundary at all, so "Grape", "Skyscraper", "Trapeze", "Drapery"
+--      (all contain "rape"), "Scunthorpe" (contains "cunt") and "Ganazi"
+--      (contains "nazi") were all rejected — the classic "Scunthorpe
+--      problem". Fixed with \y (Postgres's actual word-boundary
+--      metacharacter) on both sides of the alternation.
+--   2. The URL/domain check used \b for a word boundary — in Postgres's
+--      regex dialect \b is a literal BACKSPACE character (ASCII 8), not
+--      a word boundary (that's \y here, unlike JS where \b is correct).
+--      A pattern requiring a literal backspace before/after a domain
+--      essentially never matches real input, so "mysite.com" and
+--      "coolsite.gg" silently passed this constraint while the client
+--      correctly blocked them. Fixed by using \y here too.
 create or replace function public.is_safe_display_name(name text)
 returns boolean as $$
 begin
@@ -75,26 +92,53 @@ begin
   if regexp_replace(name, '[^0-9]', '', 'g') ~ '[0-9]{7,}' then
     return false; -- phone number (7+ digits in a row, separators stripped)
   end if;
-  if name ~* '(https?://|www\.)|\b[a-z0-9-]+\.(com|net|org|io|co|me|tv|gg)\b' then
+  if name ~* '(https?://|www\.)|\y[a-z0-9-]+\.(com|net|org|io|co|me|tv|gg)\y' then
     return false; -- URL / bare domain
   end if;
-  if lower(name) ~ '(nigger|nigga|faggot|retard|cunt|rape|nazi)' then
-    return false; -- blocked word
+  if lower(name) ~ '\y(nigger|nigga|faggot|retard|cunt|rape|nazi)\y' then
+    return false; -- blocked word, whole-word only
   end if;
   return true;
 end;
 $$ language plpgsql immutable;
 
+-- Added NOT VALID first, then validated separately below — this is what
+-- lets the migration apply cleanly even if a live profiles/ranked_queue
+-- row already has a name this constraint would now reject (adding a
+-- normal CHECK constraint validates every existing row immediately and
+-- aborts the whole statement on the first violation; NOT VALID skips
+-- that initial scan, so the constraint starts applying to new/updated
+-- rows right away without the migration itself failing).
 alter table public.profiles drop constraint if exists profiles_display_name_safe;
 alter table public.profiles add constraint profiles_display_name_safe
-  check (public.is_safe_display_name(display_name));
+  check (public.is_safe_display_name(display_name)) not valid;
 
--- Automatically create a profile row whenever a new user signs up.
+-- Any existing row that would now fail the constraint falls back to the
+-- same default a brand-new profile gets, rather than being left in a
+-- permanently-invalid state that VALIDATE CONSTRAINT below would then
+-- fail on.
+update public.profiles set display_name = 'Coder'
+  where not public.is_safe_display_name(display_name);
+
+alter table public.profiles validate constraint profiles_display_name_safe;
+
+-- Automatically create a profile row whenever a new user signs up. Falls
+-- back to 'Coder' when the requested name is unsafe instead of letting
+-- the CHECK constraint reject the whole insert — that used to surface to
+-- the learner as a bare "Database error saving new user" with no account
+-- created at all (see QA_REPORT.md CQ-06b; the client now also validates
+-- before ever calling signUp, so this is the defense-in-depth path, not
+-- the primary one).
 create or replace function public.handle_new_user()
 returns trigger as $$
+declare
+  requested_name text := coalesce(new.raw_user_meta_data ->> 'display_name', 'Coder');
 begin
   insert into public.profiles (id, display_name)
-  values (new.id, coalesce(new.raw_user_meta_data ->> 'display_name', 'Coder'));
+  values (
+    new.id,
+    case when public.is_safe_display_name(requested_name) then requested_name else 'Coder' end
+  );
   return new;
 end;
 $$ language plpgsql security definer;
@@ -165,12 +209,21 @@ create policy "Users can view their own queue entry"
   on public.ranked_queue for select
   using (auth.uid() = user_id);
 
--- See is_safe_display_name() and QA_REPORT.md CQ-06 — ranked_queue's
--- display_name is the one actually shown to a live opponent, so this is
--- the constraint that matters most.
+-- See is_safe_display_name() and QA_REPORT.md CQ-06/CQ-06b —
+-- ranked_queue's display_name is the one actually shown to a live
+-- opponent, so this is the constraint that matters most. Same NOT VALID
+-- + cleanup + VALIDATE pattern as profiles above; queue rows are
+-- ephemeral (one per player actively searching for a match), so a
+-- violating row is just deleted rather than patched — there's no
+-- meaningful "safe default" queue entry to fall back to, and the player
+-- rejoins the queue themselves if this ever actually fires.
 alter table public.ranked_queue drop constraint if exists ranked_queue_display_name_safe;
 alter table public.ranked_queue add constraint ranked_queue_display_name_safe
-  check (public.is_safe_display_name(display_name));
+  check (public.is_safe_display_name(display_name)) not valid;
+
+delete from public.ranked_queue where not public.is_safe_display_name(display_name);
+
+alter table public.ranked_queue validate constraint ranked_queue_display_name_safe;
 
 -- One row per matched pair, playing the same seeded content so neither
 -- side gets an easier draw. Only touched by try_ranked_match() (creates

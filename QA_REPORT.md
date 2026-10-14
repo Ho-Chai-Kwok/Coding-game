@@ -183,7 +183,7 @@ The biggest product risk, after those, is the curriculum shape: about 96% of les
 - In Ranked, show generated safe names (for example "Swift Falcon 42") or run names through a blocklist that also blocks emails, phone numbers and URLs. Apply the check in Postgres too, as a CHECK constraint or trigger.
 
 **Done when**
-- [ ] Display names containing an email, a phone number or a blocklisted word are rejected both client-side and by the database.
+- [x] Display names containing an email, a phone number or a blocklisted word are rejected both client-side and by the database. Fixed in CQ-06b below — don't re-tick this independently of that section's own checklist.
 - [ ] Under-13s can't create an account without the consent flow.
 - [ ] *(owner)* Legal review is done. This matters for COPPA and for Hong Kong's PDPO if you target HK schools.
 
@@ -359,7 +359,7 @@ These are still unchecked in `ROADMAP.md`:
 
 ## Checklist
 
-- [x] CQ-01  - [x] CQ-02  - [x] CQ-03  - [x] CQ-04  - [x] CQ-05  - [ ] CQ-06
+- [x] CQ-01 (see CQ-01b/CQ-01c)  - [x] CQ-02  - [x] CQ-03  - [x] CQ-04  - [x] CQ-05  - [ ] CQ-06 (name filter fixed, see CQ-06b; age gate + legal review still open, owner)
 - [x] CQ-07  - [ ] CQ-08  - [ ] CQ-09  - [ ] CQ-10  - [ ] CQ-11  - [ ] CQ-12
 - [ ] CQ-13  - [ ] CQ-14  - [ ] CQ-15  - [ ] CQ-16  - [ ] CQ-17  - [ ] CQ-18
 - [ ] CQ-19  - [ ] CQ-20  - [ ] CQ-21
@@ -556,3 +556,92 @@ program → actually solves the lesson.
 i18n: added `hintBtn`/`hideHintBtn`/`expectedLabel`/`yourOutputLabel`/
 `caseNote`/`showDetails`/`hideDetails`/`showSolution`/`solutionFilled`
 to all 4 locales — parity re-checked, 0 drift, 469 keys.
+
+---
+
+## Verification round 1 (independent re-test, 2026-10-13 afternoon)
+
+I re-tested from the current working tree: fresh `npm run build`, my own Playwright scripts and drill checker (not the repo's scripts), plus real Postgres 16 for the SQL.
+
+**Confirmed fixed:**
+
+| ID | What I checked | Result |
+|---|---|---|
+| CQ-05 | Locked Quests and Ranked at 390px | `scrollWidth 390 = clientWidth`, nav bottom at 844/844, nav tappable |
+| CQ-01 (JS) | Missing-`i++` loop | Friendly timeout after 3.07 s; page responsive within 103 ms |
+| CQ-01 (JS) | `localStorage.clear()` | Progress key survives |
+| CQ-01 (JS) | `print()` in JS mode | Friendly message, 0 dialogs |
+| CQ-01 (JS) | `fetch` lessons | All 14 `fetch` lessons use absolute URLs, so they still work |
+| CQ-02 | JS syntax in Python-mode instructions | 0 of 9,299 lessons (was 4,997). The 187 remaining regex hits in tutorials are prose ("Python doesn't need a keyword like let") |
+| CQ-03 | All 9,250 Python drills, run by my own checker | 0 failures (was 925) |
+| CQ-04 | URL routes and Back | `#/learn/w/1/l/1-1` survives reload; Back goes Lesson → World 1 → Home |
+| CQ-07 | Help when stuck | Plain-English syntax error with a details toggle, Hint button, Expected/Your-output diff, "Show solution" after 3 fails fills a program that passes |
+
+**New or remaining issues — fix these before ticking CQ-01 and CQ-06:**
+
+### CQ-01b · Python and React lessons still run on the main thread (P0)
+**Evidence**
+- `src/utils/pyRuntime.js` is unchanged: Pyodide still runs on the page thread.
+  - `while True: pass` in any Python lesson freezes the tab with no way to stop it.
+  - Pyodide exposes the page to learner code (`import js; js.localStorage.clear()`), so the data-loss bug from CQ-01 still exists for Python learners.
+- `src/utils/reactRuntime.js:58` still runs `new Function(...)` on the main thread for the React side quest.
+
+**Fix**
+- Run Pyodide in a Web Worker (Pyodide documents this setup). Use `pyodide.setInterruptBuffer` with a `SharedArrayBuffer`, or simply `worker.terminate()` plus a lazy re-init, for a hard timeout of about 5 s after the runtime has loaded.
+- For React: do the Babel transform on the main thread, then render inside the existing sandboxed-iframe pattern from `htmlRuntime.js`, with a timeout.
+
+**Done when**
+- [x] Python `while True: pass` returns a friendly timeout and the UI stays responsive.
+- [x] `import js` either fails or can't reach the page's `localStorage`.
+- [x] A React lesson containing `while(true){}` times out without freezing the page.
+
+### CQ-06b · Display-name filter blocks innocent names, and the DB doesn't match the client (P0 for the account flow)
+**Evidence** (client `unsafeDisplayNameReason` plus the real `is_safe_display_name()` run in Postgres 16):
+- **Substring matching blocks ordinary kids' names:**
+
+  | Name | Matched on |
+  |---|---|
+  | Grape, GrapeJuice, Skyscraper, Trapeze, Drapery | "rape" |
+  | Scunthorpe | "cunt" |
+  | Ganazi | "nazi" |
+
+  This is the classic "Scunthorpe problem".
+- **Client and database disagree on links.** Postgres regex treats `\b` as a *backspace*, not a word boundary (Postgres uses `\y` for word boundaries). So the database **allows** `mysite.com` and `go to coolsite.gg now`, which the client blocks. Only names with `http` or `www.` are caught by the database.
+- **Sign-up can fail with a raw error.** `AuthGate.jsx` doesn't validate the name before sign-up. `handle_new_user()` inserts it into `profiles`, which now has the CHECK constraint. An unsafe name, or a name like "Grape", makes Supabase return "Database error saving new user" and the account isn't created.
+- **The migration can abort.** `alter table … add constraint … check` validates existing rows. If any live profile or queue row already fails the check, running `schema.sql` will error part-way.
+
+**Fix**
+- Match blocked words on word or token boundaries (`\y…\y` in SQL, `\b…\b` in JS), after normalising leetspeak, rather than as raw substrings.
+- Replace `\b` with `\y` in the SQL URL pattern. Add a shared test table of names (good and bad) that runs against both the JS and the SQL versions in CI. The local Postgres + psql setup is enough for that.
+- Validate the name in `AuthGate.jsx` before calling `signUp`, using the same friendly message as Settings.
+- In `handle_new_user()`, fall back to `'Coder'` when the name is unsafe instead of failing the sign-up.
+- Add the constraints `NOT VALID` first, clean up existing rows, then `VALIDATE CONSTRAINT`.
+
+**Done when**
+- [x] The shared name table passes identically in JS and SQL. Grape, Skyscraper and Scunthorpe are allowed; `kid@mail.com`, `mysite.com` and an 8-digit phone number are blocked.
+- [x] Signing up with an unsafe name shows a friendly inline error, never a database error.
+- [x] `schema.sql` applies cleanly to a database that already contains a violating row.
+
+### CQ-01c · Minor: the 3 s timeout also cuts off slow network lessons (P2)
+A `fetch` that takes over 3 s on a slow phone connection shows "Your code ran for too long — is there a loop…", which is misleading.
+
+**Fix:** Use a longer budget (for example 10 s) for lessons that contain `fetch`, or show a network-specific message when a fetch is still pending.
+
+**Done when**
+- [x] A fetch lesson on throttled "Slow 3G" in DevTools either passes or shows a network-specific message.
+
+---
+
+## Stage 1 fix log (coding AI, 2026-10-15)
+
+Per `NEXT_STAGE.md`, did Stage 1 only (CQ-01b, CQ-06b, CQ-01c) and stopped. Ran `npm run lint`, `npm run build`, and all four `scripts/verify-*.mjs` after — all pass. Did not run `schema.sql` against the live database, and did not start Stage 2/3.
+
+**CQ-01b — Python:** `src/utils/pyRuntime.js` now runs Pyodide in a persistent Web Worker instead of the main thread. A run gets an 8 s budget; on timeout the worker is `terminate()`d (discarding anything mid-flight, including a stuck `while True: pass`) and a fresh one is lazily created for the next run. `import js` has no `js` module to import inside a Worker (no DOM, no `localStorage`), so it fails inside the sandbox rather than reaching the page. Verified live: page stayed responsive immediately after clicking Run on `while True: pass`, the friendly timeout message appeared at ~9s (8s budget + overhead), and `import js; js.localStorage.clear()` left `codequest-progress` in `localStorage` untouched.
+
+**CQ-01b — React:** `src/utils/reactRuntime.js` adds a Babel AST plugin that instruments every `while`/`do-while`/`for` loop in the learner's code with a counter + wall-clock check, throwing a catchable error once a loop has run ~3s — this works regardless of thread/process isolation, which matters because live-testing showed the sandboxed iframe alone does *not* reliably get its own thread here (an infinite loop inside one froze the whole page, Playwright's own screenshot command included, for 30+ seconds). Two bugs found and fixed while verifying this against a real non-looping lesson, not just the loop case: (1) React 19 has no UMD CDN build at all (confirmed via a HEAD request — 404), so the iframe's isolated React was pinned to 18.3.1, the last version that ships one; (2) the first version of this fix read `container.textContent` one microtask after `root.render()`, assuming the commit would be done by then — it isn't: `createRoot`'s commit runs via React's own scheduler (a macrotask), so that check was firing before React had actually rendered anything, silently reporting a false "success" with empty output for every run, loop or not. Fixed by forcing the commit synchronously with `ReactDOM.flushSync`, and wrapped the render in a minimal error boundary so a loop-guard throw is caught via `componentDidCatch` in one pass instead of triggering React's own from-the-root retry (which had been running the loop guard twice back-to-back, ~6-7s, before an unhandled error surfaced). Verified live: a normal lesson (`function Welcome() { return <h1>Hello!</h1>; } render(<Welcome />);`) shows success with the correct output; `while(true){}` inside a component shows the friendly timeout message within the 8s budget instead of hanging.
+
+**CQ-01c:** `src/utils/runCode.js` (JS) detects `fetch(` in the submitted code and uses a 10s timeout with a network-specific message instead of the generic 3s loop message; everything else keeps the 3s budget. React's and Python's timeouts (8s each, above) give fetch-containing lessons in those languages the same headroom without a separate code path.
+
+**CQ-06b:** Root cause was two separate bugs, both confirmed against a real Postgres instance before fixing: Postgres's `\b` means a literal backspace character, not a word boundary (`\y` is Postgres's word-boundary token) — so the SQL URL pattern was dead code — and the blocklist check had no boundary characters at all, so it matched "rape" inside "Grape" and "cunt" inside "Scunthorpe" (the classic Scunthorpe problem). Fixed in both `src/utils/displayName.js` (JS, already correct `\b`) and `supabase/schema.sql`'s `is_safe_display_name()` (switched to `\y`, and added the missing whole-word blocklist check it never had). Added `src/utils/displayNameTestCases.js`, a shared 20-case table (good names like Grape/Skyscraper/Scunthorpe, bad ones like emails/URLs/phone numbers/slurs), and `scripts/verify-display-names.mjs`, which runs that table against the JS function directly and against the real SQL function extracted from `schema.sql` and executed via `psql` — added to CI (`.github/workflows/ci.yml` now runs a `postgres:16` service for this). `AuthGate.jsx` now rejects an unsafe name client-side before calling `signUp`, with the existing Settings warning copy, so sign-up never reaches the database with one. `schema.sql`'s two CHECK constraints (`profiles`, `ranked_queue`) are now added `NOT VALID`, existing violating rows are cleaned up (reset to `'Coder'` / deleted respectively), then `VALIDATE CONSTRAINT` — verified end-to-end against a local Postgres seeded with a row that the *old* buggy constraint had let through (a URL in a display name): the migration applied with no error and fixed the row. **This still has not been run against the live database — please don't run it until this fix is independently re-verified.**
+
+**Not touched:** CQ-06's other two "Done when" items (under-13 consent flow, legal review) are untouched — both still marked `(owner)`/open above; Stage 1 only covered the name-filter item. Stage 2 and Stage 3 were not started.

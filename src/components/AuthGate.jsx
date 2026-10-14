@@ -3,6 +3,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useI18n } from "../i18n/I18nContext";
 import { isSupabaseConfigured } from "../lib/supabaseClient";
 import TurnstileWidget, { isCaptchaEnabled } from "./TurnstileWidget";
+import { isSafeDisplayName } from "../utils/displayName";
 
 export default function AuthGate({ children }) {
   const {
@@ -111,8 +112,20 @@ export default function AuthGate({ children }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setSubmitting(true);
     setFormError(null);
+
+    // Validated here too, not just in Settings — previously an unsafe
+    // name just surfaced as Supabase's raw "Database error saving new
+    // user" with no account created, since the only enforcement was the
+    // database CHECK constraint. An empty name is fine (falls back to
+    // the default "Coder" server-side); only a non-empty unsafe one is
+    // blocked here. See QA_REPORT.md CQ-06b.
+    if (tab === "signUp" && displayName.trim() && !isSafeDisplayName(displayName)) {
+      setFormError(t("settings.displayNameWarning"));
+      return;
+    }
+
+    setSubmitting(true);
 
     const { error } =
       tab === "logIn"

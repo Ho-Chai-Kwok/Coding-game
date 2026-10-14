@@ -11,7 +11,16 @@
 // content-moderation system — no list like this ever is. It exists to
 // catch the obvious cases, not to replace real moderation tooling if
 // this app ever needs it at scale.
+//
+// Matched on WHOLE-WORD boundaries only (\b...\b), not as a raw
+// substring — see QA_REPORT.md CQ-06b. A plain .includes() check is the
+// classic "Scunthorpe problem": it blocked "Grape", "Skyscraper",
+// "Trapeze", and "Drapery" (all contain "rape"), "Scunthorpe" (contains
+// "cunt"), and "Ganazi" (contains "nazi"). \b only matches at an actual
+// word edge, so "cunt" inside "sCUNThorpe" (letter on both sides, no
+// boundary) never matches, while a real standalone "cunt" still does.
 const BLOCKED_WORDS = ["nigger", "nigga", "faggot", "retard", "cunt", "rape", "nazi"];
+const BLOCKED_WORD_PATTERN = new RegExp(`\\b(?:${BLOCKED_WORDS.join("|")})\\b`, "i");
 
 const EMAIL_PATTERN = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
 const URL_PATTERN = /(https?:\/\/|www\.)|\b[a-z0-9-]+\.(com|net|org|io|co|me|tv|gg)\b/i;
@@ -35,8 +44,7 @@ export function unsafeDisplayNameReason(name) {
   if (EMAIL_PATTERN.test(trimmed)) return "email";
   if (URL_PATTERN.test(trimmed)) return "url";
   if (hasLongDigitRun(trimmed)) return "phone";
-  const lower = trimmed.toLowerCase();
-  if (BLOCKED_WORDS.some((w) => lower.includes(w))) return "blocked-word";
+  if (BLOCKED_WORD_PATTERN.test(trimmed)) return "blocked-word";
   return null;
 }
 
