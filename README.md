@@ -4,6 +4,25 @@ A free, Duolingo-style coding game for kids and teens — learn to code by
 solving bite-sized, hands-on challenges, racing through ranked mini-games,
 and unlocking characters along the way.
 
+## Product direction (owner decisions, 2026-10-17)
+
+Three decisions from `NEXT_STAGE.md` §2d (O1–O3), made so Stage 3 work has
+a target instead of guessing. Full context and "Done when" criteria for
+each are in `QA_REPORT.md`.
+
+- **Target age: 8+ general audience** (not teens/adults-only, not a
+  separate pre-reader mode for ages 3–6). Drives the under-13 decision
+  below and the UI/copy age-appropriateness work in Stage 3.
+- **Under-13 sign-ups: parental-email consent flow**, not an outright
+  block. Under-13s can have real accounts, but creating one requires a
+  verified consent step from a parent's email before the account is
+  active. This is more work than a block (CQ-06 in Stage 3) but keeps the
+  product open to its actual audience given the 8+ target above.
+- **The 50 auto-generated drill worlds move to a separate "Practice Gym"
+  section**, out of the main learning path (CQ-08 in Stage 3). The main
+  path stays a believable, human-curated size; drills become optional
+  extra practice rather than inflating the headline lesson/world counts.
+
 ## Features
 
 - **100-world learning path** — one topic per world, broken into small

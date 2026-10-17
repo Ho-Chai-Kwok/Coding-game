@@ -184,7 +184,7 @@ The biggest product risk, after those, is the curriculum shape: about 96% of les
 
 **Done when**
 - [x] Display names containing an email, a phone number or a blocklisted word are rejected both client-side and by the database. Fixed in CQ-06b below — don't re-tick this independently of that section's own checklist.
-- [ ] Under-13s can't create an account without the consent flow.
+- [ ] Under-13s can't create an account without the consent flow. *(Decided 2026-10-17: build the parental-email consent flow, not a block — see README.md "Product direction". Not yet built; Stage 3.)*
 - [ ] *(owner)* Legal review is done. This matters for COPPA and for Hong Kong's PDPO if you target HK schools.
 
 ---
@@ -228,7 +228,7 @@ The biggest product risk, after those, is the curriculum shape: about 96% of les
   - README: "100-world learning path", "31 Side Quests", "10 unlockable characters"
   - Characters screen: "1/12 unlocked"
 
-**Fix** *(owner decision on scope)*
+**Fix** *(owner decision on scope — decided 2026-10-17: separate "Practice Gym", see README.md "Product direction". Implementation below is still Stage 3, not done.)*
 - Move worlds 101–150 out of the main path into an optional **"Practice Gym"** that is endless, generates on demand, and has no 185-node maps.
 - Spend the effort on turning more worlds 13–100 into hands-on code lessons.
 - De-duplicate side-quest pools, or cap each topic at its unique-question count.
@@ -296,7 +296,7 @@ The biggest product risk, after those, is the curriculum shape: about 96% of les
 
 | ID | Issue | Evidence | Fix | Done when |
 |---|---|---|---|---|
-| CQ-13 | Ages 3–6 can't use the app *(owner: positioning)* | Every lesson needs reading and typing syntax | Either state "Ages 8+" in the meta, store listing and onboarding, or add a pre-reader mode (drag-and-drop blocks, audio narration of instructions, picture-based quizzes) | The positioning decision is written in the README and meta |
+| CQ-13 | Ages 3–6 can't use the app *(owner: positioning — decided 2026-10-17: "8+ general audience", see README.md)* | Every lesson needs reading and typing syntax | State "Ages 8+" in the meta, store listing and onboarding (no pre-reader mode) | Decision is in the README now; meta tags, store listing and onboarding copy still need updating (Stage 3) |
 | CQ-14 | Jargon and copy errors | "← Modes" back label; "Kernel Dash · Continue →" for a game never played; "Just 1 more days"; "LP" never explained | Use "← Home", "Play →", fix the plural, add a one-line LP tooltip | Copy review done in all 4 locales |
 | CQ-15 | Guest path is de-emphasised | Live site: "Continue as Guest →" is a small text link under the login form | Make "Start playing (no account needed)" the primary button and put Log in / Sign up second | Primary CTA is guest |
 | CQ-16 | Python first-run wait is unexplained | Live: the first run downloads ~5.4 MB (stdlib 2.2 MB + wasm 2.9 MB), ~3–5 s, showing only "Running…" | Show "Loading Python (first time only)…" with progress; start preloading Pyodide when a Python lesson opens | The first run shows a loading message |
@@ -359,7 +359,7 @@ These are still unchecked in `ROADMAP.md`:
 
 ## Checklist
 
-- [x] CQ-01 (see CQ-01b/CQ-01c)  - [x] CQ-02  - [x] CQ-03  - [x] CQ-04  - [x] CQ-05  - [ ] CQ-06 (name filter fixed, see CQ-06b; age gate + legal review still open, owner)
+- [x] CQ-01 (see CQ-01b/CQ-01c)  - [x] CQ-02  - [x] CQ-03  - [x] CQ-04  - [x] CQ-05  - [ ] CQ-06 (name filter fixed, see CQ-06b; consent flow decided, not built; legal review still open)
 - [x] CQ-07  - [ ] CQ-08  - [ ] CQ-09  - [ ] CQ-10  - [ ] CQ-11  - [ ] CQ-12
 - [ ] CQ-13  - [ ] CQ-14  - [ ] CQ-15  - [ ] CQ-16  - [ ] CQ-17  - [ ] CQ-18
 - [ ] CQ-19  - [ ] CQ-20  - [ ] CQ-21
