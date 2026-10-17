@@ -1,7 +1,7 @@
 import { getRankInfo, TIERS } from "../data/rank";
 import { SKILL_GATE_LESSONS, meetsSkillGate } from "../data/skillGate";
-import { useI18n } from "../i18n/I18nContext";
-import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/useI18n";
+import { useAuth } from "../auth/useAuth";
 import CharacterRig from "./CharacterRig";
 import SkillGateNotice from "./SkillGateNotice";
 
@@ -65,7 +65,10 @@ export default function RankedHome({
       >
         <span className="ranked-home__badge-icon">🏆</span>
         <span className="ranked-home__tier">{rank.label}</span>
-        <span className="ranked-home__points">{rank.points} LP</span>
+        {/* CQ-14: "LP" was never explained anywhere in the UI. */}
+        <span className="ranked-home__points" title={t("rankedHome.lpTooltip")}>
+          {rank.points} LP
+        </span>
       </div>
 
       {peak.label !== rank.label && (

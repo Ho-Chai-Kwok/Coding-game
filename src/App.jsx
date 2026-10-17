@@ -6,7 +6,8 @@ import LevelMap from "./components/LevelMap";
 import LevelScreen from "./components/LevelScreen";
 import LanguageSelect from "./components/LanguageSelect";
 import AuthGate from "./components/AuthGate";
-import { useAuth } from "./auth/AuthContext";
+import ParentLock from "./components/ParentLock";
+import { useAuth } from "./auth/useAuth";
 import { useProgressSync } from "./hooks/useProgressSync";
 import { computeStreak } from "./utils/streak";
 import { packWorlds, unpackWorlds, packSideQuests, unpackSideQuests } from "./utils/progressSerialize";
@@ -171,6 +172,8 @@ function AppShell() {
   const [profile, setProfile] = useState(DEFAULT_PROFILE);
   const [theme, setTheme] = useState("system"); // "system" | "light" | "dark"
   const [reducedMotion, setReducedMotion] = useState("system"); // "system" | "on" | "off"
+  const [textSize, setTextSize] = useState("default"); // "default" | "large" | "xl" — see QA_REPORT.md CQ-09
+  const [parentLockEnabled, setParentLockEnabled] = useState(false); // CQ-21, off by default
   const [streak, setStreak] = useState(1);
   const [lastPlayedDate, setLastPlayedDate] = useState(null);
   const [continueWorldId, setContinueWorldId] = useState(null);
@@ -197,6 +200,18 @@ function AppShell() {
       document.documentElement.dataset.theme = theme;
     }
   }, [theme]);
+
+  // CQ-09: scales every rem-based font size in the app from one root
+  // setting — same data-attribute pattern as theme/reducedMotion above,
+  // gated purely in CSS (see index.css) so this component doesn't need to
+  // know which rule reads it.
+  useEffect(() => {
+    if (textSize === "default") {
+      delete document.documentElement.dataset.textSize;
+    } else {
+      document.documentElement.dataset.textSize = textSize;
+    }
+  }, [textSize]);
 
   // "system" respects the OS-level prefers-reduced-motion setting (checked
   // live, not just at mount, so it still reacts if someone flips it while
@@ -229,6 +244,8 @@ function AppShell() {
       profile,
       theme,
       reducedMotion,
+      textSize,
+      parentLockEnabled,
       streak,
       lastPlayedDate,
       continueWorldId,
@@ -251,6 +268,8 @@ function AppShell() {
       profile,
       theme,
       reducedMotion,
+      textSize,
+      parentLockEnabled,
       streak,
       lastPlayedDate,
       continueWorldId,
@@ -295,6 +314,8 @@ function AppShell() {
       if (saved.profile) setProfile(saved.profile);
       if (saved.theme) setTheme(saved.theme);
       if (saved.reducedMotion) setReducedMotion(saved.reducedMotion);
+      if (saved.textSize) setTextSize(saved.textSize);
+      if (typeof saved.parentLockEnabled === "boolean") setParentLockEnabled(saved.parentLockEnabled);
       if (saved.continueWorldId) setContinueWorldId(saved.continueWorldId);
       if (saved.selectedCharacterId) setSelectedCharacterId(saved.selectedCharacterId);
     }
@@ -759,28 +780,37 @@ function AppShell() {
       />
     );
   } else if (mode === "settings") {
+    // CQ-21: Settings (and Account, a section within it) sit behind the
+    // optional parent lock when the parent has turned it on — see
+    // ParentLock.jsx.
     screen = (
-      <Settings
-        profile={profile}
-        onChangeProfile={setProfile}
-        theme={theme}
-        onChangeTheme={setTheme}
-        reducedMotion={reducedMotion}
-        onChangeReducedMotion={setReducedMotion}
-        codingLanguage={language}
-        onChangeCodingLanguage={setLanguage}
-        unlockedAvatars={unlockedAvatars}
-        mainLessonsCompleted={mainLessonsCompleted}
-        streak={streak}
-        sideQuestsState={sideQuestsState}
-        rankedWins={rankedWins}
-        rankedLosses={rankedLosses}
-        rankedShield={rankedShield}
-        onBack={backToModes}
-        onResetProgress={resetProgress}
-        onExportData={exportData}
-        syncStatus={syncStatus}
-      />
+      <ParentLock enabled={parentLockEnabled} onBack={backToModes}>
+        <Settings
+          profile={profile}
+          onChangeProfile={setProfile}
+          theme={theme}
+          onChangeTheme={setTheme}
+          reducedMotion={reducedMotion}
+          onChangeReducedMotion={setReducedMotion}
+          textSize={textSize}
+          onChangeTextSize={setTextSize}
+          parentLockEnabled={parentLockEnabled}
+          onChangeParentLockEnabled={setParentLockEnabled}
+          codingLanguage={language}
+          onChangeCodingLanguage={setLanguage}
+          unlockedAvatars={unlockedAvatars}
+          mainLessonsCompleted={mainLessonsCompleted}
+          streak={streak}
+          sideQuestsState={sideQuestsState}
+          rankedWins={rankedWins}
+          rankedLosses={rankedLosses}
+          rankedShield={rankedShield}
+          onBack={backToModes}
+          onResetProgress={resetProgress}
+          onExportData={exportData}
+          syncStatus={syncStatus}
+        />
+      </ParentLock>
     );
   } else if (mode === "learning") {
     const activeWorld = worldsState.find((w) => w.id === activeWorldId);
@@ -950,9 +980,11 @@ function AppShell() {
 
   return (
     <>
-      <div className={`app${hideBottomNav ? "" : " app--with-nav"}`}>
+      {/* CQ-10e: no <main> landmark existed anywhere — a screen-reader
+          user had no "skip to main content" target at all. */}
+      <main className={`app${hideBottomNav ? "" : " app--with-nav"}`}>
         <Suspense fallback={<div className="app-loading" aria-label="Loading">🎮</div>}>{screen}</Suspense>
-      </div>
+      </main>
       {!hideBottomNav && (
         <BottomNav
           active={mode}

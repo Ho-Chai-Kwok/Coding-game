@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 
 // A plain <textarea>, upgraded with the editor conveniences kids will
 // recognize from VSCode/LeetCode: typing an opening bracket or quote
@@ -16,9 +16,18 @@ export default function CodeEditor({
   language = "javascript",
   rows = 5,
   className = "",
+  ariaLabel = "Code editor",
+  describedBy,
 }) {
   const textareaRef = useRef(null);
   const indentUnit = ["python", "c", "cpp", "java"].includes(language) ? "    " : "  ";
+  // CQ-10a: Tab always inserted a space before this, trapping keyboard
+  // focus inside the editor with no way out (WCAG 2.1.2) — same escape
+  // CodeMirror and other code editors use: Esc arms a one-shot "let the
+  // next Tab actually leave" flag, cleared by any other key so a normal
+  // Tab-to-indent still works the rest of the time.
+  const escapeArmedRef = useRef(false);
+  const hintId = useId();
 
   function applyChange(newValue, selStart, selEnd = selStart) {
     // Write the DOM node directly and synchronously, instead of waiting
@@ -40,7 +49,19 @@ export default function CodeEditor({
     const el = e.target;
     const { selectionStart: start, selectionEnd: end, value: text } = el;
 
+    if (e.key === "Escape") {
+      escapeArmedRef.current = true;
+      return;
+    }
+    const escapeArmed = escapeArmedRef.current;
+    escapeArmedRef.current = false;
+
     if (e.key === "Tab") {
+      if (escapeArmed) {
+        // Don't preventDefault — let the browser move focus to the next
+        // element like it would for any ordinary textarea.
+        return;
+      }
       e.preventDefault();
       if (e.shiftKey) {
         const lineStart = text.lastIndexOf("\n", start - 1) + 1;
@@ -132,14 +153,23 @@ export default function CodeEditor({
   }
 
   return (
-    <textarea
-      ref={textareaRef}
-      className={className}
-      value={value}
-      onChange={onChange}
-      onKeyDown={handleKeyDown}
-      spellCheck={false}
-      rows={rows}
-    />
+    <>
+      <textarea
+        ref={textareaRef}
+        className={className}
+        value={value}
+        onChange={onChange}
+        onKeyDown={handleKeyDown}
+        spellCheck={false}
+        rows={rows}
+        aria-label={ariaLabel}
+        aria-describedby={[describedBy, hintId].filter(Boolean).join(" ")}
+      />
+      {/* CQ-10a: screen-reader-only — sighted users already see the Run
+          button right below, so this isn't shown visually too. */}
+      <span id={hintId} className="sr-only">
+        Press Escape, then Tab, to leave the code editor.
+      </span>
+    </>
   );
 }

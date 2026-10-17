@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 export default function QuizChallenge({ content, onSolved, onFeedback, disabledOptionIndex = null }) {
   const { t } = useI18n();

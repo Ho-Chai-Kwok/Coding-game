@@ -46,12 +46,19 @@ export const COLLECTIBLE_TYPES = new Set(["semicolon", "brace"]);
 
 let nextId = 1;
 
-export function speedAt(elapsedSeconds) {
-  return Math.min(MAX_SPEED, BASE_SPEED + elapsedSeconds * SPEED_RAMP_PER_SEC);
+// CQ-17: a flat multiplier, not a separate speed curve, so Easy mode
+// stays the exact same game — just more reaction time — rather than a
+// different ramp a player would have to re-learn switching back.
+export const EASY_SPEED_MULTIPLIER = 0.65;
+
+export function speedAt(elapsedSeconds, easy = false) {
+  const speed = Math.min(MAX_SPEED, BASE_SPEED + elapsedSeconds * SPEED_RAMP_PER_SEC);
+  return easy ? speed * EASY_SPEED_MULTIPLIER : speed;
 }
 
-export function spawnIntervalAt(elapsedSeconds) {
-  return Math.max(MIN_SPAWN_MS, BASE_SPAWN_MS - elapsedSeconds * SPAWN_RAMP_MS_PER_SEC);
+export function spawnIntervalAt(elapsedSeconds, easy = false) {
+  const interval = Math.max(MIN_SPAWN_MS, BASE_SPAWN_MS - elapsedSeconds * SPAWN_RAMP_MS_PER_SEC);
+  return easy ? interval / EASY_SPEED_MULTIPLIER : interval;
 }
 
 // `excludeWall`: during a flash question, a wall forcing the player out

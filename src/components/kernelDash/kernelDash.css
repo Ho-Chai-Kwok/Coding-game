@@ -235,6 +235,15 @@
   opacity: 0.65 !important;
 }
 
+.kernel-dash__easy-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
 .kernel-dash__final-score {
   font-family: var(--heading);
   font-size: 44px;

@@ -1,5 +1,5 @@
 import { getLanguage } from "../data/languages";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import CharacterBadge from "./CharacterBadge";
 
 function chunk(array, size) {

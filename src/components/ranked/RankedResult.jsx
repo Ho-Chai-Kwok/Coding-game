@@ -1,6 +1,6 @@
 import Confetti from "../Confetti";
 import ByteBornSprite from "../byteborn/ByteBornSprite";
-import { useI18n } from "../../i18n/I18nContext";
+import { useI18n } from "../../i18n/useI18n";
 import { CHARACTERS } from "../../data/characters";
 import "../byteborn/byteborn.css";
 

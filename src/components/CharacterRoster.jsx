@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import CharacterRig from "./CharacterRig";
 import { ALL_STATES } from "./byteborn/ByteBornSprite";
 import { CHARACTERS, isCharacterUnlocked, unlockProgress, unlockHint } from "../data/characters";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 // One emoji per state (see ALL_STATES / ByteBornSprite.jsx's own top
 // comment for what each one actually looks like) — a little collectible
@@ -103,17 +103,28 @@ export default function CharacterRoster({
               </button>
 
               {unlocked && (
-                <div className="character-card__emoji-row" onMouseLeave={() => setState(c.id, "idle")}>
+                // CQ-10g: a purely visual preview — a screen-reader user
+                // can't see the pose change, so this is 20 tab stops of
+                // real cost for no real benefit. aria-hidden on the row
+                // plus tabIndex={-1} on each button (needed together: a
+                // focusable element left inside an aria-hidden container
+                // is its own, separate axe violation) removes the whole
+                // row from the accessibility tree and the tab order,
+                // while a mouse/touch user previews poses exactly as
+                // before.
+                <div
+                  className="character-card__emoji-row"
+                  onMouseLeave={() => setState(c.id, "idle")}
+                  aria-hidden="true"
+                >
                   {ALL_STATES.map((s) => (
                     <button
                       key={s}
                       type="button"
+                      tabIndex={-1}
                       className={`character-card__emoji${state === s ? " character-card__emoji--active" : ""}`}
                       onMouseEnter={() => setState(c.id, s)}
-                      onFocus={() => setState(c.id, s)}
-                      onBlur={() => setState(c.id, "idle")}
                       onClick={() => preview(c.id, s)}
-                      aria-label={s}
                     >
                       {STATE_EMOJI[s]}
                     </button>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getDailyRotation, MODE_I18N_KEY } from "../data/rankedModes";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 // A slot-machine style spin: cycles rapidly through today's playable modes,
 // decelerating to a stop on a randomly chosen one. Replaces the old

@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
 import CodeEditor from "./CodeEditor";
-import { runPythonCode } from "../utils/pyRuntime";
+import { runPythonCode, preloadPython, isPythonReady } from "../utils/pyRuntime";
 import { runJsCode } from "../utils/runCode";
 import { runCompiledCode } from "../utils/remoteRun";
 import { runSqlCode } from "../utils/sqlRuntime";
 import { runReactCode } from "../utils/reactRuntime";
 import { runHtmlCode } from "../utils/htmlRuntime";
 import { isCompiledLanguage } from "../data/languages";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import { friendlyErrorMessage, firstDiffIndex } from "../utils/friendlyError";
 
 // After this many failed runs (wrong output or an error) on the same
@@ -82,6 +82,7 @@ export default function CodeChallenge({ content, levelId, language = "javascript
 function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
   const { t } = useI18n();
   const compiled = isCompiledLanguage(language);
+  const instructionsId = useId(); // CQ-10b: aria-describedby target
   const [code, setCode] = useState(active.starterCode);
   const [result, setResult] = useState(null); // { status, logs, error }
   const [running, setRunning] = useState(false);
@@ -89,6 +90,22 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
   const [showErrorDetails, setShowErrorDetails] = useState(false);
   const [failCount, setFailCount] = useState(0);
   const [solutionShown, setSolutionShown] = useState(false);
+  // CQ-16: starts the ~5.4MB Pyodide download the moment a Python lesson
+  // opens, instead of waiting for Run — and tracks it here so the "first
+  // time only" loading message below only shows while that's actually
+  // in flight, never on later lessons once it's cached for the session.
+  const [pythonLoading, setPythonLoading] = useState(language === "python" && !isPythonReady());
+
+  useEffect(() => {
+    if (language !== "python" || isPythonReady()) return;
+    let cancelled = false;
+    preloadPython().then(() => {
+      if (!cancelled) setPythonLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [language]);
 
   async function handleRun() {
     setRunning(true);
@@ -115,7 +132,12 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
       return;
     }
 
-    const output = logs.join("\n").trim();
+    // Defensive: every runner's non-error path should always return a
+    // real logs array, but a malformed runner result (e2e testing once
+    // caught exactly this from a race inside pyRuntime.js) crashing the
+    // whole lesson screen is a worse failure mode than just showing a
+    // mismatch against expected output.
+    const output = (logs ?? []).join("\n").trim();
     const passed = output === active.expectedOutput;
     setResult({ status: passed ? "success" : "mismatch", logs, error: null });
     if (!passed) setFailCount((n) => n + 1);
@@ -142,7 +164,7 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
     <div className={`code-challenge code-challenge--${language}`}>
       <TutorialCard tutorial={active.tutorial} example={active.example} />
 
-      <p className="code-challenge__instructions">{active.instructions}</p>
+      <p id={instructionsId} className="code-challenge__instructions">{active.instructions}</p>
 
       <div className="code-challenge__editor-frame">
         <div className="code-challenge__editor-chrome">
@@ -159,6 +181,8 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
           }}
           language={language}
           rows={Math.min(16, Math.max(5, active.starterCode.split("\n").length + 1))}
+          ariaLabel={t("codeChallenge.editorLabel")}
+          describedBy={instructionsId}
         />
       </div>
 
@@ -190,7 +214,14 @@ function CodeChallengeBody({ active, language, onSolved, onFeedback }) {
           ☁️ {running ? t("codeChallenge.compiling") : t("codeChallenge.onlineNote")}
         </p>
       )}
-      {active.pyPackages?.length > 0 && (
+      {/* CQ-16: the first Python run on a fresh session pays for a ~5.4MB
+          download with no explanation otherwise — shown instead of the
+          pyPackages note below (which is specifically about the extra
+          numpy/pandas-style packages some lessons need on top of this). */}
+      {language === "python" && pythonLoading && (
+        <p className="code-challenge__online-note">🐍 {t("codeChallenge.loadingPython")}</p>
+      )}
+      {active.pyPackages?.length > 0 && !pythonLoading && (
         <p className="code-challenge__online-note">
           📦 {running ? t("codeChallenge.loadingPackage") : t("codeChallenge.packageNote").replace("{package}", active.pyPackages.join(", "))}
         </p>

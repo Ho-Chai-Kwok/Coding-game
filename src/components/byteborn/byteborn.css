@@ -1073,7 +1073,7 @@
 
 .buddy__name {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -1083,7 +1083,7 @@
 
 .buddy__line {
   margin: 2px 0 0;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   line-height: 1.35;
   color: var(--text-h);
@@ -1121,7 +1121,7 @@
 
 @media (max-width: 480px) {
   .buddy__sprite { width: 96px; height: 110px; }
-  .buddy__line { font-size: 14px; }
+  .buddy__line { font-size: 0.875rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1140,7 +1140,7 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--bg, #fff) 70%, transparent);
   color: var(--text);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1;
   cursor: pointer;
   opacity: 0.6;
@@ -1181,7 +1181,7 @@
 }
 
 .buddy-toggle__label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: var(--buddy-color);
   filter: brightness(0.8);
@@ -1231,7 +1231,7 @@
 
 .character-card__concept {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text);
   opacity: 0.8;

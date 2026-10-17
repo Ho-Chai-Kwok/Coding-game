@@ -47,6 +47,8 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
+      # Unit tests (CQ-19): progress save/load, streak math, rank math.
+      - run: npm run test
       - run: npm run build
       # Every generated practice-drill lesson's hint actually produces its
       # claimed output, in both languages — see QA_REPORT.md CQ-02/CQ-03.
@@ -62,3 +64,10 @@ jobs:
       # the client (JS) and the real database constraint (SQL).
       - run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - run: node scripts/verify-display-names.mjs
+      # Browser-level repros (CQ-19) for CQ-01/CQ-01b (sandbox timeouts),
+      # CQ-04 (routing/Back button) and CQ-05 (locked-screen overflow) —
+      # runs against the dist/ build above, same as production.
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+        env:
+          CI: true

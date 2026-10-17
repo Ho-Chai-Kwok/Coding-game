@@ -1,4 +1,4 @@
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import { STREAK_MILESTONES } from "../data/rewards";
 
 const WEEKDAY_KEYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];

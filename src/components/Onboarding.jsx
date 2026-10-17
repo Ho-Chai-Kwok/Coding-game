@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import { SKILL_LEVELS, LEARNING_GOALS, getRecommendedQuestNames, getStartMessageKey } from "../data/onboarding";
 import { PRIMER_STEPS } from "../data/primer";
 import { LANGUAGES } from "../data/languages";
@@ -144,6 +144,13 @@ export default function Onboarding({ onComplete }) {
     setStep((s) => Math.min(s + 1, STEPS.length - 1));
   }
 
+  // CQ-12: a beginner who already feels oriented can jump straight past
+  // the remaining primer cards to the summary (one tap from their first
+  // lesson), rather than being forced through every "Got it!" in order.
+  function skipPrimer() {
+    setStep(STEPS.length - 1);
+  }
+
   function choose(setter, value) {
     setter(value);
     next();
@@ -225,6 +232,12 @@ export default function Onboarding({ onComplete }) {
 
       {primerStep && primerStep.type === "quiz" && (
         <PrimerQuizCard key={stepName} step={primerStep} onSolved={next} />
+      )}
+
+      {primerStep && (
+        <button type="button" className="onboarding__skip-primer" onClick={skipPrimer}>
+          {t("primer.skip")}
+        </button>
       )}
 
       {stepName === "summary" && (

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ByteBornSprite from "../byteborn/ByteBornSprite";
-import { useI18n } from "../../i18n/I18nContext";
+import { useI18n } from "../../i18n/useI18n";
 import {
   LANE_COUNT,
   TRACK_LENGTH,
@@ -55,6 +55,11 @@ const ICON = { bug: "🐛", error: "⚠️", wall: "🧱", semicolon: ";", brace
 export default function KernelDash({ character, onBack }) {
   const { t } = useI18n();
   const [status, setStatus] = useState("ready"); // "ready" | "playing" | "over"
+  // CQ-17: a slower, more reaction-time-friendly speed for younger or
+  // older players — chosen on the ready screen, kept for "Play again" too
+  // (not reset per run) since someone who picked it once almost always
+  // wants it again.
+  const [easyMode, setEasyMode] = useState(false);
   const [lane, setLane] = useState(1);
   const [action, setAction] = useState(null); // null | "jump" | "duck"
   const [obstacles, setObstacles] = useState([]);
@@ -70,6 +75,7 @@ export default function KernelDash({ character, onBack }) {
   const laneRef = useRef(lane);
   const actionRef = useRef(action);
   const statusRef = useRef(status);
+  const easyModeRef = useRef(easyMode);
   const rafRef = useRef(null);
   const actionTimerRef = useRef(null);
   const lastFrameRef = useRef(0);
@@ -89,6 +95,7 @@ export default function KernelDash({ character, onBack }) {
   laneRef.current = lane;
   actionRef.current = action;
   statusRef.current = status;
+  easyModeRef.current = easyMode;
 
   const endRun = useCallback(() => {
     if (statusRef.current !== "playing") return;
@@ -137,7 +144,7 @@ export default function KernelDash({ character, onBack }) {
       const dt = Math.min(0.05, (now - lastFrameRef.current) / 1000); // clamp so a tab-switch stall can't skip a mile of track
       lastFrameRef.current = now;
       elapsedRef.current += dt;
-      const speed = speedAt(elapsedRef.current);
+      const speed = speedAt(elapsedRef.current, easyModeRef.current);
       const travel = speed * dt;
 
       scoreRef.current += travel * SCORE_PER_PX;
@@ -169,7 +176,7 @@ export default function KernelDash({ character, onBack }) {
 
       let list = obstaclesRef.current;
       if (nextSpawnInRef.current <= 0) {
-        nextSpawnInRef.current = spawnIntervalAt(elapsedRef.current);
+        nextSpawnInRef.current = spawnIntervalAt(elapsedRef.current, easyModeRef.current);
         list = [...list, spawnObstacle(Boolean(flashQuestionRef.current))];
       }
 
@@ -221,7 +228,7 @@ export default function KernelDash({ character, onBack }) {
     setIsNewBest(false);
     elapsedRef.current = 0;
     scoreRef.current = 0;
-    nextSpawnInRef.current = spawnIntervalAt(0);
+    nextSpawnInRef.current = spawnIntervalAt(0, easyModeRef.current);
     flashQuestionRef.current = null;
     nextFlashInRef.current = FIRST_FLASH_QUESTION_MS;
     flashTimeLeftRef.current = 0;
@@ -390,6 +397,16 @@ export default function KernelDash({ character, onBack }) {
             <h2>{t("kernelDash.title")}</h2>
             <p>{t("kernelDash.subtitle")}</p>
             <p className="kernel-dash__controls-hint">{t("kernelDash.controlsHint")}</p>
+            {/* CQ-17: a slower speed for younger/older players, or anyone
+                who just wants an easier run. */}
+            <label className="kernel-dash__easy-toggle">
+              <input
+                type="checkbox"
+                checked={easyMode}
+                onChange={(e) => setEasyMode(e.target.checked)}
+              />
+              {t("kernelDash.easyMode")}
+            </label>
             <button className="kernel-dash__start" onClick={startRun}>
               {t("kernelDash.start")}
             </button>

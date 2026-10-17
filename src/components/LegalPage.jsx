@@ -1,5 +1,5 @@
-import { useI18n } from "../i18n/I18nContext";
-import { isCaptchaEnabled } from "./TurnstileWidget";
+import { useI18n } from "../i18n/useI18n";
+import { isCaptchaEnabled } from "./turnstileConfig";
 
 const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL;
 const UPDATED = "23 September 2026";

@@ -36,6 +36,18 @@ function workerSource() {
       return pyodideReadyPromise;
     }
     self.onmessage = async (e) => {
+      // CQ-16: a lesson can ask the worker to start loading Pyodide
+      // before the learner has clicked Run at all, so the ~5.4MB
+      // first-time download is already under way by the time they do.
+      if (e.data.type === "preload") {
+        try {
+          await getPyodide();
+          self.postMessage({ type: "ready" });
+        } catch (err) {
+          self.postMessage({ type: "ready", error: (err && err.message) ? err.message : String(err) });
+        }
+        return;
+      }
       const { code, packages } = e.data;
       const logs = [];
       try {
@@ -68,11 +80,43 @@ function discardWorker() {
   if (workerBlobUrl) URL.revokeObjectURL(workerBlobUrl);
   worker = null;
   workerBlobUrl = null;
+  // A fresh worker means Pyodide has to load all over again.
+  pyodideReady = false;
 }
 
 function lastMeaningfulLine(message) {
   const lines = message.trim().split("\n").filter(Boolean);
   return lines[lines.length - 1] || message;
+}
+
+// CQ-16: tracks whether Pyodide has already finished loading once this
+// session (set true after the first successful preload or run), so the
+// UI can show a "first time only" loading message instead of nothing —
+// the first real run otherwise just showed the generic "Running…" for
+// the full ~5.4MB download with no explanation.
+let pyodideReady = false;
+export function isPythonReady() {
+  return pyodideReady;
+}
+
+// Starts the ~5.4MB Pyodide download as soon as a Python lesson opens,
+// rather than waiting for the learner to click Run — called from
+// CodeChallenge.jsx on mount. A no-op once already loaded (getWorker()
+// reuses the same persistent worker, and getPyodide() inside it caches
+// its own ready promise), so calling this more than once is harmless.
+export async function preloadPython() {
+  if (pyodideReady) return;
+  return new Promise((resolve) => {
+    const w = getWorker();
+    function onMessage(e) {
+      if (e.data?.type !== "ready") return;
+      w.removeEventListener("message", onMessage);
+      if (!e.data.error) pyodideReady = true;
+      resolve();
+    }
+    w.addEventListener("message", onMessage);
+    w.postMessage({ type: "preload" });
+  });
 }
 
 // Data-science packages (numpy, pandas, ...) are multi-megabyte downloads,
@@ -104,7 +148,20 @@ export async function runPythonCode(code, packages = []) {
     }, TIMEOUT_MS);
 
     function onMessage(e) {
+      // CQ-16 bug, caught by the e2e suite: a run and a preload share the
+      // same worker and both attach their own "message" listener, so a
+      // run started while a preload is still in flight also receives
+      // that preload's {type:"ready"} handshake here — destructuring
+      // logs/error from it gave {logs: undefined, error: undefined},
+      // which resolved the run with garbage and crashed the caller's
+      // `logs.join()` on the real result arriving right after. Only
+      // preloadPython()'s own listener should ever act on that message.
+      if (e.data?.type === "ready") return;
       const { logs, error } = e.data;
+      // A run can only get here after Pyodide finished loading — covers
+      // the case where a run happens without preloadPython() ever having
+      // been called (or it having been skipped/missed).
+      pyodideReady = true;
       finish({ logs, error: error ? lastMeaningfulLine(error) : null });
     }
 

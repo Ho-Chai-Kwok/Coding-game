@@ -1,4 +1,4 @@
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 export default function TutorialCard({ tutorial, example }) {
   const { t } = useI18n();

@@ -3,7 +3,7 @@ import CodeChallenge from "../CodeChallenge";
 import RankedTimerBar from "./RankedTimerBar";
 import RankedResult from "./RankedResult";
 import { useCountdown } from "../../hooks/useCountdown";
-import { useI18n } from "../../i18n/I18nContext";
+import { useI18n } from "../../i18n/useI18n";
 import {
   getCodePool,
   shuffledSample,

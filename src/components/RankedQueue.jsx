@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRankedQueue } from "../hooks/useRankedQueue";
 import { getMode, MODE_I18N_KEY } from "../data/rankedModes";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 // Real matchmaking: polls for the closest-ranked waiting opponent (see
 // useRankedQueue.js / try_ranked_match() in supabase/schema.sql), widening

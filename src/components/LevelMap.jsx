@@ -1,5 +1,5 @@
 import LevelNode from "./LevelNode";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 const ZIGZAG_PATTERN = [0, 1, 2, 2, 1, 0, -1, -2, -2, -1];
 const ZIGZAG_STEP = 44; // px of horizontal offset per pattern unit

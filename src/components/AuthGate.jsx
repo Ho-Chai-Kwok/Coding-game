@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useAuth } from "../auth/AuthContext";
-import { useI18n } from "../i18n/I18nContext";
+import { useAuth } from "../auth/useAuth";
+import { useI18n } from "../i18n/useI18n";
 import { isSupabaseConfigured } from "../lib/supabaseClient";
-import TurnstileWidget, { isCaptchaEnabled } from "./TurnstileWidget";
+import TurnstileWidget from "./TurnstileWidget";
+import { isCaptchaEnabled } from "./turnstileConfig";
 import { isSafeDisplayName } from "../utils/displayName";
 
 export default function AuthGate({ children }) {
@@ -183,6 +184,17 @@ export default function AuthGate({ children }) {
         <h1 className="auth-gate__title">Code Quest 🎮</h1>
         <p className="auth-gate__subtitle">{t("auth.subtitle")}</p>
 
+        {/* Primary CTA (CQ-15): most visitors just want to start playing,
+            not create an account first — an account is for syncing
+            progress across devices, not a requirement to play at all. */}
+        <button className="auth-gate__guest-primary" onClick={continueAsGuest} type="button">
+          {t("auth.continueAsGuest")}
+        </button>
+
+        <div className="auth-gate__divider">
+          <span>{t("auth.orDivider")}</span>
+        </div>
+
         <div className="auth-gate__tabs">
           <button
             className={`auth-gate__tab${tab === "logIn" ? " auth-gate__tab--active" : ""}`}
@@ -253,10 +265,6 @@ export default function AuthGate({ children }) {
             {t("auth.forgotPassword")}
           </button>
         )}
-
-        <button className="auth-gate__guest" onClick={continueAsGuest} type="button">
-          {t("auth.continueAsGuest")}
-        </button>
 
         <p className="auth-gate__legal">
           <a href="#/terms">{t("legal.terms")}</a> · <a href="#/privacy">{t("legal.privacy")}</a>

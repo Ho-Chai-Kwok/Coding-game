@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
-
-export const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-export const isCaptchaEnabled = Boolean(TURNSTILE_SITE_KEY);
+import { TURNSTILE_SITE_KEY, isCaptchaEnabled } from "./turnstileConfig";
 
 const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 let scriptPromise = null;

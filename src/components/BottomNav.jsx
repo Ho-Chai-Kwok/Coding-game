@@ -1,4 +1,4 @@
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 // The app's 5 primary destinations, always reachable from a fixed bar at
 // the bottom of the screen — switching between them no longer requires

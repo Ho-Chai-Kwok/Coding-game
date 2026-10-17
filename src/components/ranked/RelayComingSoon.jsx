@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/I18nContext";
+import { useI18n } from "../../i18n/useI18n";
 
 // Relay needs real 2-4 player team matchmaking, which this app doesn't
 // have yet — flagged in the design brief as later-phase, out of scope for

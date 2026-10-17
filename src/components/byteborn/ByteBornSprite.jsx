@@ -436,30 +436,4 @@ export default function ByteBornSprite({ id, state = "idle", showFx = true, labe
   );
 }
 
-export const BYTEBORN_IDS = Object.keys(SPRITES);
-
-// The canonical, ordered list of all 20 states (see the top comment) — a
-// single source of truth so nothing else (the roster preview, a future
-// debug screen) has to re-type this list and risk drifting from it.
-export const ALL_STATES = [
-  "idle",
-  "thinking",
-  "correct",
-  "wrong",
-  "win",
-  "lose",
-  "perfect",
-  "streak",
-  "rankUp",
-  "rankDown",
-  "shielded",
-  "greet",
-  "hype",
-  "waiting",
-  "surprised",
-  "sleepy",
-  "laughing",
-  "confused",
-  "determined",
-  "cheer",
-];
+export { BYTEBORN_IDS, ALL_STATES } from "./sprites.jsx";

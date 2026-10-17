@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ByteBornSprite from "./ByteBornSprite";
-import { useI18n } from "../../i18n/I18nContext";
+import { useI18n } from "../../i18n/useI18n";
 
 // Duolingo-style lesson buddy: the player's selected Byteborn stands beside
 // the lesson and reacts to what they do. Challenges report events through

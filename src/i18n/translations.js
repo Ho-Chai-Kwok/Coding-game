@@ -14,7 +14,7 @@ export const translations = {
   en: {
     appName: "Code Quest",
     back: "Back",
-    backToModes: "Modes",
+    backToModes: "Home",
     backToWorlds: "Worlds",
     backToAllQuests: "All Quests",
 
@@ -29,6 +29,7 @@ export const translations = {
       nudgeTitle: "Ready for your first lesson?",
       nudgeDesc: "Tap Learn below to pick a language and get started!",
       leisureLabel: "Need a break?",
+      kernelDashCta: "Play →",
       learningTitle: "Learning Mode",
       learningDesc: "150 worlds, one topic at a time — go slow, go steady!",
       sidequestTitle: "Side Quests",
@@ -114,6 +115,7 @@ export const translations = {
 
     codeChallenge: {
       run: "▶ Run Code",
+      editorLabel: "Code editor",
       running: "⏳ Running...",
       success: "🎉 Awesome job! Output:",
       continue: "Continue →",
@@ -125,6 +127,7 @@ export const translations = {
       compiling: "Compiling online… this can take a few seconds.",
       packageNote: "First run loads {package} (a few MB) — this can take a moment, then it's cached.",
       loadingPackage: "Loading package…",
+      loadingPython: "Loading Python (first time only)…",
       htmlNote: "Your HTML/CSS renders in a real, sandboxed preview — scripts don't run, but layout and styling are genuine.",
       rendering: "Rendering preview…",
       hintBtn: "Hint",
@@ -176,6 +179,7 @@ export const translations = {
     // curious kid with zero background.
     primer: {
       gotIt: "Got it! →",
+      skip: "Skip — take me to my first lesson →",
       keyTermLabel: "Remember this word:",
 
       codeTitle: "What is code?",
@@ -237,6 +241,7 @@ export const translations = {
     },
 
     rankedHome: {
+      lpTooltip: "LP = League Points, earned by winning ranked matches",
       pointsToNext: "LP to next division",
       maxTier: "You've reached the top rank!",
       wins: "Wins",
@@ -413,10 +418,17 @@ export const translations = {
       tag_career: "Career",
     },
 
+    parentLock: {
+      title: "Parent check",
+      question: "What is {a} + {b}?",
+      wrong: "Not quite — try this one.",
+    },
+
     kernelDash: {
       title: "Kernel Dash",
       subtitle: "Dash through the Kernel — jump bugs, duck errors, dodge walls!",
       controlsHint: "↑ / swipe up: jump · ↓ / swipe down: duck · ← →: switch lanes",
+      easyMode: "🐢 Easy mode (slower)",
       start: "Start Run",
       playAgain: "Run Again",
       score: "Score",
@@ -452,7 +464,8 @@ export const translations = {
       displayName: "Display name",
       logIn: "Log In",
       signUp: "Sign Up",
-      continueAsGuest: "Continue as Guest →",
+      continueAsGuest: "Start playing (no account needed) →",
+      orDivider: "or",
       needAccount: "Need an account? Sign up",
       haveAccount: "Already have an account? Log in",
       signOut: "Sign Out",
@@ -503,9 +516,16 @@ export const translations = {
       themeDark: "Dark",
       codingLanguage: "Coding Language",
       language: "App Language",
+      lessonsEnglishOnly: "Lessons are in English. Only the app's own menus and buttons are translated.",
+      parentLock: "🔒 Parent lock",
+      parentLockNote: "Asks a simple sum before Settings or Account can be opened — stops a young child's random tapping from changing things by accident.",
       accessibility: "Accessibility",
       reducedMotion: "Reduce Motion",
       reducedMotionNote: "Turns off confetti and animated effects.",
+      textSize: "Text size",
+      textSizeDefault: "Default",
+      textSizeLarge: "Large",
+      textSizeXL: "Extra large",
       reducedMotionSystem: "System",
       reducedMotionOn: "On",
       reducedMotionOff: "Off",
@@ -590,6 +610,7 @@ export const translations = {
       learningNotStartedText: "Ready to start? Try your first lesson in Learn.",
       skillGateLockedText: "Finish {n} more lessons to unlock Side Quests and Ranked Mode.",
       streakMilestoneText: "{streak}-day streak! Just {n} more days until you unlock {reward}.",
+      streakMilestoneTextSingular: "{streak}-day streak! Just {n} more day until you unlock {reward}.",
       rankedShieldActiveText: "You have a promotion shield ({n} left) — a great time to take a risk in Ranked.",
       rankedToughStretchText: "Ranked's been a bit tough lately — maybe try a Side Quest or two before your next match.",
       rankedGoodWinRateText: "Nice! Your Ranked win rate is {n}% — keep it up.",
@@ -603,7 +624,7 @@ export const translations = {
   es: {
     appName: "Code Quest",
     back: "Atrás",
-    backToModes: "Modos",
+    backToModes: "Inicio",
     backToWorlds: "Mundos",
     backToAllQuests: "Todas las Misiones",
 
@@ -618,6 +639,7 @@ export const translations = {
       nudgeTitle: "¿Listo para tu primera lección?",
       nudgeDesc: "Toca Aprender abajo para elegir un lenguaje y comenzar!",
       leisureLabel: "¿Necesitas un descanso?",
+      kernelDashCta: "Jugar →",
       learningTitle: "Modo Aprendizaje",
       learningDesc: "150 mundos, un tema a la vez — ¡con calma, paso a paso!",
       sidequestTitle: "Misiones Secundarias",
@@ -703,6 +725,7 @@ export const translations = {
 
     codeChallenge: {
       run: "▶ Ejecutar Código",
+      editorLabel: "Editor de código",
       running: "⏳ Ejecutando...",
       success: "🎉 ¡Excelente trabajo! Salida:",
       continue: "Continuar →",
@@ -714,6 +737,7 @@ export const translations = {
       compiling: "Compilando en línea… puede tardar unos segundos.",
       packageNote: "La primera ejecución carga {package} (varios MB) — puede tardar un momento, luego queda en caché.",
       loadingPackage: "Cargando paquete…",
+      loadingPython: "Cargando Python (solo la primera vez)…",
       htmlNote: "Tu HTML/CSS se renderiza en una vista previa real y aislada — los scripts no se ejecutan, pero el diseño y los estilos son genuinos.",
       rendering: "Renderizando vista previa…",
       hintBtn: "Pista",
@@ -760,6 +784,7 @@ export const translations = {
 
     primer: {
       gotIt: "¡Entendido! →",
+      skip: "Saltar — ir a mi primera lección →",
       keyTermLabel: "Recuerda esta palabra:",
 
       codeTitle: "¿Qué es el código?",
@@ -821,6 +846,7 @@ export const translations = {
     },
 
     rankedHome: {
+      lpTooltip: "LP = Puntos de Liga (League Points), se obtienen ganando partidas clasificatorias",
       pointsToNext: "PL para la siguiente división",
       maxTier: "¡Has alcanzado el rango máximo!",
       wins: "Victorias",
@@ -987,6 +1013,7 @@ export const translations = {
       title: "Carrera por el Kernel",
       subtitle: "¡Corre por el Kernel — salta bugs, agáchate ante errores, esquiva muros!",
       controlsHint: "↑ / deslizar arriba: saltar · ↓ / deslizar abajo: agacharse · ← →: cambiar de carril",
+      easyMode: "🐢 Modo fácil (más lento)",
       start: "Comenzar Carrera",
       playAgain: "Correr de Nuevo",
       score: "Puntos",
@@ -1013,6 +1040,12 @@ export const translations = {
       tag_career: "Carrera Profesional",
     },
 
+    parentLock: {
+      title: "Comprobación parental",
+      question: "¿Cuánto es {a} + {b}?",
+      wrong: "No es correcto — prueba con este.",
+    },
+
     skillGate: {
       title: "Todavía no desbloqueado",
       body: "Termina {need} lecciones en el Modo Aprendizaje para desbloquear esto — vas {done}/{need}.",
@@ -1036,7 +1069,8 @@ export const translations = {
       displayName: "Nombre para mostrar",
       logIn: "Iniciar Sesión",
       signUp: "Registrarse",
-      continueAsGuest: "Continuar como Invitado →",
+      continueAsGuest: "Empezar a jugar (sin cuenta) →",
+      orDivider: "o",
       needAccount: "¿No tienes cuenta? Regístrate",
       haveAccount: "¿Ya tienes cuenta? Inicia sesión",
       signOut: "Cerrar Sesión",
@@ -1087,9 +1121,16 @@ export const translations = {
       themeDark: "Oscuro",
       codingLanguage: "Lenguaje de Programación",
       language: "Idioma de la App",
+      lessonsEnglishOnly: "Las lecciones están en inglés. Solo los menús y botones de la app están traducidos.",
+      parentLock: "🔒 Bloqueo parental",
+      parentLockNote: "Pide resolver una suma sencilla antes de abrir Ajustes o Cuenta — evita que un niño pequeño cambie algo al tocar la pantalla al azar.",
       accessibility: "Accesibilidad",
       reducedMotion: "Reducir Movimiento",
       reducedMotionNote: "Desactiva el confeti y los efectos animados.",
+      textSize: "Tamaño del texto",
+      textSizeDefault: "Predeterminado",
+      textSizeLarge: "Grande",
+      textSizeXL: "Extra grande",
       reducedMotionSystem: "Sistema",
       reducedMotionOn: "Activado",
       reducedMotionOff: "Desactivado",
@@ -1174,6 +1215,7 @@ export const translations = {
       learningNotStartedText: "¿Listo para empezar? Prueba tu primera lección en Aprender.",
       skillGateLockedText: "Termina {n} lecciones más para desbloquear Misiones Secundarias y el Modo Clasificado.",
       streakMilestoneText: "¡Racha de {streak} días! Solo {n} días más para desbloquear {reward}.",
+      streakMilestoneTextSingular: "¡Racha de {streak} días! Solo {n} día más para desbloquear {reward}.",
       rankedShieldActiveText: "Tienes un escudo de ascenso ({n} restantes) — buen momento para arriesgarte en Clasificado.",
       rankedToughStretchText: "El Modo Clasificado ha estado difícil últimamente — prueba una Misión Secundaria antes de tu próxima partida.",
       rankedGoodWinRateText: "¡Bien! Tu tasa de victorias en Clasificado es del {n}% — sigue así.",
@@ -1187,7 +1229,7 @@ export const translations = {
   "zh-TW": {
     appName: "Code Quest",
     back: "返回",
-    backToModes: "模式",
+    backToModes: "首頁",
     backToWorlds: "世界",
     backToAllQuests: "所有支線任務",
 
@@ -1202,6 +1244,7 @@ export const translations = {
       nudgeTitle: "準備好上第一堂課了嗎？",
       nudgeDesc: "點選下方的「學習」選擇語言，開始學習吧！",
       leisureLabel: "需要休息一下嗎？",
+      kernelDashCta: "開始遊玩 →",
       learningTitle: "學習模式",
       learningDesc: "150 個世界，一次專注一個主題——慢慢來，穩紮穩打！",
       sidequestTitle: "支線任務",
@@ -1287,6 +1330,7 @@ export const translations = {
 
     codeChallenge: {
       run: "▶ 執行程式碼",
+      editorLabel: "程式碼編輯器",
       running: "⏳ 執行中...",
       success: "🎉 太棒了！輸出：",
       continue: "繼續 →",
@@ -1298,6 +1342,7 @@ export const translations = {
       compiling: "正在線上編譯…可能需要幾秒鐘。",
       packageNote: "第一次執行會載入 {package}（幾 MB）——可能需要一點時間，之後就會被快取。",
       loadingPackage: "正在載入套件…",
+      loadingPython: "正在載入 Python（僅限第一次）…",
       htmlNote: "你的 HTML/CSS 會在真實的沙盒預覽中渲染——腳本不會執行，但版面配置與樣式都是真實的。",
       rendering: "正在渲染預覽…",
       hintBtn: "提示",
@@ -1344,6 +1389,7 @@ export const translations = {
 
     primer: {
       gotIt: "了解了！→",
+      skip: "跳過 — 直接開始第一課 →",
       keyTermLabel: "記住這個詞：",
 
       codeTitle: "什麼是程式碼？",
@@ -1405,6 +1451,7 @@ export const translations = {
     },
 
     rankedHome: {
+      lpTooltip: "LP = 聯賽點數，贏得排名賽即可獲得",
       pointsToNext: "LP 即可晉級",
       maxTier: "你已達到最高段位！",
       wins: "勝場",
@@ -1571,6 +1618,7 @@ export const translations = {
       title: "核心狂奔",
       subtitle: "在核心城中狂奔——跳過蟲蟲、躲過錯誤、閃避牆壁！",
       controlsHint: "↑／上滑：跳躍．↓／下滑：下蹲．←→：切換車道",
+      easyMode: "🐢 簡易模式（較慢）",
       start: "開始奔跑",
       playAgain: "再跑一次",
       score: "分數",
@@ -1597,6 +1645,12 @@ export const translations = {
       tag_career: "職涯發展",
     },
 
+    parentLock: {
+      title: "家長驗證",
+      question: "{a} + {b} 等於多少？",
+      wrong: "不對喔 — 再試試這個。",
+    },
+
     skillGate: {
       title: "尚未解鎖",
       body: "在學習模式中完成 {need} 堂課即可解鎖——你目前是 {done}/{need}。",
@@ -1620,7 +1674,8 @@ export const translations = {
       displayName: "顯示名稱",
       logIn: "登入",
       signUp: "註冊",
-      continueAsGuest: "以訪客身分繼續 →",
+      continueAsGuest: "立即開始遊玩（免帳號） →",
+      orDivider: "或",
       needAccount: "還沒有帳號？註冊",
       haveAccount: "已經有帳號了？登入",
       signOut: "登出",
@@ -1670,9 +1725,16 @@ export const translations = {
       themeDark: "深色",
       codingLanguage: "程式語言",
       language: "應用程式語言",
+      lessonsEnglishOnly: "課程內容為英文。僅應用程式本身的選單與按鈕已翻譯。",
+      parentLock: "🔒 家長鎖定",
+      parentLockNote: "開啟「設定」或「帳戶」前需先回答一個簡單算式——避免幼兒隨意觸碰畫面而不小心更改設定。",
       accessibility: "無障礙設定",
       reducedMotion: "減少動態效果",
       reducedMotionNote: "關閉彩帶特效與動畫效果。",
+      textSize: "文字大小",
+      textSizeDefault: "預設",
+      textSizeLarge: "大",
+      textSizeXL: "特大",
       reducedMotionSystem: "系統預設",
       reducedMotionOn: "開啟",
       reducedMotionOff: "關閉",
@@ -1757,6 +1819,7 @@ export const translations = {
       learningNotStartedText: "準備好開始了嗎？到「學習」試試你的第一堂課。",
       skillGateLockedText: "再完成 {n} 堂課就能解鎖支線任務和排名模式。",
       streakMilestoneText: "連續 {streak} 天了！再過 {n} 天就能解鎖 {reward}。",
+      streakMilestoneTextSingular: "連續 {streak} 天了！再過 {n} 天就能解鎖 {reward}。",
       rankedShieldActiveText: "你有一個晉級護盾（剩 {n} 場）——現在是在排名模式放手一搏的好時機。",
       rankedToughStretchText: "最近排名模式打得比較辛苦——下一場對戰前，不妨先玩個支線任務。",
       rankedGoodWinRateText: "太棒了！你的排名勝率是 {n}%——繼續保持。",
@@ -1770,7 +1833,7 @@ export const translations = {
   ko: {
     appName: "Code Quest",
     back: "뒤로",
-    backToModes: "모드",
+    backToModes: "홈",
     backToWorlds: "월드",
     backToAllQuests: "모든 퀘스트",
 
@@ -1785,6 +1848,7 @@ export const translations = {
       nudgeTitle: "첫 레슨을 시작할 준비가 됐나요?",
       nudgeDesc: "아래의 학습 탭을 눌러 언어를 선택하고 시작해보세요!",
       leisureLabel: "잠깐 쉬고 싶나요?",
+      kernelDashCta: "플레이하기 →",
       learningTitle: "학습 모드",
       learningDesc: "150개의 월드, 한 번에 한 주제씩 — 천천히, 꾸준하게!",
       sidequestTitle: "사이드 퀘스트",
@@ -1870,6 +1934,7 @@ export const translations = {
 
     codeChallenge: {
       run: "▶ 코드 실행",
+      editorLabel: "코드 편집기",
       running: "⏳ 실행 중...",
       success: "🎉 정말 잘했어요! 출력:",
       continue: "계속하기 →",
@@ -1881,6 +1946,7 @@ export const translations = {
       compiling: "온라인에서 컴파일 중… 몇 초 걸릴 수 있어요.",
       packageNote: "처음 실행하면 {package}를 불러와요 (몇 MB 정도) — 잠깐 걸릴 수 있고, 이후엔 캐시돼요.",
       loadingPackage: "패키지 불러오는 중…",
+      loadingPython: "Python 불러오는 중 (처음 한 번만)…",
       htmlNote: "HTML/CSS는 실제 샌드박스 미리보기에서 렌더링돼요 — 스크립트는 실행되지 않지만 레이아웃과 스타일은 진짜예요.",
       rendering: "미리보기 렌더링 중…",
       hintBtn: "힌트",
@@ -1927,6 +1993,7 @@ export const translations = {
 
     primer: {
       gotIt: "알겠어요! →",
+      skip: "건너뛰기 — 첫 수업으로 바로 가기 →",
       keyTermLabel: "이 단어를 기억하세요:",
 
       codeTitle: "코드란 무엇인가요?",
@@ -1988,6 +2055,7 @@ export const translations = {
     },
 
     rankedHome: {
+      lpTooltip: "LP = 리그 포인트, 랭크 매치에서 승리하면 얻을 수 있어요",
       pointsToNext: "다음 등급까지 LP",
       maxTier: "최고 등급에 도달했어요!",
       wins: "승",
@@ -2154,6 +2222,7 @@ export const translations = {
       title: "커널 대시",
       subtitle: "커널을 가로질러 달려요 — 버그는 점프, 에러는 숙이고, 벽은 피해요!",
       controlsHint: "↑ / 위로 스와이프: 점프 · ↓ / 아래로 스와이프: 숙이기 · ← →: 차선 변경",
+      easyMode: "🐢 쉬운 모드 (느리게)",
       start: "달리기 시작",
       playAgain: "다시 달리기",
       score: "점수",
@@ -2180,6 +2249,12 @@ export const translations = {
       tag_career: "커리어",
     },
 
+    parentLock: {
+      title: "부모 확인",
+      question: "{a} + {b}는 얼마일까요?",
+      wrong: "아니에요 — 이 문제를 풀어보세요.",
+    },
+
     skillGate: {
       title: "아직 잠겨 있어요",
       body: "학습 모드에서 {need}개 레슨을 완료하면 잠금이 풀려요 — 현재 {done}/{need}.",
@@ -2203,7 +2278,8 @@ export const translations = {
       displayName: "표시 이름",
       logIn: "로그인",
       signUp: "회원가입",
-      continueAsGuest: "게스트로 계속하기 →",
+      continueAsGuest: "계정 없이 바로 시작하기 →",
+      orDivider: "또는",
       needAccount: "계정이 없으신가요? 회원가입",
       haveAccount: "이미 계정이 있으신가요? 로그인",
       signOut: "로그아웃",
@@ -2253,9 +2329,16 @@ export const translations = {
       themeDark: "다크 모드",
       codingLanguage: "프로그래밍 언어",
       language: "앱 언어",
+      lessonsEnglishOnly: "수업 내용은 영어로 되어 있어요. 앱 자체의 메뉴와 버튼만 번역되어 있어요.",
+      parentLock: "🔒 부모 잠금",
+      parentLockNote: "설정이나 계정을 열기 전에 간단한 덧셈 문제를 풀어야 해요 — 어린 아이가 화면을 마음대로 눌러 설정이 바뀌는 걸 막아줘요.",
       accessibility: "접근성",
       reducedMotion: "움직임 줄이기",
       reducedMotionNote: "색종이 효과와 애니메이션 효과를 꺼요.",
+      textSize: "글자 크기",
+      textSizeDefault: "기본",
+      textSizeLarge: "크게",
+      textSizeXL: "아주 크게",
       reducedMotionSystem: "시스템 설정",
       reducedMotionOn: "켜기",
       reducedMotionOff: "끄기",
@@ -2340,6 +2423,7 @@ export const translations = {
       learningNotStartedText: "시작할 준비 됐나요? 학습 탭에서 첫 레슨을 해보세요.",
       skillGateLockedText: "{n}개 레슨만 더 끝내면 사이드 퀘스트와 랭크 모드가 열려요.",
       streakMilestoneText: "{streak}일 연속 학습 중! {n}일만 더 지나면 {reward}을(를) 얻을 수 있어요.",
+      streakMilestoneTextSingular: "{streak}일 연속 학습 중! {n}일만 더 지나면 {reward}을(를) 얻을 수 있어요.",
       rankedShieldActiveText: "승급 방패가 있어요 ({n}경기 남음) — 랭크에서 과감하게 도전해볼 좋은 기회예요.",
       rankedToughStretchText: "요즘 랭크 경기가 좀 힘드셨죠 — 다음 경기 전에 사이드 퀘스트를 한두 개 해보는 건 어때요?",
       rankedGoodWinRateText: "좋아요! 랭크 승률이 {n}%예요 — 계속 이 기세를 유지해요.",

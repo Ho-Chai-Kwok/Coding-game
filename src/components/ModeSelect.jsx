@@ -1,5 +1,5 @@
-import { useI18n } from "../i18n/I18nContext";
-import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/useI18n";
+import { useAuth } from "../auth/useAuth";
 import CharacterBadge from "./CharacterBadge";
 
 // What the player's Byteborn is doing on the Home dashboard, picked from
@@ -112,7 +112,10 @@ export default function ModeSelect({
           <span className="kernel-dash-card__label">{t("modeSelect.leisureLabel")}</span>
           <span className="kernel-dash-card__name">{t("kernelDash.title")}</span>
         </div>
-        <span className="kernel-dash-card__cta">{t("modeSelect.continueButton")}</span>
+        {/* CQ-14: this is a casual arcade mode with no "progress" to
+            resume, so it always says "Play", never "Continue" — unlike
+            the learning-path continue-card above. */}
+        <span className="kernel-dash-card__cta">{t("modeSelect.kernelDashCta")}</span>
       </button>
     </div>
   );

@@ -49,12 +49,17 @@
 }
 
 .bottom-nav__tab--active {
-  color: var(--accent);
+  /* CQ-10c: --accent directly as text on --bg was 2.62:1 in light mode
+     (confirmed with a real relative-luminance calculation) — WCAG AA
+     needs 4.5:1 for this size of text. --accent-text is a separate token
+     from --accent itself (which stays as the brand color for buttons/
+     borders, where contrast against --bg isn't what matters). */
+  color: var(--accent-text);
 }
 
 .bottom-nav__icon {
   position: relative;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -67,12 +72,12 @@
   position: absolute;
   top: -6px;
   right: -8px;
-  font-size: 10px;
+  font-size: 0.625rem;
   line-height: 1;
 }
 
 .bottom-nav__label {
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   letter-spacing: 0.1px;
 }
@@ -172,7 +177,7 @@ button:not(:disabled):active {
   background: none;
   border: none;
   color: var(--accent);
-  font-size: 15px;
+  font-size: 0.9375rem;
   cursor: pointer;
   padding: 4px 0;
   margin-bottom: 8px;
@@ -189,7 +194,7 @@ button:not(:disabled):active {
 .mode-select__header p {
   margin-top: -16px;
   margin-bottom: 32px;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 /* --- Dashboard: profile, streak, progress, continue card --- */
@@ -218,7 +223,7 @@ button:not(:disabled):active {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 1.75rem;
   animation: float-bob 3s ease-in-out infinite;
 }
 
@@ -230,14 +235,14 @@ button:not(:disabled):active {
 
 .mode-select__welcome {
   font-family: var(--heading);
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: var(--text-h);
 }
 
 .mode-select__streak {
   align-self: flex-start;
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   font-weight: 700;
   background: var(--accent-bg);
@@ -274,7 +279,7 @@ button:not(:disabled):active {
 
 .mode-select__progress-label {
   margin-top: 6px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   text-align: left;
 }
@@ -302,7 +307,7 @@ button:not(:disabled):active {
 }
 
 .continue-card__icon {
-  font-size: 32px;
+  font-size: 2rem;
   flex-shrink: 0;
 }
 
@@ -314,7 +319,7 @@ button:not(:disabled):active {
 }
 
 .continue-card__label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0.85;
@@ -323,14 +328,14 @@ button:not(:disabled):active {
 
 .continue-card__world {
   font-family: var(--heading);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
 }
 
 .continue-card__cta {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 
@@ -357,7 +362,7 @@ button:not(:disabled):active {
 }
 
 .kernel-dash-card__icon {
-  font-size: 32px;
+  font-size: 2rem;
   flex-shrink: 0;
 }
 
@@ -369,7 +374,7 @@ button:not(:disabled):active {
 }
 
 .kernel-dash-card__label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0.85;
@@ -378,14 +383,14 @@ button:not(:disabled):active {
 
 .kernel-dash-card__name {
   font-family: var(--heading);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
 }
 
 .kernel-dash-card__cta {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 
@@ -402,7 +407,7 @@ button:not(:disabled):active {
 
 .mode-select__nudge-bounce {
   display: inline-block;
-  font-size: 28px;
+  font-size: 1.75rem;
   animation: nudge-bounce 1.4s ease-in-out infinite;
 }
 
@@ -419,13 +424,13 @@ button:not(:disabled):active {
   margin-top: 8px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: var(--text-h);
 }
 
 .mode-select__nudge-desc {
   margin-top: 4px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
 }
 
@@ -492,7 +497,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 6px 16px;
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -520,7 +525,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 7px 18px;
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text-h);
   background: var(--code-bg);
@@ -540,20 +545,20 @@ button:not(:disabled):active {
 }
 
 .mode-card__icon {
-  font-size: 48px;
+  font-size: 3rem;
   line-height: 1;
   animation: float-bob 3s ease-in-out infinite;
 }
 
 .mode-card__title {
   font-family: var(--heading);
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   letter-spacing: -0.2px;
 }
 
 .mode-card__desc {
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   opacity: 0.95;
   max-width: 220px;
   line-height: 1.4;
@@ -584,7 +589,7 @@ button:not(:disabled):active {
 
 .world-map__chapter-title {
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--accent);
   text-align: left;
@@ -633,7 +638,7 @@ button:not(:disabled):active {
 }
 
 .world-card__icon {
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 1;
   margin-bottom: 2px;
 }
@@ -641,12 +646,12 @@ button:not(:disabled):active {
 .world-card__name {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 1.0625rem;
   letter-spacing: -0.1px;
 }
 
 .world-card__progress {
-  font-size: 12px;
+  font-size: 0.75rem;
   opacity: 0.9;
 }
 
@@ -675,7 +680,7 @@ button:not(:disabled):active {
   border-radius: 50%;
   background: #fff;
   color: #16a34a;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -690,7 +695,7 @@ button:not(:disabled):active {
   padding: 3px 9px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.28);
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 700;
   letter-spacing: 0.2px;
   text-transform: uppercase;
@@ -707,7 +712,7 @@ button:not(:disabled):active {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 6px 14px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   font-family: var(--sans);
   color: var(--text);
@@ -741,7 +746,7 @@ button:not(:disabled):active {
 }
 
 .level-map__world-icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1;
   display: inline-block;
   animation: float-bob 3s ease-in-out infinite;
@@ -760,7 +765,7 @@ button:not(:disabled):active {
 }
 
 .level-map__encouragement {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--accent);
   font-weight: 600;
   margin-bottom: 24px;
@@ -839,7 +844,7 @@ button:not(:disabled):active {
   background: var(--bg);
   border: 2px solid var(--border);
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   min-width: 18px;
   height: 18px;
@@ -850,12 +855,12 @@ button:not(:disabled):active {
 }
 
 .level-node__badge {
-  font-size: 26px;
+  font-size: 1.625rem;
   line-height: 1;
 }
 
 .level-node__title {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--text);
   max-width: 76px;
@@ -875,12 +880,24 @@ button:not(:disabled):active {
   gap: 12px;
 }
 
+.level-screen__title {
+  font-size: 1.625rem;
+  line-height: 118%;
+  letter-spacing: -0.2px;
+  margin: 0 0 8px;
+}
+@media (max-width: 1024px) {
+  .level-screen__title {
+    font-size: 1.3125rem;
+  }
+}
+
 .level-screen__back {
   align-self: flex-start;
   background: none;
   border: none;
   color: var(--accent);
-  font-size: 15px;
+  font-size: 0.9375rem;
   cursor: pointer;
   padding: 4px 0;
   margin-bottom: 16px;
@@ -907,7 +924,7 @@ button:not(:disabled):active {
 
 .tutorial-card__label {
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--accent);
   text-transform: uppercase;
@@ -916,7 +933,7 @@ button:not(:disabled):active {
 
 .tutorial-card__text {
   color: var(--text-h);
-  font-size: 14.5px;
+  font-size: 1rem; /* CQ-09: minimum 16px for body text at Default */
   line-height: 1.5;
 }
 
@@ -931,7 +948,7 @@ button:not(:disabled):active {
 
 .tutorial-card__example code {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 1rem; /* CQ-09: minimum 16px for body text at Default */
   line-height: 1.5;
   color: var(--text-h);
   background: none;
@@ -1015,7 +1032,7 @@ button:not(:disabled):active {
   width: 100%;
   box-sizing: border-box;
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 1rem; /* CQ-09: minimum 16px for the editor at Default */
   line-height: 1.5;
   padding: 16px 18px;
   border: none;
@@ -1035,7 +1052,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 13px 30px;
   font-family: var(--heading);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -1069,7 +1086,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 10px 18px;
   font-family: var(--sans);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -1117,7 +1134,7 @@ button:not(:disabled):active {
 
 .code-challenge__result-title {
   font-family: var(--heading);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--text-h);
 }
@@ -1128,13 +1145,13 @@ button:not(:disabled):active {
 
 .code-challenge__result-detail {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   white-space: pre-wrap;
 }
 
 .code-challenge__hint {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   text-align: center;
 }
@@ -1147,7 +1164,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 9px 18px;
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -1173,7 +1190,7 @@ button:not(:disabled):active {
 }
 
 .code-challenge__diff-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -1183,7 +1200,7 @@ button:not(:disabled):active {
 
 .code-challenge__diff-value {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-h);
   white-space: pre-wrap;
   word-break: break-word;
@@ -1198,7 +1215,7 @@ button:not(:disabled):active {
 
 .code-challenge__diff-note {
   margin: 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   opacity: 0.85;
 }
@@ -1209,13 +1226,13 @@ button:not(:disabled):active {
   color: var(--text);
   opacity: 0.75;
   text-decoration: underline;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
   padding: 2px 0;
 }
 
 .code-challenge__result-detail--raw {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   opacity: 0.75;
 }
 
@@ -1225,7 +1242,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 12px 28px;
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -1252,7 +1269,7 @@ button:not(:disabled):active {
 .quiz-challenge__recap-badge {
   align-self: center;
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
   color: #fff;
   background: linear-gradient(155deg, #fb923c, #ea580c);
@@ -1265,7 +1282,7 @@ button:not(:disabled):active {
 .quiz-challenge__instructions {
   color: var(--text);
   text-align: center;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .quiz-challenge__question {
@@ -1273,7 +1290,7 @@ button:not(:disabled):active {
   color: var(--text-h);
   text-align: center;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .quiz-challenge__options {
@@ -1284,7 +1301,7 @@ button:not(:disabled):active {
 
 .quiz-challenge__option {
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 0.875rem;
   text-align: left;
   padding: 14px 18px;
   border-radius: 16px;
@@ -1335,7 +1352,7 @@ button:not(:disabled):active {
 
 .quiz-challenge__feedback-title {
   font-family: var(--heading);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--text-h);
 }
@@ -1345,7 +1362,7 @@ button:not(:disabled):active {
 }
 
 .quiz-challenge__explanation {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
 }
 
@@ -1356,7 +1373,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 12px 28px;
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -1386,7 +1403,7 @@ button:not(:disabled):active {
 }
 
 .level-screen__ranked-hint {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   opacity: 0.8;
 }
@@ -1400,7 +1417,7 @@ button:not(:disabled):active {
   border: none;
   border-radius: 999px;
   padding: 12px 22px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   color: #fff;
@@ -1446,18 +1463,18 @@ button:not(:disabled):active {
 }
 
 .ranked-home__badge-icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1;
 }
 
 .ranked-home__tier {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.3px;
 }
 
 .ranked-home__points {
-  font-size: 13px;
+  font-size: 0.8125rem;
   opacity: 0.9;
 }
 
@@ -1482,7 +1499,7 @@ button:not(:disabled):active {
 
 .ranked-home__progress-label {
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
 }
 
@@ -1505,13 +1522,13 @@ button:not(:disabled):active {
 }
 
 .ranked-home__stat-value {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-h);
 }
 
 .ranked-home__stat-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text);
   opacity: 0.8;
 }
@@ -1520,7 +1537,7 @@ button:not(:disabled):active {
   border: none;
   border-radius: 999px;
   padding: 16px 36px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -1542,7 +1559,7 @@ button:not(:disabled):active {
 
 .ranked-home__guest-gate-text {
   max-width: 320px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text);
   text-align: center;
   line-height: 1.5;
@@ -1567,12 +1584,12 @@ button:not(:disabled):active {
 }
 
 .skill-gate__icon {
-  font-size: 34px;
+  font-size: 2.125rem;
   line-height: 1;
 }
 
 .skill-gate__title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   color: var(--text);
   margin: 0;
@@ -1580,7 +1597,7 @@ button:not(:disabled):active {
 
 .skill-gate__body {
   max-width: 300px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text);
   opacity: 0.85;
   line-height: 1.5;
@@ -1604,7 +1621,7 @@ button:not(:disabled):active {
 }
 
 .skill-gate__progress-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text);
   opacity: 0.75;
@@ -1616,7 +1633,7 @@ button:not(:disabled):active {
   border: none;
   border-radius: 999px;
   padding: 12px 28px;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -1671,7 +1688,7 @@ button:not(:disabled):active {
 }
 
 .ranked-home__character-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text);
   opacity: 0.75;
 }
@@ -1679,13 +1696,13 @@ button:not(:disabled):active {
 .ranked-home__character-name {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--text-h);
 }
 
 .ranked-home__character-change {
   flex-shrink: 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: var(--accent);
 }
@@ -1713,7 +1730,7 @@ button:not(:disabled):active {
 }
 
 .character-badge__label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text-h);
 }
@@ -1734,7 +1751,7 @@ button:not(:disabled):active {
 }
 
 .quest-path__icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1;
   animation: float-bob 3s ease-in-out infinite;
 }
@@ -1786,7 +1803,7 @@ button:not(:disabled):active {
   background: var(--code-bg);
   cursor: pointer;
   font-family: var(--sans);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text-h);
   transition: transform 0.15s ease, border-color 0.15s ease;
@@ -1818,7 +1835,7 @@ button:not(:disabled):active {
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .quest-lesson-row--locked .quest-lesson-row__number {
@@ -1847,7 +1864,7 @@ button:not(:disabled):active {
   border-radius: 50%;
   width: 42px;
   height: 42px;
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -1885,7 +1902,7 @@ button:not(:disabled):active {
 
 .settings__section-title {
   font-family: var(--heading);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-h);
   margin: 0 0 12px;
@@ -1909,7 +1926,7 @@ button:not(:disabled):active {
   color: var(--text-h);
   font-family: var(--sans);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
@@ -1935,7 +1952,7 @@ button:not(:disabled):active {
   padding: 10px 22px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #fff;
   cursor: pointer;
   background: linear-gradient(155deg, #818cf8, #4f46e5);
@@ -1949,7 +1966,7 @@ button:not(:disabled):active {
   padding: 12px 16px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #c2410c;
   background: rgba(251, 146, 60, 0.12);
   cursor: pointer;
@@ -1957,7 +1974,7 @@ button:not(:disabled):active {
 
 .settings__label {
   display: block;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text);
   margin: 14px 0 6px;
@@ -1976,7 +1993,7 @@ button:not(:disabled):active {
   background: var(--code-bg);
   color: var(--text-h);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .settings__text-input:focus {
@@ -1996,7 +2013,7 @@ button:not(:disabled):active {
   border-radius: 16px;
   border: 2px solid var(--border);
   background: var(--code-bg);
-  font-size: 26px;
+  font-size: 1.625rem;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
@@ -2013,14 +2030,14 @@ button:not(:disabled):active {
 .settings__avatar-btn--locked {
   cursor: not-allowed;
   opacity: 0.7;
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .settings__avatar-day {
   position: absolute;
   bottom: 3px;
   right: 5px;
-  font-size: 9px;
+  font-size: 0.5625rem;
   font-weight: 800;
   font-family: var(--heading);
   color: var(--text);
@@ -2042,7 +2059,7 @@ button:not(:disabled):active {
   color: var(--text-h);
   font-family: var(--sans);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
@@ -2065,7 +2082,7 @@ button:not(:disabled):active {
 
 .settings__about-title {
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text);
   text-transform: uppercase;
@@ -2074,14 +2091,14 @@ button:not(:disabled):active {
 }
 
 .settings__about-text {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   opacity: 0.8;
   margin-top: 2px;
 }
 
 .settings__about-privacy {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text);
   opacity: 0.75;
   max-width: 340px;
@@ -2102,7 +2119,7 @@ button:not(:disabled):active {
 .auth-gate__loading {
   color: var(--text);
   font-family: var(--heading);
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .auth-gate__card {
@@ -2122,7 +2139,7 @@ button:not(:disabled):active {
 .auth-gate__subtitle {
   margin-top: -8px;
   color: var(--text);
-  font-size: 14.5px;
+  font-size: 0.9063rem;
 }
 
 .auth-gate__tabs {
@@ -2141,7 +2158,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   cursor: pointer;
 }
@@ -2166,7 +2183,7 @@ button:not(:disabled):active {
   background: var(--code-bg);
   color: var(--text-h);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .auth-gate__input:focus {
@@ -2176,12 +2193,12 @@ button:not(:disabled):active {
 
 .auth-gate__error {
   color: #c2410c;
-  font-size: 13px;
+  font-size: 0.8125rem;
   margin: 0;
 }
 
 .auth-gate__privacy-note {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text);
   opacity: 0.8;
   line-height: 1.5;
@@ -2195,7 +2212,7 @@ button:not(:disabled):active {
   padding: 13px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #fff;
   cursor: pointer;
   background: linear-gradient(155deg, #34d399, #0ea5e9);
@@ -2213,13 +2230,46 @@ button:not(:disabled):active {
   color: var(--accent);
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
   padding: 6px;
 }
 
+/* CQ-15: the primary CTA — same prominent treatment as .auth-gate__submit,
+   since playing as a guest is the main path, not a fallback link. */
+.auth-gate__guest-primary {
+  border: none;
+  border-radius: 999px;
+  padding: 13px;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(155deg, #34d399, #0ea5e9);
+  box-shadow: var(--shadow);
+}
+
+.auth-gate__divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  opacity: 0.6;
+  font-size: 0.7813rem;
+  text-transform: uppercase;
+}
+
+.auth-gate__divider::before,
+.auth-gate__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 .auth-gate__hint {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   opacity: 0.8;
 }
@@ -2239,7 +2289,7 @@ button:not(:disabled):active {
 }
 
 .calendar-screen__icon {
-  font-size: 36px;
+  font-size: 2.25rem;
   line-height: 1;
   animation: float-bob 3s ease-in-out infinite;
 }
@@ -2265,7 +2315,7 @@ button:not(:disabled):active {
 .calendar-screen__banner-title {
   font-family: var(--heading);
   font-weight: 800;
-  font-size: 16px;
+  font-size: 1rem;
   margin-bottom: 8px;
 }
 
@@ -2282,7 +2332,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 4px 12px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .calendar-screen__banner-dismiss {
@@ -2291,7 +2341,7 @@ button:not(:disabled):active {
   padding: 8px 20px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #fff;
   background: #b45309;
   cursor: pointer;
@@ -2321,7 +2371,7 @@ button:not(:disabled):active {
 
 .calendar-grid__weekday {
   text-align: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: var(--text);
   opacity: 0.7;
@@ -2334,13 +2384,13 @@ button:not(:disabled):active {
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text);
 }
 
 .calendar-grid__day--logged {
   background: var(--accent-bg);
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .calendar-grid__day--today {
@@ -2382,7 +2432,7 @@ button:not(:disabled):active {
 }
 
 .reward-row__icon {
-  font-size: 26px;
+  font-size: 1.625rem;
   flex-shrink: 0;
 }
 
@@ -2397,17 +2447,17 @@ button:not(:disabled):active {
 .reward-row__day {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-h);
 }
 
 .reward-row__desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text);
 }
 
 .reward-row__status {
-  font-size: 16px;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
@@ -2691,7 +2741,7 @@ button:not(:disabled):active {
 }
 
 .character-roster__count {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   font-weight: 700;
   margin-bottom: 20px;
@@ -2739,7 +2789,7 @@ button:not(:disabled):active {
 
 .character-card__tier {
   align-self: flex-end;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -2775,7 +2825,7 @@ button:not(:disabled):active {
   border: none;
   background: none;
   padding: 2px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1;
   border-radius: 6px;
   cursor: pointer;
@@ -2800,7 +2850,7 @@ button:not(:disabled):active {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 1.75rem;
   /* Sits inside a disabled <button> — without this it inherits the
      browser's default dimmed "disabled control" text color, which (unlike
      most CSS) also desaturates this emoji almost to invisibility instead
@@ -2812,14 +2862,14 @@ button:not(:disabled):active {
 
 .character-card__name {
   font-family: var(--heading);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: var(--text-h);
   margin: 2px 0 0;
 }
 
 .character-card__archetype {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--accent);
   font-weight: 700;
   text-transform: uppercase;
@@ -2828,14 +2878,14 @@ button:not(:disabled):active {
 }
 
 .character-card__ability {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text-h);
   line-height: 1.4;
   min-height: 34px;
 }
 
 .character-card__move-line {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text);
   opacity: 0.75;
   font-style: italic;
@@ -2850,7 +2900,7 @@ button:not(:disabled):active {
   padding: 9px 12px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #fff;
   cursor: pointer;
   background: linear-gradient(155deg, #818cf8, #4f46e5);
@@ -2866,7 +2916,7 @@ button:not(:disabled):active {
 }
 
 .character-card__unlock-hint {
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text);
   opacity: 0.85;
   line-height: 1.4;
@@ -2931,18 +2981,18 @@ button:not(:disabled):active {
 }
 
 .ranked-shuffle__reel-icon {
-  font-size: 52px;
+  font-size: 3.25rem;
   line-height: 1;
 }
 
 .ranked-shuffle__reel-name {
   font-family: var(--heading);
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
 .ranked-shuffle__hint {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text);
   animation: wiggle 1s ease infinite;
 }
@@ -2960,7 +3010,7 @@ button:not(:disabled):active {
 
 .ranked-shuffle__result-label {
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--accent);
   text-transform: uppercase;
@@ -2969,7 +3019,7 @@ button:not(:disabled):active {
 }
 
 .ranked-shuffle__result-desc {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   margin: 0;
 }
@@ -2985,7 +3035,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 11px 20px;
   font-family: var(--heading);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--accent);
   background: var(--accent-bg);
@@ -3002,7 +3052,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 13px 28px;
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -3044,7 +3094,7 @@ button:not(:disabled):active {
   background: var(--accent-bg);
   border: 1px solid var(--accent-border);
   color: var(--text-h);
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   text-align: center;
 }
@@ -3058,19 +3108,19 @@ button:not(:disabled):active {
 }
 
 .ranked-mode-screen__icon {
-  font-size: 40px;
+  font-size: 2.5rem;
   line-height: 1;
 }
 
 .ranked-mode-screen__round-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text);
 }
 
 .ranked-mode-screen__loading {
   margin-top: 24px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   opacity: 0.75;
   text-align: center;
@@ -3106,7 +3156,7 @@ button:not(:disabled):active {
 /* --- Ranked queue (real matchmaking) / waiting-for-opponent --- */
 
 .ranked-queue__spinner {
-  font-size: 44px;
+  font-size: 2.75rem;
   line-height: 1;
   margin-top: 8px;
   animation: ranked-queue-pulse 1.4s ease-in-out infinite;
@@ -3125,14 +3175,14 @@ button:not(:disabled):active {
 
 .ranked-queue__status {
   font-family: var(--heading);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-h);
   margin: 4px 0 0;
 }
 
 .ranked-queue__waited {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   opacity: 0.85;
   margin: 0 0 6px;
@@ -3140,7 +3190,7 @@ button:not(:disabled):active {
 
 .ranked-match-runner__match-limit {
   margin-top: 14px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   color: var(--text);
   opacity: 0.6;
   text-align: center;
@@ -3148,7 +3198,7 @@ button:not(:disabled):active {
 
 .ranked-queue__practice-hint {
   max-width: 320px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   opacity: 0.85;
   text-align: center;
@@ -3156,7 +3206,7 @@ button:not(:disabled):active {
 }
 
 .ranked-queue__error {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   text-align: center;
 }
@@ -3178,7 +3228,7 @@ button:not(:disabled):active {
   background: rgba(34, 197, 94, 0.12);
   border: 1px solid rgba(34, 197, 94, 0.4);
   color: var(--text-h);
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   text-align: center;
   animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -3186,7 +3236,7 @@ button:not(:disabled):active {
 
 .ranked-timer__label {
   font-family: var(--heading);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text-h);
   flex-shrink: 0;
@@ -3254,7 +3304,7 @@ button:not(:disabled):active {
 .ranked-result__stat-line {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   padding: 4px 4px;
 }
@@ -3264,14 +3314,14 @@ button:not(:disabled):active {
 }
 
 .ranked-result__bonus {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--accent);
   font-weight: 700;
 }
 
 .ranked-result__points {
   font-family: var(--heading);
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   margin-top: 2px;
 }
@@ -3290,7 +3340,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 13px 30px;
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -3323,7 +3373,7 @@ button:not(:disabled):active {
 
 .bug-hunt__prompt {
   text-align: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   margin: 0;
 }
@@ -3346,7 +3396,7 @@ button:not(:disabled):active {
   background: transparent;
   padding: 10px 14px;
   font-family: var(--mono);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text-h);
   cursor: pointer;
   text-align: left;
@@ -3386,7 +3436,7 @@ button:not(:disabled):active {
   width: 18px;
   color: var(--text);
   opacity: 0.6;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .bug-hunt__line-code {
@@ -3402,7 +3452,7 @@ button:not(:disabled):active {
 
 .bug-hunt__fix {
   font-family: var(--mono);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   text-align: left;
   padding: 12px 16px;
   border-radius: 14px;
@@ -3443,14 +3493,14 @@ button:not(:disabled):active {
 
 .bug-hunt__feedback-title {
   font-family: var(--heading);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-h);
   margin: 0;
 }
 
 .bug-hunt__explanation {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text);
   margin: 0;
 }
@@ -3461,7 +3511,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 11px 26px;
   font-family: var(--heading);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -3479,7 +3529,7 @@ button:not(:disabled):active {
 .code-golf__line-count {
   align-self: center;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--accent);
   margin: 0;
@@ -3490,7 +3540,7 @@ button:not(:disabled):active {
 .showdown__category {
   align-self: center;
   font-family: var(--heading);
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -3502,7 +3552,7 @@ button:not(:disabled):active {
 }
 
 .showdown__preview-hint {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text);
   animation: wiggle 1s ease infinite;
 }
@@ -3525,12 +3575,12 @@ button:not(:disabled):active {
 .chaos-round__modifier-name {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 0.9063rem;
   color: var(--text-h);
 }
 
 .chaos-round__modifier-desc {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
 }
 
@@ -3545,7 +3595,7 @@ button:not(:disabled):active {
 }
 
 .relay-coming-soon__emoji {
-  font-size: 44px;
+  font-size: 2.75rem;
   margin: 0;
   animation: float-bob 3s ease-in-out infinite;
 }
@@ -3583,7 +3633,7 @@ button:not(:disabled):active {
 }
 
 .error-boundary__icon {
-  font-size: 48px;
+  font-size: 3rem;
   line-height: 1;
   animation: float-bob 3s ease-in-out infinite;
 }
@@ -3605,7 +3655,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 13px 30px;
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -3621,7 +3671,7 @@ button:not(:disabled):active {
 /* --- Lazy-chunk loading fallback --- */
 
 .app-loading {
-  font-size: 44px;
+  font-size: 2.75rem;
   line-height: 1;
   margin-top: 20vh;
   animation: float-bob 1.2s ease-in-out infinite;
@@ -3665,7 +3715,7 @@ button:not(:disabled):active {
 .rank-change--down { border-color: #ef4444; }
 .rank-change--shield { border-color: #22d3ee; }
 .rank-change__sprite { width: 156px; height: 178px; margin-top: -8px; }
-.rank-change__title { margin: 0; font-family: var(--heading); font-size: 26px; color: var(--text-h); }
+.rank-change__title { margin: 0; font-family: var(--heading); font-size: 1.625rem; color: var(--text-h); }
 .rank-change__title-emoji { display: inline-block; }
 
 @media (max-width: 480px) {
@@ -3676,7 +3726,7 @@ button:not(:disabled):active {
   align-items: center;
   gap: 10px;
   font-family: var(--heading);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   color: var(--text-h);
 }
@@ -3704,7 +3754,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 13px 30px;
   font-family: var(--heading);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -3749,7 +3799,7 @@ button:not(:disabled):active {
 .auth-gate__legal,
 .settings__about-links {
   margin: 4px 0 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   text-align: center;
   color: var(--text);
 }
@@ -3761,7 +3811,7 @@ button:not(:disabled):active {
   padding: 9px 20px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #dc2626;
   background: transparent;
   cursor: pointer;
@@ -3785,7 +3835,7 @@ button:not(:disabled):active {
   padding: 9px 18px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 .settings__delete-confirm { border: none; color: #fff; background: #dc2626; }
@@ -3795,15 +3845,26 @@ button:not(:disabled):active {
 
 .settings__hint {
   margin: 4px 0 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   opacity: 0.8;
   line-height: 1.5;
 }
 
+.settings__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
 .settings__warning {
   margin: 4px 0 12px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: #b45309;
   line-height: 1.5;
 }
@@ -3824,7 +3885,7 @@ button:not(:disabled):active {
   background: var(--bg);
   border-left: 3px solid var(--accent);
   color: var(--text-h);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.5;
 }
 
@@ -3840,7 +3901,7 @@ button:not(:disabled):active {
   color: var(--accent);
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   cursor: pointer;
   text-decoration: underline;
 }
@@ -3855,7 +3916,7 @@ button:not(:disabled):active {
 
 .settings__password-success {
   margin-top: 10px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 700;
   color: #16a34a;
 }
@@ -3870,7 +3931,7 @@ button:not(:disabled):active {
   padding: 12px 16px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-h);
   background: var(--code-bg);
   cursor: pointer;
@@ -3909,7 +3970,7 @@ button:not(:disabled):active {
 
 .code-helper__subtitle {
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.5;
   margin: 0;
   max-width: 380px;
@@ -3922,7 +3983,7 @@ button:not(:disabled):active {
   padding: 7px 16px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text-h);
   background: var(--code-bg);
   cursor: pointer;
@@ -3936,7 +3997,7 @@ button:not(:disabled):active {
 
 .code-helper__turns {
   margin: 0 0 12px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 700;
   color: var(--text);
   opacity: 0.6;
@@ -3957,7 +4018,7 @@ button:not(:disabled):active {
   max-width: 88%;
   padding: 12px 16px;
   border-radius: 18px;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.55;
   animation: code-helper-bubble-in 0.2s ease both;
 }
@@ -4044,7 +4105,7 @@ button:not(:disabled):active {
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.15);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 0.75rem;
   white-space: pre-wrap;
   overflow-x: auto;
 }
@@ -4073,7 +4134,7 @@ button:not(:disabled):active {
   background: var(--code-bg);
   color: var(--text-h);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 0.875rem;
   resize: vertical;
   transition: border-color 0.15s ease;
 }
@@ -4086,14 +4147,14 @@ button:not(:disabled):active {
 .code-helper__counter {
   margin: 4px 0 0;
   text-align: right;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text);
   opacity: 0.6;
 }
 
 .code-helper__no-paste-hint {
   margin: 2px 0 0;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-style: italic;
   color: var(--text);
   opacity: 0.6;
@@ -4119,7 +4180,7 @@ button:not(:disabled):active {
   background: var(--code-bg);
   color: var(--text-h);
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.5;
   resize: vertical;
 }
@@ -4136,7 +4197,7 @@ button:not(:disabled):active {
   padding: 14px 20px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #fff;
   cursor: pointer;
   background: linear-gradient(155deg, #22d3ee, #0891b2);
@@ -4164,7 +4225,7 @@ button:not(:disabled):active {
 .code-helper__limit-reached p {
   margin: 0 0 10px;
   color: var(--text-h);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
 }
 
 .code-helper__guest-gate {
@@ -4177,7 +4238,7 @@ button:not(:disabled):active {
 
 .code-helper__guest-gate-text {
   max-width: 420px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text);
   line-height: 1.5;
 }
@@ -4192,7 +4253,7 @@ button:not(:disabled):active {
 
 .practice-problems__intro {
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.5;
   margin: 0 0 16px;
 }
@@ -4208,7 +4269,7 @@ button:not(:disabled):active {
   border: 2px solid var(--border);
   border-radius: 999px;
   padding: 6px 14px;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   font-weight: 700;
   color: var(--text-h);
   background: var(--code-bg);
@@ -4270,12 +4331,12 @@ button:not(:disabled):active {
   flex: 1;
   min-width: 120px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--text-h);
 }
 
 .practice-problems__row-topic {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text);
   opacity: 0.7;
 }
@@ -4284,7 +4345,7 @@ button:not(:disabled):active {
   display: inline-block;
   border-radius: 999px;
   padding: 3px 10px;
-  font-size: 10.5px;
+  font-size: 0.6563rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -4315,12 +4376,12 @@ button:not(:disabled):active {
 
 .practice-problems__detail h2 {
   margin: 10px 0 2px;
-  font-size: 19px;
+  font-size: 1.1875rem;
 }
 
 .practice-problems__topic-tag {
   margin: 0 0 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent);
 }
@@ -4328,7 +4389,7 @@ button:not(:disabled):active {
 .practice-problems__summary {
   margin: 0 0 14px;
   color: var(--text-h);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.55;
 }
 
@@ -4339,7 +4400,7 @@ button:not(:disabled):active {
   background: var(--accent-bg);
   border: 1px solid var(--accent-border);
   color: var(--text-h);
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.55;
 }
 
@@ -4353,7 +4414,7 @@ button:not(:disabled):active {
   padding: 9px 20px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #fff;
   text-decoration: none;
   background: linear-gradient(155deg, #ffa116, #b98815);
@@ -4362,7 +4423,7 @@ button:not(:disabled):active {
 
 .practice-problems__skills-title {
   margin: 20px 0 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-h);
 }
 
@@ -4383,19 +4444,19 @@ button:not(:disabled):active {
 }
 
 .practice-problems__skill-icon {
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1;
 }
 
 .practice-problems__skill-name {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text-h);
 }
 
 .practice-problems__skill-locked {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text);
   opacity: 0.7;
   text-align: right;
@@ -4405,7 +4466,7 @@ button:not(:disabled):active {
   border: none;
   border-radius: 999px;
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #fff;
   background: linear-gradient(155deg, #22d3ee, #0891b2);
@@ -4415,7 +4476,7 @@ button:not(:disabled):active {
 
 .practice-problems__empty {
   color: var(--text);
-  font-size: 13px;
+  font-size: 0.8125rem;
   text-align: center;
   padding: 20px 0;
 }
@@ -4439,14 +4500,14 @@ button:not(:disabled):active {
   margin-top: 6px;
   padding: 3px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.25);
 }
 .language-select__note {
   max-width: 560px;
   margin: 18px auto 0;
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   line-height: 1.5;
   text-align: center;
   color: var(--text);
@@ -4472,9 +4533,9 @@ button:not(:disabled):active {
 .code-challenge--html .code-challenge__editor-frame { border-color: rgba(227, 76, 38, 0.5); }
 .code-challenge--html .code-challenge__editor-frame:focus-within { border-color: #e34c26; }
 .code-challenge--html .code-challenge__run { background: linear-gradient(155deg, #f06529, #e34c26); }
-.code-challenge__online-note { margin: 6px 0 0; font-size: 12px; text-align: center; color: var(--text); }
-.code-challenge__loading { text-align: center; font-size: 28px; }
-.ranked-home__note { margin: 0; font-size: 12.5px; line-height: 1.45; text-align: center; color: var(--text); }
+.code-challenge__online-note { margin: 6px 0 0; font-size: 0.75rem; text-align: center; color: var(--text); }
+.code-challenge__loading { text-align: center; font-size: 1.75rem; }
+.ranked-home__note { margin: 0; font-size: 0.7813rem; line-height: 1.45; text-align: center; color: var(--text); }
 
 /* --- Terminal challenge (interactive command-line simulator) --- */
 .terminal-challenge {
@@ -4505,7 +4566,7 @@ button:not(:disabled):active {
 .terminal__title {
   margin-left: 10px;
   font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #9ca3af;
 }
 
@@ -4514,7 +4575,7 @@ button:not(:disabled):active {
   overflow-y: auto;
   padding: 12px 14px;
   font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 
@@ -4557,7 +4618,7 @@ button:not(:disabled):active {
   background: transparent;
   color: #f9fafb;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 0.8125rem;
   caret-color: #4ade80;
 }
 
@@ -4618,7 +4679,7 @@ button:not(:disabled):active {
 
 .onboarding__header h1 {
   font-family: var(--heading);
-  font-size: 26px;
+  font-size: 1.625rem;
   margin-bottom: 6px;
 }
 
@@ -4655,7 +4716,7 @@ button:not(:disabled):active {
 }
 
 .onboarding__card-icon {
-  font-size: 34px;
+  font-size: 2.125rem;
   line-height: 1;
   animation: float-bob 3s ease-in-out infinite;
 }
@@ -4663,12 +4724,12 @@ button:not(:disabled):active {
 .onboarding__card-title {
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--text-h);
 }
 
 .onboarding__card-desc {
-  font-size: 12.5px;
+  font-size: 0.7813rem;
   color: var(--text);
   line-height: 1.4;
 }
@@ -4699,20 +4760,20 @@ button:not(:disabled):active {
 }
 
 .onboarding__summary-icon {
-  font-size: 52px;
+  font-size: 3.25rem;
   animation: float-bob 2.4s ease-in-out infinite;
 }
 
 .onboarding__summary h1 {
   font-family: var(--heading);
-  font-size: 26px;
+  font-size: 1.625rem;
   margin: 0;
 }
 
 .onboarding__summary-message {
   max-width: 480px;
   color: var(--text);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.6;
 }
 
@@ -4728,7 +4789,7 @@ button:not(:disabled):active {
   margin: 0 0 10px;
   font-weight: 700;
   color: var(--text-h);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .onboarding__recommend-list {
@@ -4743,7 +4804,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   background: var(--bg);
   border: 2px solid var(--border);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-h);
 }
@@ -4754,7 +4815,7 @@ button:not(:disabled):active {
   border-radius: 999px;
   padding: 15px 34px;
   font-family: var(--heading);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: #fff;
   cursor: pointer;
@@ -4765,6 +4826,21 @@ button:not(:disabled):active {
 
 .onboarding__start:hover {
   transform: translateY(-2px) scale(1.05);
+}
+
+/* CQ-12: a quiet escape hatch out of the primer, not a competing CTA —
+   same treatment as .auth-gate__guest. */
+.onboarding__skip-primer {
+  border: none;
+  background: none;
+  color: var(--text);
+  opacity: 0.75;
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 6px;
+  margin-top: -6px;
 }
 
 /* --- Onboarding primer: "what do these words mean" for total beginners --- */
@@ -4779,7 +4855,7 @@ button:not(:disabled):active {
 }
 
 .primer-card__icon {
-  font-size: 42px;
+  font-size: 2.625rem;
   line-height: 1;
   animation: float-bob 3s ease-in-out infinite;
 }
@@ -4790,7 +4866,7 @@ button:not(:disabled):active {
 
 .primer-card__body {
   color: var(--text);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.6;
 }
 
@@ -4803,7 +4879,7 @@ button:not(:disabled):active {
   background: var(--code-bg);
   border: 1px solid var(--border);
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--text-h);
   text-align: left;
@@ -4821,7 +4897,7 @@ button:not(:disabled):active {
   background: var(--accent-bg);
   border: 1px solid var(--accent-border);
   color: var(--text-h);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
 }
 
 .primer-card__keyword strong {
@@ -4852,13 +4928,13 @@ button:not(:disabled):active {
   font-family: var(--mono);
   font-weight: 700;
   color: var(--accent);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .primer-card__list-row dd {
   margin: 0;
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   line-height: 1.5;
 }
 
@@ -4894,14 +4970,14 @@ button:not(:disabled):active {
   margin: 0 0 8px;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: var(--text-h);
 }
 
 .leave-match-confirm__body {
   margin: 0 0 18px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
@@ -4918,7 +4994,7 @@ button:not(:disabled):active {
   padding: 12px 16px;
   font-family: var(--sans);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 0.9375rem;
   cursor: pointer;
 }
 
@@ -4930,4 +5006,76 @@ button:not(:disabled):active {
 .leave-match-confirm__leave {
   background: var(--accent-bg);
   color: var(--text-h);
+}
+
+/* CQ-21: full-screen gate, same layout pattern as .auth-gate. */
+.parent-lock {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parent-lock__card {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  text-align: center;
+}
+
+.parent-lock__title {
+  margin: 0;
+}
+
+.parent-lock__question {
+  font-family: var(--heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.parent-lock__choices {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.parent-lock__choice {
+  flex: 1;
+  min-width: 70px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
+  font-family: var(--heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.parent-lock__choice:hover {
+  border-color: var(--accent);
+}
+
+.parent-lock__error {
+  color: #c2410c;
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.parent-lock__back {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 6px;
 }

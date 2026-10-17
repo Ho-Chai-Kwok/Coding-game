@@ -1,7 +1,7 @@
 import CodeChallenge from "./CodeChallenge";
 import QuizChallenge from "./QuizChallenge";
 import TerminalChallenge from "./TerminalChallenge";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import { CHARACTERS } from "../data/characters";
 import BuddyCoach from "./byteborn/BuddyCoach";
 import { useBuddy } from "./byteborn/useBuddy";
@@ -25,7 +25,11 @@ export default function LevelScreen({
         ← {t("back")}
       </button>
 
-      <h2>{level.title}</h2>
+      {/* CQ-10e: was an h2 with no h1 anywhere on this screen — each
+          screen in this SPA is its own "page", so its own title is the
+          h1. className keeps the existing visual size (index.css's bare
+          h1 selector is much bigger, meant for an actual page title). */}
+      <h1 className="level-screen__title">{level.title}</h1>
       <BuddyCoach character={character} mood={mood} />
 
       {level.content?.type === "code" && (
