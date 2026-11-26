@@ -34,6 +34,17 @@ supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 supabase functions deploy generate-ranked-questions
 ```
 
+**Optional settings** (`supabase secrets set NAME=value`):
+
+- `ALLOWED_ORIGINS` — once you have your domain, set it (comma-separated,
+  e.g. `https://codequest.app,https://www.codequest.app`) so browsers only
+  accept responses on your own site. Unset, any origin works (still safe,
+  since every request needs a signed-in user's token).
+- `ANTHROPIC_MODEL` — overrides the default Claude model.
+
+`SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are
+provided to Edge Functions by Supabase automatically.
+
 ## What happens if you don't deploy this
 
 Nothing breaks. Every quiz-based ranked mode already falls back to the

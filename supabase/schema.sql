@@ -31,26 +31,41 @@ create table if not exists public.progress (
 alter table public.profiles enable row level security;
 alter table public.progress enable row level security;
 
+-- A save is a few KB; 1 MB is a generous ceiling that stops one account
+-- from using the progress row as free bulk storage.
+alter table public.progress drop constraint if exists progress_data_size;
+alter table public.progress add constraint progress_data_size
+  check (pg_column_size(data) <= 1048576) not valid;
+alter table public.profiles drop constraint if exists profiles_ui_language_len;
+alter table public.profiles add constraint profiles_ui_language_len
+  check (length(ui_language) <= 16) not valid;
+
+drop policy if exists "Users can view their own profile" on public.profiles;
 create policy "Users can view their own profile"
   on public.profiles for select
   using (auth.uid() = id);
 
+drop policy if exists "Users can update their own profile" on public.profiles;
 create policy "Users can update their own profile"
   on public.profiles for update
   using (auth.uid() = id);
 
+drop policy if exists "Users can insert their own profile" on public.profiles;
 create policy "Users can insert their own profile"
   on public.profiles for insert
   with check (auth.uid() = id);
 
+drop policy if exists "Users can view their own progress" on public.progress;
 create policy "Users can view their own progress"
   on public.progress for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can upsert their own progress" on public.progress;
 create policy "Users can upsert their own progress"
   on public.progress for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update their own progress" on public.progress;
 create policy "Users can update their own progress"
   on public.progress for update
   using (auth.uid() = user_id);
@@ -85,6 +100,9 @@ returns boolean as $$
 begin
   if name is null or length(trim(name)) = 0 then
     return false;
+  end if;
+  if length(trim(name)) > 30 then
+    return false; -- too long (the UI caps input at 20)
   end if;
   if name ~* '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}' then
     return false; -- email
@@ -141,7 +159,7 @@ begin
   );
   return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = public;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
@@ -205,6 +223,7 @@ create table if not exists public.ranked_queue (
 
 alter table public.ranked_queue enable row level security;
 
+drop policy if exists "Users can view their own queue entry" on public.ranked_queue;
 create policy "Users can view their own queue entry"
   on public.ranked_queue for select
   using (auth.uid() = user_id);
@@ -250,13 +269,23 @@ create table if not exists public.ranked_matches (
 
 alter table public.ranked_matches enable row level security;
 
+drop policy if exists "Players can view their own match" on public.ranked_matches;
 create policy "Players can view their own match"
   on public.ranked_matches for select
   using (auth.uid() = player1_id or auth.uid() = player2_id);
 
 -- Realtime: lets both players' clients receive live updates on their
 -- match row (the opponent's result landing, settlement) without polling.
-alter publication supabase_realtime add table public.ranked_matches;
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'ranked_matches'
+  ) then
+    alter publication supabase_realtime add table public.ranked_matches;
+  end if;
+end;
+$$;
 
 -- Atomically finds the closest-ranked waiting opponent in `p_mode_id`
 -- within `p_max_gap` LP and pairs with them, or (if no one close enough
@@ -378,11 +407,21 @@ declare
   winner uuid;
   p1_delta int; p2_delta int;
 begin
+  if auth.uid() is null then raise exception 'Not signed in'; end if;
+  if p_score is null or p_score = 'NaN'::numeric or p_score < 0 or p_score > 1000000 then
+    raise exception 'Invalid score';
+  end if;
+  p_finished_at := now();
   select * into m from public.ranked_matches where id = p_match_id for update;
   if m is null then raise exception 'Match not found'; end if;
   if m.status = 'settled' then return; end if;
   if auth.uid() <> m.player1_id and auth.uid() <> m.player2_id then
     raise exception 'Not a player in this match';
+  end if;
+  -- One submission per player: a second call can't overwrite a score.
+  if (auth.uid() = m.player1_id and m.player1_result is not null)
+     or (auth.uid() = m.player2_id and m.player2_result is not null) then
+    return;
   end if;
 
   if auth.uid() = m.player1_id then
@@ -451,6 +490,7 @@ declare
   k constant int := 40;
   p1_delta int; p2_delta int;
 begin
+  if auth.uid() is null then raise exception 'Not signed in'; end if;
   select * into m from public.ranked_matches where id = p_match_id for update;
   if m is null then raise exception 'Match not found'; end if;
   if m.status = 'settled' then return; end if;
@@ -522,6 +562,7 @@ create table if not exists public.ranked_stats (
 
 alter table public.ranked_stats enable row level security;
 
+drop policy if exists "Users can view their own ranked stats" on public.ranked_stats;
 create policy "Users can view their own ranked stats"
   on public.ranked_stats for select
   using (auth.uid() = user_id);
@@ -671,6 +712,18 @@ begin
   select coalesce(points, 0) into v_points from public.ranked_stats where user_id = auth.uid();
   v_points := coalesce(v_points, 0);
 
+  -- The name is shown to a live opponent. When a match forms on this
+  -- call it goes straight into ranked_matches (which has no CHECK of its
+  -- own), so sanitize here rather than rely on the queue constraint.
+  if not public.is_safe_display_name(p_display_name) then
+    p_display_name := 'Coder';
+  end if;
+  p_display_name := left(trim(p_display_name), 30);
+  if p_mode_id is null or length(p_mode_id) > 40 then
+    raise exception 'Invalid mode';
+  end if;
+  p_max_gap := least(greatest(coalesce(p_max_gap, 0), 0), 10000);
+
   -- Someone else's poll may have already matched us since our last call.
   select id into v_match_id from public.ranked_matches
     where (player1_id = auth.uid() or player2_id = auth.uid())
@@ -742,11 +795,21 @@ declare
   winner uuid;
   p1_delta int; p2_delta int;
 begin
+  if auth.uid() is null then raise exception 'Not signed in'; end if;
+  if p_score is null or p_score = 'NaN'::numeric or p_score < 0 or p_score > 1000000 then
+    raise exception 'Invalid score';
+  end if;
+  p_finished_at := now();
   select * into m from public.ranked_matches where id = p_match_id for update;
   if m is null then raise exception 'Match not found'; end if;
   if m.status = 'settled' then return; end if;
   if auth.uid() <> m.player1_id and auth.uid() <> m.player2_id then
     raise exception 'Not a player in this match';
+  end if;
+  -- One submission per player: a second call can't overwrite a score.
+  if (auth.uid() = m.player1_id and m.player1_result is not null)
+     or (auth.uid() = m.player2_id and m.player2_result is not null) then
+    return;
   end if;
 
   if auth.uid() = m.player1_id then
@@ -811,6 +874,7 @@ declare
   k constant int := 40;
   p1_delta int; p2_delta int;
 begin
+  if auth.uid() is null then raise exception 'Not signed in'; end if;
   select * into m from public.ranked_matches where id = p_match_id for update;
   if m is null then raise exception 'Match not found'; end if;
   if m.status = 'settled' then return; end if;
@@ -918,24 +982,28 @@ alter table public.ranked_matches add column if not exists generated_questions j
 -- one is silently a no-op — the Edge Function always re-reads the row
 -- afterward and returns whatever actually ended up stored, so neither
 -- side can end up trusting its own losing generation over the real one.
-create or replace function public.save_match_questions(p_match_id uuid, p_questions jsonb)
+drop function if exists public.save_match_questions(uuid, jsonb);
+create or replace function public.save_match_questions(p_match_id uuid, p_questions jsonb, p_player_id uuid)
 returns void
 language plpgsql
 security definer
 set search_path = public
 as $$
 begin
-  if auth.uid() is null then
-    raise exception 'Not authenticated';
+  if p_player_id is null then
+    raise exception 'Missing player';
   end if;
 
   update public.ranked_matches
   set generated_questions = p_questions
   where id = p_match_id
     and generated_questions is null
-    and (auth.uid() = player1_id or auth.uid() = player2_id);
+    and (p_player_id = player1_id or p_player_id = player2_id);
 end;
 $$;
 
-revoke all on function public.save_match_questions(uuid, jsonb) from public, anon;
-grant execute on function public.save_match_questions(uuid, jsonb) to authenticated;
+-- Server-only: only the generate-ranked-questions Edge Function (using the
+-- service-role key) may call this. If players could call it directly,
+-- one could plant a question set they already know the answers to.
+revoke all on function public.save_match_questions(uuid, jsonb, uuid) from public, anon, authenticated;
+grant execute on function public.save_match_questions(uuid, jsonb, uuid) to service_role;

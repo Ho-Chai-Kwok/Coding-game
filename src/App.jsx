@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from "react";
+import { unlockGymWorld } from "./data/practiceGym.js";
 import ModeSelect from "./components/ModeSelect";
 import BottomNav from "./components/BottomNav";
 import WorldMap from "./components/WorldMap";
@@ -409,6 +410,9 @@ function AppShell() {
   }
 
   function enterWorld(worldId) {
+    // Practice Gym worlds unlock on first visit once the gym is open
+    // (see src/data/practiceGym.js); main-path worlds are unchanged.
+    setWorldsState((prev) => unlockGymWorld(prev, worldId));
     const world = worldsState.find((w) => w.id === worldId);
     const intro = world && TOPIC_INTROS[world.name];
     if (intro && !hasSeenIntro(world.name)) {

@@ -28,6 +28,8 @@ export const DISPLAY_NAME_TEST_CASES = [
   { name: "coolsite.gg", expected: false },
   { name: "go to coolsite.gg now", expected: false },
   { name: "91234567", expected: false },
+  { name: "A".repeat(30), expected: true },
+  { name: "A".repeat(31), expected: false },
   { name: "call 555-123-4567", expected: false },
   { name: "www.example.org", expected: false },
   { name: "cunt", expected: false },

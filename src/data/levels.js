@@ -1248,6 +1248,12 @@ const PRACTICE_WORLD_DEFS = buildPracticeWorldDefs(185);
 
 const ALL_WORLD_DEFS = [...REAL_WORLDS, ...EXTRA_WORLD_DEFS, ...PRACTICE_WORLD_DEFS];
 
+// The main learning path is the hand-built worlds; everything after it is
+// the generated drill worlds, shown separately as the optional Practice Gym
+// (owner decision O2, QA_REPORT.md CQ-08). World ids don't change, so old
+// saves keep working.
+export const MAIN_PATH_WORLD_COUNT = REAL_WORLDS.length + EXTRA_WORLD_DEFS.length;
+
 export const worlds = ALL_WORLD_DEFS.map((def, i) =>
   finalizeRealWorld(def, i + 1, i === 0),
 );

@@ -16,16 +16,27 @@
 // deno-lint-ignore-file no-explicit-any
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+// ALLOWED_ORIGINS (comma-separated, e.g. "https://codequest.app") locks
+// the browser CORS check to the real site once a domain exists. Unset, it
+// stays "*" — still safe, since every request needs a valid user JWT.
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "")
+  .split(",").map((o) => o.trim()).filter(Boolean);
+let CORS_HEADERS: Record<string, string> = {};
+function setCors(req: Request) {
+  const origin = req.headers.get("Origin") ?? "";
+  const allow = ALLOWED_ORIGINS.length === 0 ? "*" : (ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
+  CORS_HEADERS = {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
 const MAX_QUESTION_LEN = 500;
 const MAX_CODE_LEN = 4000;
 const DAILY_LIMIT = 20;
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = Deno.env.get("ANTHROPIC_MODEL") ?? "claude-haiku-4-5-20251001";
 // A continuous chat, not one-shot Q&A — but still bounded: 20 user turns
 // (+ up to 20 matching assistant replies) per conversation. This isn't
 // just a UX nicety — it's the real defense against someone hand-crafting
@@ -56,6 +67,7 @@ function jsonResponse(body: unknown, status = 200) {
 }
 
 Deno.serve(async (req) => {
+  setCors(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
   }
@@ -88,21 +100,6 @@ Deno.serve(async (req) => {
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError || !userData?.user) {
     return jsonResponse({ error: "unauthenticated" }, 401);
-  }
-
-  const { data: usage, error: usageError } = await supabase
-    .rpc("check_and_log_code_help_usage", { p_daily_limit: DAILY_LIMIT })
-    .single();
-  if (usageError) {
-    console.error("usage_check_failed:", usageError.message, usageError.code);
-    return jsonResponse({ error: "usage_check_failed" }, 500);
-  }
-  const usageRow = usage as { allowed: boolean; used_today: number; daily_limit: number };
-  if (!usageRow.allowed) {
-    return jsonResponse(
-      { error: "rate_limited", usedToday: usageRow.used_today, dailyLimit: usageRow.daily_limit },
-      429,
-    );
   }
 
   let body: any;
@@ -144,9 +141,26 @@ Deno.serve(async (req) => {
     }
   }
 
+  // Counted only once the request is known to be well-formed.
+  const { data: usage, error: usageError } = await supabase
+    .rpc("check_and_log_code_help_usage", { p_daily_limit: DAILY_LIMIT })
+    .single();
+  if (usageError) {
+    console.error("usage_check_failed:", usageError.message, usageError.code);
+    return jsonResponse({ error: "usage_check_failed" }, 500);
+  }
+  const usageRow = usage as { allowed: boolean; used_today: number; daily_limit: number };
+  if (!usageRow.allowed) {
+    return jsonResponse(
+      { error: "rate_limited", usedToday: usageRow.used_today, dailyLimit: usageRow.daily_limit },
+      429,
+    );
+  }
+
   let aiRes: Response;
   try {
     aiRes = await fetch("https://api.anthropic.com/v1/messages", {
+      signal: AbortSignal.timeout(30000),
       method: "POST",
       headers: {
         "content-type": "application/json",

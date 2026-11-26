@@ -46,6 +46,8 @@ jobs:
           python-version: "3.x"
 
       - run: npm ci
+      # Fail on any known high/critical vulnerability in dependencies.
+      - run: npm audit --audit-level=high
       - run: npm run lint
       # Unit tests (CQ-19): progress save/load, streak math, rank math.
       - run: npm run test
@@ -64,6 +66,10 @@ jobs:
       # the client (JS) and the real database constraint (SQL).
       - run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - run: node scripts/verify-display-names.mjs
+      # The full supabase/schema.sql applies (and re-applies) cleanly, and
+      # its security rules hold when acting as real signed-in users: RLS,
+      # no forged LP, no score overwrite, no planted ranked questions.
+      - run: node scripts/verify-schema.mjs
       # Browser-level repros (CQ-19) for CQ-01/CQ-01b (sandbox timeouts),
       # CQ-04 (routing/Back button) and CQ-05 (locked-screen overflow) —
       # runs against the dist/ build above, same as production.
@@ -71,3 +77,9 @@ jobs:
       - run: npx playwright test
         env:
           CI: true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: test-results/
+          retention-days: 7

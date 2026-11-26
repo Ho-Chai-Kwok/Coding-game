@@ -693,3 +693,28 @@ Told to do all remaining stages. Stage 2's own code pieces (O10 support-email di
 **CQ-06 age-gate implementation:** Not built. The decision (parental-email consent flow, recorded in Stage 2) still needs an actual email-sending mechanism to work end-to-end, which depends on O6 (Supabase email confirmation) and O7 (a custom email sender) — neither set up yet. Building a consent UI now that can't actually send anything yet would be hard to test honestly; left for after O6/O7.
 
 **Hand-off, unchanged from Stage 2:** O6, O7, O8, O9, O11 (deploy, needs an Anthropic key), O4 (run `schema.sql` live — still holds on independent re-verification), O12, O13 are all still owner dashboard/account/legal actions this session has no access to.
+
+## Stage 5 — launch hardening (2026-11-26)
+
+Independent pass over consistency, security and availability, each backed by a test that now runs in CI.
+
+**Database (`supabase/schema.sql`), tested by the new `scripts/verify-schema.mjs`** (30 checks against a Supabase-like Postgres; the old schema failed 5 of them):
+- **The schema couldn't be re-run.** `create policy` and `alter publication … add table` errored on a second run, so O4 ("run the updated schema.sql on the live DB") would have failed. Both are now idempotent. CI applies the file three times, once with a live row that breaks the name rule.
+- **Unsafe names reached opponents.** When a match formed on the caller's own poll, `try_ranked_match` wrote `p_display_name` straight into `ranked_matches`, which has no CHECK. It is now sanitized there too.
+- **Planted ranked questions.** `save_match_questions` was callable by any player, so one could pre-fill a match with questions they knew the answers to. It is now service-role only, called by the Edge Function after its RLS check.
+- **Result forging.** `submit_ranked_result` accepted the client's `finishedAt` (back-date to win ties), allowed re-submitting to overwrite a score, and accepted negative/NaN scores. It now uses the server clock, takes one submission per player, and range-checks the score. Null-uid guards were added to both settlement functions.
+- `handle_new_user` (SECURITY DEFINER) now pins `search_path`. There is a 1 MB cap on a progress save, a length cap on `ui_language`, and a 30-character cap on display names (JS and SQL, shared test table).
+
+**Edge Functions:** Code Helper no longer spends one of the learner's 20 daily requests on a malformed request. Both functions have AI-call timeouts, an optional `ALLOWED_ORIGINS` CORS lock, and an `ANTHROPIC_MODEL` override. Both type-check under `tsc --strict`.
+
+**Hosting:** new `vercel.json` with Content-Security-Policy, HSTS, X-Frame-Options, nosniff, Referrer/Permissions-Policy, COOP, and immutable caching for hashed assets. `vite preview` sends the same headers, so the whole Playwright suite runs under the production CSP (Python/Pyodide, React and HTML lessons all still work).
+
+**Availability:** after a redeploy, an open tab asking for a deleted old chunk now reloads once instead of crashing (`vite:preloadError`, loop-guarded). This has an e2e test.
+
+**CQ-08 (Practice Gym), built:** worlds 101–150 (generated drills) are a separate Practice Gym section, closed until World 1 is complete, then all open. World ids are unchanged, so existing saves load as before. Counts are computed from data, and copy was corrected in all 4 locales, the README and the meta tags (the Home subtitle said "100", the others "150").
+
+**CQ-10(f), verified:** axe-core runs on all 10 main screens in light and dark mode. It found and fixed real WCAG AA contrast failures on Characters (tier, archetype, concept, move line, unlock hint) and Calendar (weekday labels). Now 0 critical/serious.
+
+**Other:** `npm audit` now shows 0 (Vite 8.2.2 → 8.4.0, high advisory). CI now runs `npm audit --audit-level=high` and `verify-schema.mjs`, and uploads the Playwright report on failure. Removed two empty iCloud-duplicate folders under `supabase/functions/`.
+
+**Still open:** CQ-06 age gate (blocked on O6/O7 email set-up), CQ-18 bundle split (main chunk 923 kB / 287 kB gzip; works, just not under the 400 kB target), and the owner-only items in README → "Launch checklist".

@@ -31,7 +31,7 @@ export const translations = {
       leisureLabel: "Need a break?",
       kernelDashCta: "Play →",
       learningTitle: "Learning Mode",
-      learningDesc: "150 worlds, one topic at a time — go slow, go steady!",
+      learningDesc: "100 worlds plus a Practice Gym — go slow, go steady!",
       sidequestTitle: "Side Quests",
       sidequestDesc: "Hands-on courses on real tools like Git, PyTorch, AWS, and NumPy!",
       rankedTitle: "Ranked Mode",
@@ -63,7 +63,10 @@ export const translations = {
 
     worldMap: {
       title: "Choose a World 🗺️",
-      subtitle: "100 worlds, one topic each — learn slowly, one step at a time!",
+      subtitle: "{n} worlds, one topic each — learn slowly, one step at a time!",
+      gymTitle: "Practice Gym",
+      gymDesc: "{n} optional drill worlds for extra practice — jump into any of them.",
+      gymLocked: "Finish World 1 to open {n} optional drill worlds for extra practice.",
       stages: "stages",
       change: "change",
       chapters: [
@@ -641,7 +644,7 @@ export const translations = {
       leisureLabel: "¿Necesitas un descanso?",
       kernelDashCta: "Jugar →",
       learningTitle: "Modo Aprendizaje",
-      learningDesc: "150 mundos, un tema a la vez — ¡con calma, paso a paso!",
+      learningDesc: "100 mundos y un Gimnasio de práctica — ¡con calma, paso a paso!",
       sidequestTitle: "Misiones Secundarias",
       sidequestDesc: "Cursos prácticos sobre herramientas reales como Git, PyTorch, AWS y NumPy!",
       rankedTitle: "Modo Clasificado",
@@ -673,7 +676,10 @@ export const translations = {
 
     worldMap: {
       title: "Elige un Mundo 🗺️",
-      subtitle: "150 mundos, un tema cada uno — ¡aprende despacio, paso a paso!",
+      subtitle: "{n} mundos, un tema cada uno — ¡aprende despacio, paso a paso!",
+      gymTitle: "Gimnasio de práctica",
+      gymDesc: "{n} mundos de ejercicios opcionales para practicar más — entra en el que quieras.",
+      gymLocked: "Termina el Mundo 1 para abrir {n} mundos de ejercicios opcionales.",
       stages: "etapas",
       change: "cambiar",
       chapters: [
@@ -1246,7 +1252,7 @@ export const translations = {
       leisureLabel: "需要休息一下嗎？",
       kernelDashCta: "開始遊玩 →",
       learningTitle: "學習模式",
-      learningDesc: "150 個世界，一次專注一個主題——慢慢來，穩紮穩打！",
+      learningDesc: "100 個世界加上練習館——慢慢來，穩紮穩打！",
       sidequestTitle: "支線任務",
       sidequestDesc: "透過實作學習 Git、PyTorch、AWS、NumPy 等真實工具！",
       rankedTitle: "排名模式",
@@ -1278,7 +1284,10 @@ export const translations = {
 
     worldMap: {
       title: "選擇一個世界 🗺️",
-      subtitle: "150 個世界，每個都有專屬主題——慢慢學，一步一步來！",
+      subtitle: "{n} 個世界，每個都有專屬主題——慢慢學，一步一步來！",
+      gymTitle: "練習館",
+      gymDesc: "{n} 個可選的練習世界，隨時挑一個來加強練習。",
+      gymLocked: "完成世界 1 即可開放 {n} 個可選的練習世界。",
       stages: "關卡",
       change: "更換",
       chapters: [
@@ -1850,7 +1859,7 @@ export const translations = {
       leisureLabel: "잠깐 쉬고 싶나요?",
       kernelDashCta: "플레이하기 →",
       learningTitle: "학습 모드",
-      learningDesc: "150개의 월드, 한 번에 한 주제씩 — 천천히, 꾸준하게!",
+      learningDesc: "100개의 월드와 연습 체육관 — 천천히, 꾸준하게!",
       sidequestTitle: "사이드 퀘스트",
       sidequestDesc: "Git, PyTorch, AWS, NumPy 같은 실전 도구를 직접 다뤄보는 코스!",
       rankedTitle: "랭크 모드",
@@ -1882,7 +1891,10 @@ export const translations = {
 
     worldMap: {
       title: "월드를 선택하세요 🗺️",
-      subtitle: "150개의 월드, 각각 하나의 주제 — 천천히 한 걸음씩 배워요!",
+      subtitle: "{n}개의 월드, 각각 하나의 주제 — 천천히 한 걸음씩 배워요!",
+      gymTitle: "연습 체육관",
+      gymDesc: "추가 연습용 선택 드릴 월드 {n}개 — 원하는 곳으로 바로 들어가세요.",
+      gymLocked: "월드 1을 끝내면 선택 드릴 월드 {n}개가 열려요.",
       stages: "스테이지",
       change: "변경",
       chapters: [

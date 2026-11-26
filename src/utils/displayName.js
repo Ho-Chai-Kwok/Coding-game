@@ -41,6 +41,7 @@ function hasLongDigitRun(text) {
 export function unsafeDisplayNameReason(name) {
   const trimmed = (name ?? "").trim();
   if (!trimmed) return "empty";
+  if (trimmed.length > 30) return "too-long";
   if (EMAIL_PATTERN.test(trimmed)) return "email";
   if (URL_PATTERN.test(trimmed)) return "url";
   if (hasLongDigitRun(trimmed)) return "phone";
