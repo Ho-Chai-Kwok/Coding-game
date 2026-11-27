@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef, lazy, Suspense } from "react";
-import { unlockGymWorld } from "./data/practiceGym.js";
+import { unlockGymWorld, isGymWorld } from "./data/practiceGym.js";
 import ModeSelect from "./components/ModeSelect";
 import BottomNav from "./components/BottomNav";
 import WorldMap from "./components/WorldMap";
@@ -21,7 +21,7 @@ import { describeRankChange } from "./data/rank";
 import { SKILL_GATE_LESSONS } from "./data/skillGate";
 import { toInstantLanguage, isCompiledLanguage } from "./data/languages";
 import { applyHeadStart, getHeadStartWorldId } from "./data/onboarding";
-import { TOPIC_INTROS, hasSeenIntro, markIntroSeen } from "./data/topicIntros";
+import { TOPIC_INTROS, hasSeenIntro, markIntroSeen, introForLanguage } from "./data/topicIntros";
 import "./App.css";
 
 // Lazy-loaded: these aren't needed for the first paint (mode select ->
@@ -416,7 +416,7 @@ function AppShell() {
     const world = worldsState.find((w) => w.id === worldId);
     const intro = world && TOPIC_INTROS[world.name];
     if (intro && !hasSeenIntro(world.name)) {
-      setActiveTopicIntro({ worldName: world.name, intro });
+      setActiveTopicIntro({ worldName: world.name, intro: introForLanguage(intro, language ?? "javascript") });
     }
     setActiveWorldId(worldId);
     setContinueWorldId(worldId);
@@ -661,6 +661,20 @@ function AppShell() {
     };
   }, [worldsState, sideQuestsState]);
 
+  // What Home shows: main-path worlds finished out of 100, with the bar
+  // filling by main-path lessons so early progress is still visible.
+  // (overallProgress above keeps counting everything — character unlocks
+  // depend on it.)
+  const pathProgress = useMemo(() => {
+    const path = worldsState.filter((w) => !isGymWorld(w.id));
+    const levels = path.flatMap((w) => w.levels);
+    return {
+      worldsDone: path.filter((w) => w.levels.length > 0 && w.levels.every((l) => l.status === "completed")).length,
+      worldsTotal: path.length,
+      percent: levels.length ? (levels.filter((l) => l.status === "completed").length / levels.length) * 100 : 0,
+    };
+  }, [worldsState]);
+
   // Side Quests and Ranked Mode's skill gate (see data/skillGate.js) is
   // deliberately measured only against Learning Mode — never side-quest
   // lessons themselves — so it can't be circularly unlocked by the very
@@ -745,6 +759,7 @@ function AppShell() {
         profile={profile}
         streak={streak}
         overallProgress={overallProgress}
+        pathProgress={pathProgress}
         continueWorld={continueWorld}
         selectedCharacter={selectedCharacter}
         onContinueLearning={handleContinueLearning}

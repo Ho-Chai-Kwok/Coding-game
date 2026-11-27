@@ -138,3 +138,19 @@ test("after a redeploy, a missing old chunk triggers one reload instead of a cra
   await expect(page.locator(".error-boundary")).toHaveCount(0);
   expect(blocked).toBeGreaterThanOrEqual(2);
 });
+
+test("Home counts worlds, not every lesson in the game", async ({ page }) => {
+  await seedAndEnter(page, completedThrough(2, 5), "javascript");
+  await page.goto("/#/", { waitUntil: "networkidle" });
+  await expect(page.locator(".mode-select__progress-label")).toHaveText("2/100 worlds complete");
+});
+
+test("a Python player's first topic intro shows Python, not JavaScript", async ({ page }) => {
+  await seedAndEnter(page, {}, "python");
+  await page.goto("/#/learn", { waitUntil: "networkidle" });
+  await page.locator(".world-card").first().click();
+  const intro = page.locator(".topic-intro");
+  await expect(intro.locator(".topic-intro__topic-label")).toHaveText(/print\(\)/);
+  await expect(intro).not.toContainText("console.log");
+  await expect(intro.locator(".topic-intro__caption")).toHaveText('Like this: print("Hello!")', { timeout: 10000 });
+});

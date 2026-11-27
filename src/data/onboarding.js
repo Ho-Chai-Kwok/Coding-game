@@ -26,8 +26,10 @@ export const LEARNING_GOALS = [
 // data/sidequests.js at render time — if a name doesn't match anything
 // (e.g. renamed later) it's just skipped, never a crash.
 const QUEST_NAMES_BY_GOAL = {
-  fun: ["Regular Expressions", "Testing & TDD"],
-  school: ["Git & GitHub", "Testing & TDD"],
+  // Fun/school players are often first-timers: start with things they can
+  // see working (a web page) rather than advanced tooling.
+  fun: ["HTML", "CSS", "Git & GitHub"],
+  school: ["HTML", "SQL Basics", "Git & GitHub"],
   job: ["Git & GitHub", "REST APIs", "Linux & Bash"],
   ai: ["Prompt Engineering", "NumPy", "Machine Learning Basics"],
   web: ["Node.js", "React", "REST APIs"],

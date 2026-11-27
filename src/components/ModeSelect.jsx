@@ -22,6 +22,7 @@ export default function ModeSelect({
   profile,
   streak,
   overallProgress,
+  pathProgress,
   continueWorld,
   selectedCharacter,
   onContinueLearning,
@@ -32,8 +33,7 @@ export default function ModeSelect({
 }) {
   const { t } = useI18n();
   const { isLoggedIn } = useAuth();
-  const progressPercent =
-    overallProgress.total > 0 ? (overallProgress.completed / overallProgress.total) * 100 : 0;
+  const progressPercent = pathProgress.percent;
 
   return (
     <div className="mode-select">
@@ -80,7 +80,9 @@ export default function ModeSelect({
           />
         </div>
         <p className="mode-select__progress-label">
-          {overallProgress.completed}/{overallProgress.total} {t("modeSelect.overallProgress")}
+          {t("modeSelect.worldsProgress")
+            .replace("{done}", pathProgress.worldsDone)
+            .replace("{total}", pathProgress.worldsTotal)}
         </p>
       </div>
 
