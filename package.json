@@ -14,6 +14,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:live": "playwright test -c playwright.live.config.js",
     "test:e2e": "playwright test",
     "verify": "node scripts/verify-drills.mjs && node scripts/verify-sidequest-drills.mjs && node scripts/verify-solutions.mjs",
     "verify:db": "node scripts/verify-display-names.mjs && node scripts/verify-schema.mjs"

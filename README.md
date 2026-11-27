@@ -107,6 +107,7 @@ same — just guest-only.
 | `npm run lint` | Run oxlint |
 | `npm test` | Unit tests (Vitest) |
 | `npm run test:e2e` | Browser tests (Playwright) against the production build, with production security headers |
+| `npm run test:live` | Health check against the live site (runs daily on GitHub Actions) |
 | `npm run verify` | Check every lesson's answer, hint and "Show solution" really pass |
 | `npm run verify:db` | Apply `supabase/schema.sql` to a throwaway Postgres and test its security rules (needs `psql` + a local Postgres) |
 
