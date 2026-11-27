@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useI18n } from "../i18n/I18nContext";
-import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/useI18n";
+import { useAuth } from "../auth/useAuth";
 import CodeEditor from "./CodeEditor";
 import {
   askForCodeHelp,
@@ -194,6 +194,7 @@ export default function CodeHelper({ defaultLanguage = "javascript", onBack }) {
               onChange={(e) => setCode(e.target.value.slice(0, CODE_HELP_CODE_MAX))}
               language={defaultLanguage}
               rows={8}
+              ariaLabel={t("codeHelper.codeLabel")}
             />
           </div>
           <p className="code-helper__counter">

@@ -1,5 +1,5 @@
 import RankedModeRunner from "./RankedModeRunner";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 // The honest way to keep Ranked useful when nobody's around to match with:
 // play the mode solo against no one, clearly labeled as practice the whole

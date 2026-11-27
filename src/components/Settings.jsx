@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import { LOCALES } from "../i18n/translations";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../auth/useAuth";
 import { BASE_AVATARS, REWARD_AVATARS } from "../data/rewards";
 import { LANGUAGES } from "../data/languages";
 import { getSuggestions } from "../utils/insights";
+import { isSafeDisplayName } from "../utils/displayName";
 import { version as APP_VERSION } from "../../package.json";
 
 const ALL_AVATARS = [
@@ -19,7 +20,12 @@ const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL;
 // once (see the earlier {need}/{need} bug this same fix pattern covers).
 function InsightCard({ suggestion, t }) {
   const { kind } = suggestion;
-  let text = t(`insights.${kind}Text`);
+  // CQ-14: "Just 1 more days" — a few of these count down to 1, where
+  // English needs the singular. Only streakMilestone has this shape
+  // today; a plain singular-key lookup rather than a general i18n
+  // pluralization system, since this is the one spot it's needed.
+  const key = kind === "streakMilestone" && suggestion.n === 1 ? `insights.${kind}TextSingular` : `insights.${kind}Text`;
+  let text = t(key);
   if (suggestion.n != null) text = text.replaceAll("{n}", suggestion.n);
   if (suggestion.streak != null) text = text.replaceAll("{streak}", suggestion.streak);
   if (suggestion.reward != null) text = text.replaceAll("{reward}", suggestion.reward);
@@ -116,6 +122,10 @@ export default function Settings({
   onChangeTheme,
   reducedMotion = "system",
   onChangeReducedMotion,
+  textSize = "default",
+  onChangeTextSize,
+  parentLockEnabled = false,
+  onChangeParentLockEnabled,
   codingLanguage,
   onChangeCodingLanguage,
   unlockedAvatars = BASE_AVATARS,
@@ -213,8 +223,18 @@ export default function Settings({
           value={profile.displayName}
           placeholder={t("settings.displayNamePlaceholder")}
           maxLength={20}
+          aria-describedby="display-name-warning"
           onChange={(e) => onChangeProfile({ ...profile, displayName: e.target.value })}
         />
+        {/* Warns, doesn't block typing — the real enforcement is the
+            fallback in useRankedQueue.js and the database CHECK
+            constraint, both of which can't be bypassed by ignoring this.
+            See QA_REPORT.md CQ-06. */}
+        {!isSafeDisplayName(profile.displayName) && (
+          <p id="display-name-warning" className="settings__warning">
+            ⚠️ {t("settings.displayNameWarning")}
+          </p>
+        )}
 
         <p className="settings__label">{t("settings.chooseAvatar")}</p>
         <div className="settings__avatar-grid">
@@ -228,7 +248,7 @@ export default function Settings({
                 }${!unlocked ? " settings__avatar-btn--locked" : ""}`}
                 onClick={() => unlocked && onChangeProfile({ ...profile, avatar })}
                 disabled={!unlocked}
-                aria-label={unlocked ? `Choose avatar ${avatar}` : `Locked avatar, unlock at day ${day}`}
+                aria-label={unlocked ? `Choose avatar ${avatar}` : `Locked avatar D${day}, unlocks at day ${day}`}
               >
                 {unlocked ? avatar : "🔒"}
                 {!unlocked && <span className="settings__avatar-day">D{day}</span>}
@@ -276,6 +296,40 @@ export default function Settings({
           ))}
         </div>
         <p className="settings__hint">{t("settings.reducedMotionNote")}</p>
+
+        {/* CQ-09: OS/browser "larger text" settings can't reach a px-sized
+            UI — this gives the same scaling directly, saved with the
+            profile like every other appearance setting here. */}
+        <p className="settings__label">{t("settings.textSize")}</p>
+        <div className="settings__pill-row">
+          {[
+            { value: "default", label: t("settings.textSizeDefault"), icon: "A" },
+            { value: "large", label: t("settings.textSizeLarge"), icon: "A" },
+            { value: "xl", label: t("settings.textSizeXL"), icon: "A" },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              className={`settings__pill${textSize === opt.value ? " settings__pill--active" : ""}`}
+              onClick={() => onChangeTextSize(opt.value)}
+            >
+              {opt.icon} {opt.label}
+            </button>
+          ))}
+        </div>
+
+        {/* CQ-21: off by default — a parent turns this on, which then
+            also gates getting back in here to turn it off again (by
+            design: that's what stops a toddler's random tapping from
+            reaching this exact screen in the first place). */}
+        <label className="settings__toggle">
+          <input
+            type="checkbox"
+            checked={parentLockEnabled}
+            onChange={(e) => onChangeParentLockEnabled(e.target.checked)}
+          />
+          {t("settings.parentLock")}
+        </label>
+        <p className="settings__hint">{t("settings.parentLockNote")}</p>
       </section>
 
       {codingLanguage && (
@@ -313,6 +367,10 @@ export default function Settings({
             </button>
           ))}
         </div>
+        {/* CQ-11: only the app's own menus/buttons are translated — the
+            lesson content itself is still English-only, worth saying
+            plainly right where someone's about to switch languages. */}
+        <p className="settings__hint">{t("settings.lessonsEnglishOnly")}</p>
       </section>
 
       <section className="settings__section">

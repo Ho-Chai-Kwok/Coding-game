@@ -6,18 +6,33 @@ export function useCountdown(initialSeconds, onExpire) {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
   const [running, setRunning] = useState(true);
   const onExpireRef = useRef(onExpire);
-  onExpireRef.current = onExpire;
+
+  // Ref writes belong in an effect, not during render (CQ-20) — render
+  // should stay a pure read. `onExpire` can be a fresh closure every
+  // render (most callers won't bother memoizing it); this still only
+  // ever calls whichever one was current when the clock actually hits 0.
+  useEffect(() => {
+    onExpireRef.current = onExpire;
+  }, [onExpire]);
+
+  // "expired" is fully determined by secondsLeft — deriving it during
+  // render instead of mirroring it into its own state via an effect
+  // (CQ-20) means there's no separate update to schedule, and no risk of
+  // the two ever disagreeing.
+  const expired = secondsLeft <= 0;
+  const isRunning = running && !expired;
 
   useEffect(() => {
-    if (!running) return;
-    if (secondsLeft <= 0) {
-      setRunning(false);
-      onExpireRef.current?.();
-      return;
-    }
+    if (!isRunning) return undefined;
     const id = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(id);
-  }, [running, secondsLeft]);
+  }, [isRunning]);
+
+  // Fires exactly once per expiry: this effect only re-runs when
+  // `expired` itself flips, not on every render.
+  useEffect(() => {
+    if (expired) onExpireRef.current?.();
+  }, [expired]);
 
   const reset = useCallback((seconds, start = true) => {
     setSecondsLeft(seconds);
@@ -27,5 +42,5 @@ export function useCountdown(initialSeconds, onExpire) {
   const stop = useCallback(() => setRunning(false), []);
   const addSeconds = useCallback((n) => setSecondsLeft((s) => Math.max(0, s + n)), []);
 
-  return { secondsLeft, running, reset, stop, addSeconds };
+  return { secondsLeft, running: isRunning, reset, stop, addSeconds };
 }

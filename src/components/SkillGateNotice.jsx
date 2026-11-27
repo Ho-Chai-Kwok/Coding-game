@@ -1,4 +1,4 @@
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 // Shared "you're not ready for this yet" screen for Side Quests and Ranked
 // Mode — both require a little real Learning Mode progress first (see

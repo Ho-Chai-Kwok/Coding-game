@@ -28,6 +28,15 @@
 // — see translations.js. `example` is real code syntax, not prose, so
 // it's deliberately NOT translated (same reasoning as every code example
 // elsewhere in the app).
+// Trimmed to 4 concepts + 1 comprehension check (QA_REPORT.md CQ-12 — was
+// 10 steps including "arguments"/"types" and their own quizzes, plus
+// "argv", too long and too advanced for a total beginner's first few
+// minutes). "arguments" and "types" are taught later, in context, inside
+// the real curriculum instead of up front here. argc/argv is dropped
+// entirely rather than rehomed to a C/C++ side quest for now — there
+// isn't one yet, and building a whole new quest subject just to rehome
+// one concept card is a bigger content task than this fix, not a
+// one-line move.
 export const PRIMER_STEPS = [
   {
     id: "code",
@@ -43,36 +52,11 @@ export const PRIMER_STEPS = [
     keyword: "function",
   },
   {
-    id: "functionCheck",
-    type: "quiz",
-    icon: "🛠️",
-    correctIndex: 0,
-  },
-  {
     id: "parens",
     type: "explain",
     icon: "🔘",
     example: "sayHi()   👉 actually runs it\nsayHi     👉 just mentions it, doesn't run it",
     keyword: "( )",
-  },
-  {
-    id: "arguments",
-    type: "explain",
-    icon: "🧺",
-    example: 'greet("Mia")\n// "Mia" is the argument',
-    keyword: "argument",
-  },
-  {
-    id: "argumentsCheck",
-    type: "quiz",
-    icon: "🧺",
-    correctIndex: 0,
-  },
-  {
-    id: "argv",
-    type: "explain",
-    icon: "🎁",
-    keyword: "argc / argv",
   },
   {
     id: "variables",
@@ -82,15 +66,9 @@ export const PRIMER_STEPS = [
     keyword: "variable",
   },
   {
-    id: "types",
-    type: "explain",
-    icon: "🏷️",
-    hasList: true,
-  },
-  {
-    id: "typesCheck",
+    id: "functionCheck",
     type: "quiz",
-    icon: "🏷️",
+    icon: "🛠️",
     correctIndex: 0,
   },
 ];

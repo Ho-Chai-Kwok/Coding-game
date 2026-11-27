@@ -7,7 +7,11 @@ export default function LevelNode({ level, onSelect }) {
       className={`level-node level-node--${level.status}`}
       onClick={() => !locked && onSelect(level)}
       disabled={locked}
-      aria-label={locked ? `${level.title} (locked)` : level.title}
+      // CQ-10d: the stage number is visible text too (.level-node__stage)
+      // — aria-label replaces all of a button's content for accessibility
+      // purposes, so leaving it out would drop information a sighted
+      // user sees but a screen-reader user wouldn't.
+      aria-label={`Stage ${level.stageNumber}: ${level.title}${locked ? " (locked)" : ""}`}
     >
       <span className="level-node__stage">{level.stageNumber}</span>
       <span className="level-node__badge">

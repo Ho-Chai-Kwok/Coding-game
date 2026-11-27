@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getSupabase } from "../lib/supabaseClient";
+import { isSafeDisplayName } from "../utils/displayName";
 
 // How the acceptable rank gap widens the longer someone waits: tight at
 // first (so a close-rank opponent is always preferred), growing every
@@ -52,7 +53,15 @@ export function useRankedQueue({ active, modeId, displayName }) {
         const supabase = await getSupabase();
         const { data, error } = await supabase.rpc("try_ranked_match", {
           p_mode_id: modeId,
-          p_display_name: displayName,
+          // Never send an unsafe name to an opponent, no matter how it
+          // got here — Settings already blocks it at the source (see
+          // CQ-06 in QA_REPORT.md), but this is the one choke point
+          // every ranked match actually goes through, so it's the right
+          // place for a hard fallback too. The database's own CHECK
+          // constraint (is_safe_display_name() in supabase/schema.sql)
+          // is the real backstop if this client-side check is ever
+          // bypassed entirely (e.g. a direct API call).
+          p_display_name: isSafeDisplayName(displayName) ? displayName : "Player",
           p_max_gap: gapForWait(waited),
         });
         if (cancelledRef.current) return;

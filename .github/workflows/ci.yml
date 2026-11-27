@@ -9,6 +9,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Real Postgres for scripts/verify-display-names.mjs (CQ-06b) — it
+    # runs the actual is_safe_display_name() function extracted from
+    # supabase/schema.sql against a disposable database, not a
+    # hand-copied version of the logic that could drift from what ships.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: postgres
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +41,45 @@ jobs:
           node-version: 20
           cache: npm
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
       - run: npm ci
+      # Fail on any known high/critical vulnerability in dependencies.
+      - run: npm audit --audit-level=high
       - run: npm run lint
+      # Unit tests (CQ-19): progress save/load, streak math, rank math.
+      - run: npm run test
       - run: npm run build
+      # Every generated practice-drill lesson's hint actually produces its
+      # claimed output, in both languages — see QA_REPORT.md CQ-02/CQ-03.
+      - run: node scripts/verify-drills.mjs
+      # Every generated side-quest drill question has exactly 4 distinct
+      # options with exactly one correct, and each expanded quest reaches
+      # its target lesson count — see AUTONOMOUS_LOG.md.
+      - run: node scripts/verify-sidequest-drills.mjs
+      # "Show solution" (CQ-07) fills in a correct program for every code
+      # lesson in the whole curriculum, hand-authored worlds included.
+      - run: node scripts/verify-solutions.mjs
+      # The display-name safety filter (CQ-06b) agrees exactly between
+      # the client (JS) and the real database constraint (SQL).
+      - run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - run: node scripts/verify-display-names.mjs
+      # The full supabase/schema.sql applies (and re-applies) cleanly, and
+      # its security rules hold when acting as real signed-in users: RLS,
+      # no forged LP, no score overwrite, no planted ranked questions.
+      - run: node scripts/verify-schema.mjs
+      # Browser-level repros (CQ-19) for CQ-01/CQ-01b (sandbox timeouts),
+      # CQ-04 (routing/Back button) and CQ-05 (locked-screen overflow) —
+      # runs against the dist/ build above, same as production.
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+        env:
+          CI: true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: test-results/
+          retention-days: 7

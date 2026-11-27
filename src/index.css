@@ -1,3 +1,13 @@
+/* Global box-sizing reset. Without this, any element given a `width` plus
+   `padding` (border-box was previously applied piecemeal, rule by rule,
+   which is exactly how .skill-gate got missed and overflowed phone
+   viewports — see QA_REPORT.md CQ-05). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #3a2e57;
@@ -9,6 +19,13 @@
   --accent: #ff6f61;
   --accent-bg: rgba(255, 111, 97, 0.12);
   --accent-border: rgba(255, 111, 97, 0.5);
+  /* CQ-10c: --accent itself stays as the brand color for buttons/borders
+     (white text on it, or decorative, so its own contrast against --bg
+     doesn't matter there) — this is specifically for --accent used as
+     TEXT color directly on --bg, which only passes WCAG AA (4.5:1) in
+     dark mode's lighter accent. 2.62:1 in light mode, confirmed with a
+     real relative-luminance calculation, not eyeballed. */
+  --accent-text: #c2410c;
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.08) 0 10px 20px -5px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -29,8 +46,23 @@
   -moz-osx-font-smoothing: grayscale;
 
   @media (max-width: 1024px) {
-    font-size: 16px;
+    font-size: 1rem;
   }
+}
+
+/* CQ-09: Settings → Accessibility → Text size. Every other font-size in
+   the app is in rem, so scaling the root here scales all of them —
+   placed after the responsive block above (and matched at any width,
+   phone included) so it wins regardless of viewport. Percentages here
+   are relative to the browser's own default (not to the 18px/16px rules
+   above — a CSS-spec special case for the root element), so these are
+   fixed, predictable sizes: Large = 20px, Extra large = 24px. */
+:root[data-text-size="large"] {
+  font-size: 125%;
+}
+
+:root[data-text-size="xl"] {
+  font-size: 150%;
 }
 
 /* Dark palette applies when the system prefers dark (unless the user
@@ -48,6 +80,9 @@
     --accent: #ff8f7e;
     --accent-bg: rgba(255, 143, 126, 0.15);
     --accent-border: rgba(255, 143, 126, 0.5);
+    /* Already passes WCAG AA against dark --bg (7.5:1) — no separate
+       darkened/lightened value needed here, unlike light mode. */
+    --accent-text: var(--accent);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
@@ -69,6 +104,7 @@
   --accent: #ff8f7e;
   --accent-bg: rgba(255, 143, 126, 0.15);
   --accent-border: rgba(255, 143, 126, 0.5);
+  --accent-text: var(--accent);
   --social-bg: rgba(47, 48, 58, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
@@ -110,7 +146,7 @@ h2 {
 }
 
 h1 {
-  font-size: 52px;
+  font-size: 3.25rem;
   /* Without its own line-height, h1 inherited :root's `line-height: 145%`
      — a PERCENTAGE, which computes to a fixed px value against :root's
      own small font-size (not h1's much larger one) and is inherited as
@@ -128,17 +164,17 @@ h1 {
   letter-spacing: -0.5px;
   margin: 32px 0;
   @media (max-width: 1024px) {
-    font-size: 34px;
+    font-size: 2.125rem;
     margin: 20px 0;
   }
 }
 h2 {
-  font-size: 26px;
+  font-size: 1.625rem;
   line-height: 118%;
   letter-spacing: -0.2px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
-    font-size: 21px;
+    font-size: 1.3125rem;
   }
 }
 p {
@@ -154,8 +190,22 @@ code,
 }
 
 code {
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* CQ-10: visually hidden but still reachable by screen readers — the
+   standard clip-based pattern (display:none would hide it from both). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

@@ -12,7 +12,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "verify": "node scripts/verify-drills.mjs && node scripts/verify-sidequest-drills.mjs && node scripts/verify-solutions.mjs",
+    "verify:db": "node scripts/verify-display-names.mjs && node scripts/verify-schema.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
@@ -20,11 +24,13 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
+    "@playwright/test": "^1.64.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
     "oxlint": "^1.79.0",
-    "playwright-core": "^1.63.0",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.5"
   }
 }

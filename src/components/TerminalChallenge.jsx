@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import TutorialCard from "./TutorialCard";
 import Confetti from "./Confetti";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 import { runGitCommand, gitInitialState } from "../data/gitSim";
 import { runBashCommand, bashInitialState } from "../data/bashSim";
 import { runDockerCommand, dockerInitialState } from "../data/dockerSim";

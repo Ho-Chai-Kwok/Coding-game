@@ -1,5 +1,6 @@
 import { getLanguage } from "../data/languages";
-import { useI18n } from "../i18n/I18nContext";
+import { isPracticeGymOpen, isWorldOpen, splitWorlds } from "../data/practiceGym";
+import { useI18n } from "../i18n/useI18n";
 import CharacterBadge from "./CharacterBadge";
 
 function chunk(array, size) {
@@ -48,7 +49,35 @@ export default function WorldMap({
   onBack,
 }) {
   const { t } = useI18n();
-  const chapters = chunk(worlds, 10);
+  const { mainPath, gym } = splitWorlds(worlds);
+  const chapters = chunk(mainPath, 10);
+  const gymOpen = isPracticeGymOpen(worlds);
+
+  function renderWorldCard(world) {
+    const locked = !isWorldOpen(world, worlds);
+    const completedCount = world.levels.filter((l) => l.status === "completed").length;
+    return (
+      <button
+        key={world.id}
+        className={`world-card${locked ? " world-card--locked" : ""}`}
+        style={{ "--world-from": world.from, "--world-to": world.to }}
+        onClick={() => !locked && onSelectWorld(world.id)}
+        disabled={locked}
+      >
+        <span className="world-card__icon">{locked ? "🔒" : world.icon}</span>
+        <span className="world-card__name">{world.name}</span>
+        <span className="world-card__progress">
+          {completedCount}/{world.totalStages} {t("worldMap.stages")}
+        </span>
+        <span className="world-card__bar">
+          <span
+            className="world-card__bar-fill"
+            style={{ width: `${(completedCount / world.totalStages) * 100}%` }}
+          />
+        </span>
+      </button>
+    );
+  }
   const chapterNames = t("worldMap.chapters");
 
   return (
@@ -58,7 +87,7 @@ export default function WorldMap({
           ← {t("backToModes")}
         </button>
         <h1>{t("worldMap.title")}</h1>
-        <p>{t("worldMap.subtitle")}</p>
+        <p>{t("worldMap.subtitle").replace("{n}", mainPath.length)}</p>
         {language && (
           <button
             className={`language-pill language-pill--${language}`}
@@ -83,45 +112,21 @@ export default function WorldMap({
             {t("worldMap.chapterLabel").replace("{n}", chapterIndex + 1)}:{" "}
             {chapterNames[chapterIndex] ?? t("worldMap.moreAdventures")}
           </h2>
-          <div className="world-map__grid">
-            {chapterWorlds.map((world) => {
-              const locked = world.status === "locked";
-              const completedCount = world.levels.filter(
-                (l) => l.status === "completed",
-              ).length;
-
-              return (
-                <button
-                  key={world.id}
-                  className={`world-card${locked ? " world-card--locked" : ""}`}
-                  style={{
-                    "--world-from": world.from,
-                    "--world-to": world.to,
-                  }}
-                  onClick={() => !locked && onSelectWorld(world.id)}
-                  disabled={locked}
-                >
-                  <span className="world-card__icon">
-                    {locked ? "🔒" : world.icon}
-                  </span>
-                  <span className="world-card__name">{world.name}</span>
-                  <span className="world-card__progress">
-                    {completedCount}/{world.totalStages} {t("worldMap.stages")}
-                  </span>
-                  <span className="world-card__bar">
-                    <span
-                      className="world-card__bar-fill"
-                      style={{
-                        width: `${(completedCount / world.totalStages) * 100}%`,
-                      }}
-                    />
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <div className="world-map__grid">{chapterWorlds.map(renderWorldCard)}</div>
         </section>
       ))}
+
+      {gym.length > 0 && (
+        <section className="world-map__chapter world-map__gym" aria-labelledby="practice-gym-title">
+          <h2 className="world-map__chapter-title" id="practice-gym-title">
+            🏋️ {t("worldMap.gymTitle")}
+          </h2>
+          <p className="world-map__gym-desc">
+            {(gymOpen ? t("worldMap.gymDesc") : t("worldMap.gymLocked")).replace("{n}", gym.length)}
+          </p>
+          <div className="world-map__grid">{gym.map(renderWorldCard)}</div>
+        </section>
+      )}
     </div>
   );
 }

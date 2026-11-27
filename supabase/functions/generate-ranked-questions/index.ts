@@ -23,13 +23,24 @@
 // deno-lint-ignore-file no-explicit-any
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+// ALLOWED_ORIGINS (comma-separated, e.g. "https://codequest.app") locks
+// the browser CORS check to the real site once a domain exists. Unset, it
+// stays "*" — still safe, since every request needs a valid user JWT.
+const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") ?? "")
+  .split(",").map((o) => o.trim()).filter(Boolean);
+let CORS_HEADERS: Record<string, string> = {};
+function setCors(req: Request) {
+  const origin = req.headers.get("Origin") ?? "";
+  const allow = ALLOWED_ORIGINS.length === 0 ? "*" : (ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]);
+  CORS_HEADERS = {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Vary": "Origin",
+  };
+}
 
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = Deno.env.get("ANTHROPIC_MODEL") ?? "claude-haiku-4-5-20251001";
 // Sized to the largest consumer (Showdown's MAX_ROUNDS) so every quiz-based
 // ranked mode has enough unique questions for a full match without reuse.
 const QUESTIONS_PER_BATCH = 15;
@@ -95,6 +106,7 @@ function isValidQuestion(q: any) {
 }
 
 Deno.serve(async (req) => {
+  setCors(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
   }
@@ -166,6 +178,7 @@ Deno.serve(async (req) => {
   let aiRes: Response;
   try {
     aiRes = await fetch("https://api.anthropic.com/v1/messages", {
+      signal: AbortSignal.timeout(45000),
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -223,9 +236,18 @@ Deno.serve(async (req) => {
   // Best-effort, idempotent save — then ALWAYS re-read, so two clients
   // racing on the same brand-new match both end up returning the exact
   // same stored batch regardless of which one's save actually won.
-  const { error: saveError } = await supabase.rpc("save_match_questions", {
+  // save_match_questions is server-only (see schema.sql), so this one
+  // call uses the service-role key. The player was already proven to be in
+  // this match by the RLS-restricted read above; that id is passed in.
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!serviceKey) {
+    return jsonResponse({ error: "not_configured" }, 503);
+  }
+  const admin = createClient(supabaseUrl, serviceKey);
+  const { error: saveError } = await admin.rpc("save_match_questions", {
     p_match_id: matchId,
     p_questions: questions,
+    p_player_id: userData.user.id,
   });
   if (saveError) {
     console.error("save_match_questions failed:", saveError.message);

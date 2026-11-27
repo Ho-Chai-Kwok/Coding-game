@@ -3,7 +3,7 @@ import RankedModeRunner from "./RankedModeRunner";
 import RankedResult from "./ranked/RankedResult";
 import { useRankedMatch } from "../hooks/useRankedMatch";
 import { getRankInfo } from "../data/rank";
-import { useI18n } from "../i18n/I18nContext";
+import { useI18n } from "../i18n/useI18n";
 
 const FORFEIT_WAIT_SECONDS = 45;
 // Every mode's own internal countdown (100s-240s, see each mode file)

@@ -1,5 +1,5 @@
-import { useI18n } from "../i18n/I18nContext";
-import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/useI18n";
+import { useAuth } from "../auth/useAuth";
 import CharacterBadge from "./CharacterBadge";
 
 // What the player's Byteborn is doing on the Home dashboard, picked from
@@ -28,6 +28,7 @@ export default function ModeSelect({
   onOpenSettings,
   onOpenCalendar,
   onOpenHelper,
+  onOpenKernelDash,
 }) {
   const { t } = useI18n();
   const { isLoggedIn } = useAuth();
@@ -102,6 +103,20 @@ export default function ModeSelect({
           <p className="mode-select__nudge-desc">{t("modeSelect.nudgeDesc")}</p>
         </div>
       )}
+
+      {/* A break from the curriculum, not part of it — a leisure mode,
+          clearly set apart from the "continue learning" card above. */}
+      <button className="kernel-dash-card" onClick={onOpenKernelDash}>
+        <span className="kernel-dash-card__icon">🏃</span>
+        <div className="kernel-dash-card__text">
+          <span className="kernel-dash-card__label">{t("modeSelect.leisureLabel")}</span>
+          <span className="kernel-dash-card__name">{t("kernelDash.title")}</span>
+        </div>
+        {/* CQ-14: this is a casual arcade mode with no "progress" to
+            resume, so it always says "Play", never "Continue" — unlike
+            the learning-path continue-card above. */}
+        <span className="kernel-dash-card__cta">{t("modeSelect.kernelDashCta")}</span>
+      </button>
     </div>
   );
 }

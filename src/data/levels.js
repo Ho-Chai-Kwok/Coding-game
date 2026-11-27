@@ -8,6 +8,7 @@
 // something from an earlier topic.
 
 import { EXTRA_WORLD_DEFS } from "./extraWorlds.js";
+import { buildPracticeWorldDefs } from "./practiceGenerator.js";
 
 const REAL_WORLDS = [
   {
@@ -29,13 +30,22 @@ const REAL_WORLDS = [
           '// Use console.log() to print a message.\n// Fill in the string below:\n\nconsole.log("");',
         expectedOutput: "Hello, World!",
         hint: 'console.log() takes a string in quotes, like console.log("some text").',
+        // `hint` above is plain-English guidance, not runnable code (it's
+        // the one case "Show solution" can't build from starterCode+hint
+        // alone — see CodeChallenge.jsx and QA_REPORT.md CQ-07).
+        solution:
+          '// Use console.log() to print a message.\n// Fill in the string below:\n\nconsole.log("Hello, World!");',
         python: {
           tutorial:
             "print() is how you print a message to the screen in Python. Put your message in quotes inside the parentheses.",
           example: 'print("Hi there!")\n# prints: Hi there!',
+          instructions:
+            "Every programmer's first program prints a greeting. Use print() to print exactly: Hello, World!",
           starterCode:
             '# Use print() to print a message.\n# Fill in the string below:\n\nprint("")',
           hint: 'print() takes a string in quotes, like print("some text").',
+          solution:
+            '# Use print() to print a message.\n# Fill in the string below:\n\nprint("Hello, World!")',
         },
       },
       {
@@ -48,12 +58,16 @@ const REAL_WORLDS = [
         starterCode: "// Print the number 2024\n\n",
         expectedOutput: "2024",
         hint: "console.log(2024); — no quotes needed for numbers.",
+        // Same situation as 1-1 above: hint has a trailing explanation
+        // with no // marker, so it isn't valid code on its own.
+        solution: "// Print the number 2024\n\nconsole.log(2024);",
         python: {
           tutorial:
             "Numbers don't need quotes — only text (strings) do. Just type the number directly inside print().",
           example: "print(7)\n# prints: 7",
           starterCode: "# Print the number 2024\n\n",
           hint: "print(2024) — no quotes needed for numbers.",
+          solution: "# Print the number 2024\n\nprint(2024)",
         },
       },
       {
@@ -103,12 +117,15 @@ const REAL_WORLDS = [
         starterCode: "// Print the three lines\n\n",
         expectedOutput: "*****\nHELLO\n*****",
         hint: "Three console.log() calls in a row, one per line.",
+        // hint here is a description of the approach, not literal code.
+        solution: '// Print the three lines\n\nconsole.log("*****");\nconsole.log("HELLO");\nconsole.log("*****");',
         python: {
           tutorial:
             "Let's combine what you've learned: use print() multiple times to build a bigger message out of several lines.",
           example: 'print("===")\nprint("HI")\nprint("===")',
           starterCode: "# Print the three lines\n\n",
           hint: "Three print() calls in a row, one per line.",
+          solution: '# Print the three lines\n\nprint("*****")\nprint("HELLO")\nprint("*****")',
         },
       },
     ],
@@ -159,12 +176,15 @@ const REAL_WORLDS = [
         starterCode: '// console.log("Ready!");\n',
         expectedOutput: "Ready!",
         hint: "Remove the // at the start of the line.",
+        // hint describes an edit to make, not a snippet to append.
+        solution: 'console.log("Ready!");\n',
         python: {
           tutorial:
             "Python comments start with #. To turn a comment back into real code, just remove the # in front of it.",
           example: '# print("Ready!")\n# remove # to make this run',
           starterCode: '# print("Ready!")\n',
           hint: "Remove the # at the start of the line.",
+          solution: 'print("Ready!")\n',
         },
       },
     ],
@@ -514,6 +534,7 @@ const REAL_WORLDS = [
         python: {
           tutorial: "== checks whether two values are equal, and gives back True or False.",
           example: "print(5 == 5)\n# prints: True",
+          instructions: "Print whether 7 is equal to 7, using ==.",
           starterCode: "# Print whether 7 == 7\n\n",
           hint: "print(7 == 7)",
           expectedOutput: "True",
@@ -763,6 +784,10 @@ const REAL_WORLDS = [
           "let total = 0;\n\n// Loop from 1 to 5, adding each number to total\n\nconsole.log(total);",
         expectedOutput: "15",
         hint: "for (let i = 1; i <= 5; i++) {\n  total += i;\n}",
+        // hint goes in the gap BEFORE the trailing console.log(total) that
+        // starterCode already ends with — appending it after would print
+        // the (still-zero) total before the loop even runs.
+        solution: "let total = 0;\n\nfor (let i = 1; i <= 5; i++) {\n  total += i;\n}\n\nconsole.log(total);",
         python: {
           tutorial:
             "You can build up a total inside a loop by using a variable declared outside it, and adding to it each time.",
@@ -770,6 +795,7 @@ const REAL_WORLDS = [
           starterCode:
             "total = 0\n\n# Loop from 1 to 5, adding each number to total\n\nprint(total)",
           hint: "for i in range(1, 6):\n    total += i",
+          solution: "total = 0\n\nfor i in range(1, 6):\n    total += i\n\nprint(total)",
         },
       },
       {
@@ -1213,7 +1239,20 @@ function finalizeRealWorld(def, id, isFirstWorld) {
   };
 }
 
-const ALL_WORLD_DEFS = [...REAL_WORLDS, ...EXTRA_WORLD_DEFS];
+// Practice-drill worlds (101+): templated, data-varied repetition on the
+// core topics most worth drilling — see practiceGenerator.js for the full
+// design rationale and how to tune real content volume up further.
+// variantsPerTier=185 lands total lesson count (existing + generated)
+// right around the 10,000 target (see AUTONOMOUS_LOG.md).
+const PRACTICE_WORLD_DEFS = buildPracticeWorldDefs(185);
+
+const ALL_WORLD_DEFS = [...REAL_WORLDS, ...EXTRA_WORLD_DEFS, ...PRACTICE_WORLD_DEFS];
+
+// The main learning path is the hand-built worlds; everything after it is
+// the generated drill worlds, shown separately as the optional Practice Gym
+// (owner decision O2, QA_REPORT.md CQ-08). World ids don't change, so old
+// saves keep working.
+export const MAIN_PATH_WORLD_COUNT = REAL_WORLDS.length + EXTRA_WORLD_DEFS.length;
 
 export const worlds = ALL_WORLD_DEFS.map((def, i) =>
   finalizeRealWorld(def, i + 1, i === 0),
