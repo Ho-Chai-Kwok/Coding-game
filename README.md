@@ -1,27 +1,47 @@
 # Code Quest 🎮
 
-A free, Duolingo-style coding game for kids and teens — learn to code by
-solving bite-sized, hands-on challenges, racing through ranked mini-games,
-and unlocking characters along the way.
+A free, Duolingo-style coding game for kids and teens: learn to code through
+bite-sized challenges that run real code in the browser, then put it to the
+test in live player-vs-player ranked matches.
 
-## Product direction (owner decisions, 2026-10-17)
+**▶ Play it: [codequest-learnfromzero.vercel.app](https://codequest-learnfromzero.vercel.app)** (no account needed)
 
-Three decisions from `NEXT_STAGE.md` §2d (O1–O3), made so Stage 3 work has
-a target instead of guessing. Full context and "Done when" criteria for
-each are in `QA_REPORT.md`.
+<p align="center">
+  <img src="docs/screenshots/home.png" width="240" alt="Home screen with a Continue Learning card and progress bar">
+  <img src="docs/screenshots/lesson.png" width="240" alt="A Python lesson: the learner's code ran and passed">
+  <img src="docs/screenshots/worlds.png" width="240" alt="World map showing the first chapter of the learning path">
+</p>
 
-- **Target age: 8+ general audience** (not teens/adults-only, not a
-  separate pre-reader mode for ages 3–6). Drives the under-13 decision
-  below and the UI/copy age-appropriateness work in Stage 3.
-- **Under-13 sign-ups: parental-email consent flow**, not an outright
-  block. Under-13s can have real accounts, but creating one requires a
-  verified consent step from a parent's email before the account is
-  active. This is more work than a block (CQ-06 in Stage 3) but keeps the
-  product open to its actual audience given the 8+ target above.
-- **The 50 auto-generated drill worlds move to a separate "Practice Gym"
-  section**, out of the main learning path (CQ-08 in Stage 3). The main
-  path stays a believable, human-curated size; drills become optional
-  extra practice rather than inflating the headline lesson/world counts.
+## Highlights
+
+- **Real code, safely run in the browser.** JavaScript runs in a Web Worker
+  and Python in [Pyodide](https://pyodide.org) (WebAssembly) in its own
+  worker; React/HTML lessons render in sandboxed iframes. Every runner has a
+  hard timeout, so an infinite loop can't freeze the page. C, C++ and Java
+  compile on the [Wandbox](https://wandbox.org) API.
+- **Live ranked multiplayer on Supabase.** Matchmaking, results and an
+  ELO-style points swing run inside Postgres functions with Row Level
+  Security, so the browser can't forge a score, a finish time or its rank.
+  AI-generated match questions come from a Claude-powered Edge Function.
+- **Security tested, not assumed.** `scripts/verify-schema.mjs` applies the
+  real schema to a throwaway Postgres and attacks it as signed-in users
+  (30 checks: reading others' data, forged points, planted questions,
+  unsafe names). The site ships a strict Content-Security-Policy and HSTS.
+- **Built for kids.** Guest-first (nothing leaves the device without an
+  account), a filter that keeps emails and phone numbers out of public
+  names, a parent lock, and WCAG checks with axe-core in light and dark mode.
+- **Tested end to end.** Vitest unit tests, Playwright browser tests run
+  under production security headers, and scripts that check all 16,577
+  lessons' answers and hints really pass. CI runs all of it on every pull
+  request; Vercel deploys `main`.
+- **4 interface languages:** English, Spanish, Traditional Chinese, Korean.
+
+**Stack:** React 19 · Vite · Supabase (Postgres, Auth, Realtime, Edge
+Functions in Deno/TypeScript) · Claude API · Pyodide · Web Workers ·
+Vitest · Playwright · GitHub Actions · Vercel
+
+Working notes from development (QA report, roadmap, decision log) are in
+[`docs/`](docs/).
 
 ## Features
 
@@ -48,7 +68,7 @@ each are in `QA_REPORT.md`.
   who you actually beat. Questions scale across 7 difficulty tiers
   (Bronze → Grandmaster) that track your rank. Requires an account (not
   guest) to be matched.
-- **10 unlockable characters** — a shared parametric SVG rig reskinned
+- **12 unlockable characters** — a shared parametric SVG rig reskinned
   per character, each with a real mechanical bonus tied to their
   archetype (not just flavor text), unlocked through genuine progress.
 - **Daily login rewards** — a calendar with a streak milestone ladder.
@@ -121,8 +141,8 @@ Any static host works if it sends the same headers.
 
 ## Tech stack
 
-React 19 + Vite, no router (single `mode` state string drives screen
-navigation), plain CSS with custom properties for theming, Supabase
+React 19 + Vite with hash-based routing (so the browser Back button works
+inside the app), plain CSS with custom properties for theming, Supabase
 (optional, Postgres + Auth), Pyodide (WASM Python, lazy-loaded on demand).
 
 ## Project structure
@@ -148,4 +168,5 @@ under 13, please ask a parent or guardian before creating an account.
 
 ## License
 
-Private project — all rights reserved.
+Copyright © 2026. All rights reserved. The source is public so it can be
+read and reviewed; please ask before reusing it.

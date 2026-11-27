@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 // CQ-19: browser-level repros for CQ-01 (sandbox timeout/hang), CQ-04
 // (routing/Back button), and CQ-05 (locked-screen overflow on a phone
-// viewport) — the three bugs from QA_REPORT.md that only show up with a
+// viewport) — the three bugs from docs/QA_REPORT.md that only show up with a
 // real browser, not a unit test. Builds the app and serves the static
 // dist/ output, same as production, rather than the dev server, so this
 // also catches build-only breakage.

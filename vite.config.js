@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => {
     // TODO once all 28 side quests are done: split sidequests.js into a
     // lazy-loaded per-quest chunk, with just {id, name, icon, lessonCount}
     // kept in the main bundle for the dashboard's progress math — see
-    // ROADMAP.md "Shrink the main bundle".
+    // docs/ROADMAP.md "Shrink the main bundle".
     chunkSizeWarningLimit: 900,
   },
   }
