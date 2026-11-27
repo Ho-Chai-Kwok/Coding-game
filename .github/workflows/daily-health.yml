@@ -1,0 +1,44 @@
+name: Daily health check
+
+# Every morning (~08:20 Hong Kong time) checks the LIVE site the way a
+# visitor would: it's up with its security headers, nothing private is
+# served, a JavaScript and a Python lesson really run and pass, the
+# database refuses visitors who aren't signed in, and the AI Edge
+# Functions are up and only answer this site. Tests: tests/live/.
+#
+# If it fails, GitHub emails the repo owner (Settings → Notifications →
+# Actions). Run it by hand any time from the Actions tab.
+
+on:
+  schedule:
+    - cron: "23 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Check the live site
+        run: npx playwright test -c playwright.live.config.js
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-health-report
+          path: playwright-report/
+          retention-days: 14
