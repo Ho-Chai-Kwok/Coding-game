@@ -61,13 +61,14 @@ export function spawnIntervalAt(elapsedSeconds, easy = false) {
   return easy ? interval / EASY_SPEED_MULTIPLIER : interval;
 }
 
-// `excludeWall`: during a flash question, a wall forcing the player out
-// of a lane would unfairly fight with needing to be in a *specific* lane
-// to answer — jump/duck hazards and collectibles don't have that
-// conflict (they never force a lane change), so only walls are held back.
-export function spawnObstacle(excludeWall = false) {
-  const pool = excludeWall ? SPAWN_POOL.filter((p) => p.type !== "wall") : SPAWN_POOL;
-  const totalWeight = excludeWall ? pool.reduce((s, p) => s + p.weight, 0) : SPAWN_TOTAL_WEIGHT;
+// `collectiblesOnly`: while a flash question is up (and for a short grace
+// period after a correct answer) only collectibles spawn. The player has
+// to stand in one specific lane to answer, so a bug or error dropping into
+// that lane while they read would punish them for answering — exactly
+// what players reported as "answer right, then die".
+export function spawnObstacle(collectiblesOnly = false) {
+  const pool = collectiblesOnly ? SPAWN_POOL.filter((p) => COLLECTIBLE_TYPES.has(p.type)) : SPAWN_POOL;
+  const totalWeight = collectiblesOnly ? pool.reduce((s, p) => s + p.weight, 0) : SPAWN_TOTAL_WEIGHT;
   let roll = Math.random() * totalWeight;
   let type = pool[0].type;
   for (const p of pool) {
@@ -100,10 +101,14 @@ export function clearsHazard(type, action) {
 // question set, picking difficulty from the SAME elapsed-time curve
 // that drives obstacle speed/spawn-rate, so "harder as you survive
 // longer" means one consistent thing across the whole mode.
-export const FIRST_FLASH_QUESTION_MS = 14000; // give the player a clean run before the first one
-export const FLASH_QUESTION_INTERVAL_MS = 22000; // roughly how often another one shows up
+export const FIRST_FLASH_QUESTION_MS = 8000; // a short clean run before the first one
+export const FLASH_QUESTION_INTERVAL_MS = 10000; // gap between one question ending and the next starting
 export const FLASH_QUESTION_TIME_MS = 6500; // how long the player has to pick a lane
 export const FLASH_QUESTION_BONUS = 40; // score bonus for a correct answer
+export const HAZARD_GRACE_MS = 1500; // no new hazards right after a correct answer
+// When a question appears, hazards still in the top part of the track
+// (hidden under the question banner) are removed, so none arrive unseen.
+export const BANNER_CLEAR_FRACTION = 0.4;
 
 // Maps elapsed survival time to a ranked difficulty level (1-7, same
 // scale as rank.js / rankedQuestionBank.js) — early questions pull from
