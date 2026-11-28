@@ -13,6 +13,8 @@ import {
   COLLECTIBLE_TYPES,
   FIRST_FLASH_QUESTION_MS,
   FLASH_QUESTION_INTERVAL_MS,
+  HAZARD_GRACE_MS,
+  BANNER_CLEAR_FRACTION,
   FLASH_QUESTION_TIME_MS,
   FLASH_QUESTION_BONUS,
   speedAt,
@@ -81,6 +83,7 @@ export default function KernelDash({ character, onBack }) {
   const lastFrameRef = useRef(0);
   const elapsedRef = useRef(0);
   const nextSpawnInRef = useRef(0);
+  const hazardGraceRef = useRef(0); // ms left with no hazard spawns after a correct answer
   const scoreRef = useRef(0);
   const flashQuestionRef = useRef(null);
   const nextFlashInRef = useRef(0);
@@ -132,6 +135,7 @@ export default function KernelDash({ character, onBack }) {
       setFlashFeedback("correct");
       setTimeout(() => setFlashFeedback(null), 700);
       nextFlashInRef.current = FLASH_QUESTION_INTERVAL_MS;
+      hazardGraceRef.current = HAZARD_GRACE_MS;
     } else {
       setFlashFeedback("wrong");
       endRun();
@@ -167,17 +171,24 @@ export default function KernelDash({ character, onBack }) {
           const built = buildFlashQuestion(raw);
           flashQuestionRef.current = built;
           flashTimeLeftRef.current = FLASH_QUESTION_TIME_MS;
+          // Hazards still up under the banner would reach the answer lanes
+          // unseen; drop them (anything already lower stays visible).
+          obstaclesRef.current = obstaclesRef.current.filter(
+            (o) => !HAZARD_TYPES.has(o.type) || o.distance > TRACK_LENGTH * BANNER_CLEAR_FRACTION,
+          );
           setFlashQuestion(built);
           setFlashTimeLeft(FLASH_QUESTION_TIME_MS);
         }
       }
 
       nextSpawnInRef.current -= dt * 1000;
+      hazardGraceRef.current = Math.max(0, hazardGraceRef.current - dt * 1000);
 
       let list = obstaclesRef.current;
       if (nextSpawnInRef.current <= 0) {
         nextSpawnInRef.current = spawnIntervalAt(elapsedRef.current, easyModeRef.current);
-        list = [...list, spawnObstacle(Boolean(flashQuestionRef.current))];
+        const calm = Boolean(flashQuestionRef.current) || hazardGraceRef.current > 0;
+        list = [...list, spawnObstacle(calm)];
       }
 
       let collided = false;
@@ -231,6 +242,7 @@ export default function KernelDash({ character, onBack }) {
     nextSpawnInRef.current = spawnIntervalAt(0, easyModeRef.current);
     flashQuestionRef.current = null;
     nextFlashInRef.current = FIRST_FLASH_QUESTION_MS;
+    hazardGraceRef.current = 0;
     flashTimeLeftRef.current = 0;
     setFlashQuestion(null);
     setFlashTimeLeft(0);

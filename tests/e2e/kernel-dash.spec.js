@@ -48,3 +48,20 @@ test("nothing the game loop moves every frame has a CSS transition on it", async
   expect(transitions.obstacle, "obstacle `top` must not transition").toBe(false);
   expect(transitions.bar, "timer bar `width` must not transition").toBe(false);
 });
+
+test("no hazards fall while a flash question is up", async ({ page }) => {
+  test.setTimeout(40000);
+  // Make the run predictable: every spawn is a bug in lane 0, and the
+  // player stays in lane 1, so nothing can hit them before the question.
+  await page.addInitScript(() => { Math.random = () => 0.1; });
+  await startRun(page);
+  const question = page.locator(".kernel-dash__flash");
+  await expect(question, "first question shows within ~8s").toBeVisible({ timeout: 10000 });
+  // Anything already low on the track when the question appeared has
+  // passed after ~2s; nothing new may be a hazard.
+  await page.waitForTimeout(2500);
+  await expect(question).toBeVisible();
+  const hazards = await page.locator(".kernel-dash__obstacle--bug, .kernel-dash__obstacle--error, .kernel-dash__obstacle--wall").count();
+  expect(hazards, "hazards on the track mid-question").toBe(0);
+  await expect(page.locator(".kernel-dash__obstacle").first(), "collectibles still fall").toBeVisible();
+});

@@ -133,10 +133,10 @@
 }
 
 /* Flash question: a banner across the top of the track with one labeled
-   answer per lane — obstacles keep coming underneath it (that's the
-   point: dodge AND decide at the same time), so this only takes the top
-   slice of the track, never the full overlay the start/game-over screens
-   use. */
+   answer per lane. Only collectibles fall while it is up (see
+   spawnObstacle in kernelDashEngine.js), so the player can stand in their
+   answer lane safely. It only takes the top slice of the track, never the
+   full overlay the start/game-over screens use. */
 .kernel-dash__flash {
   position: absolute;
   top: 0;
