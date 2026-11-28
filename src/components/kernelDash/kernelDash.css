@@ -57,7 +57,9 @@
   place-items: center;
   font-size: 22px;
   border-radius: 10px;
-  transition: top 0.02s linear;
+  /* No transition on `top`: the game loop sets it every frame, and a
+     transition restarted every frame never gets past its start value —
+     obstacles stayed frozen above the track, invisible. */
 }
 
 .kernel-dash__obstacle--bug {
@@ -157,7 +159,8 @@
 .kernel-dash__flash-bar-fill {
   height: 100%;
   background: #facc15;
-  transition: width 0.1s linear;
+  /* Width is set every frame by the game loop; a transition here would
+     restart each frame and leave the bar stuck at full. */
 }
 
 .kernel-dash__flash-question {
